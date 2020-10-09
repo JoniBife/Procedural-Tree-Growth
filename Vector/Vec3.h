@@ -28,12 +28,9 @@ public:
 
 	Vec3 operator*(float scalar) const;
 	friend Vec3 operator*(float scalar, const Vec3& vec3);
-
 	Vec3 operator/(float scalar) const;
-
 	Vec3 operator+(float scalar) const;
 	friend Vec3 operator+(float scalar, const Vec3& vec3);
-
 	Vec3 operator-(float scalar) const;
 	friend Vec3 operator-(float scalar, const Vec3& vec3);
 
@@ -53,6 +50,7 @@ public:
 
 float dot(const Vec3& a, const Vec3& b);
 Vec3 cross(const Vec3& a, const Vec3& b);
+Vec3 rodrigues(Vec3 v,float theta, Vec3 k);
 std::ostream& operator<<(std::ostream& os, const Vec3& vec3);
 
 #endif

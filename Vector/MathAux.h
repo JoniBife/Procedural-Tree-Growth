@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATHAUX_H
+#define MATHAUX_H
 
 #include <iostream>
 #include <math.h>
@@ -18,3 +19,7 @@ bool cmpf(float A, float B);
 float round6(float number);
 
 float randomFloat();
+
+float degreesToRadians(float angle);
+
+#endif

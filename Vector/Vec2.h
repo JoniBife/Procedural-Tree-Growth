@@ -23,9 +23,13 @@ public:
 	Vec2& operator-=(const Vec2& other);
 
 	Vec2 operator*(float scalar) const;
+	friend Vec2 operator*(float scalar, const Vec2& vec2);
 	Vec2 operator/(float scalar) const;
 	Vec2 operator+(float scalar) const;
+	friend Vec2 operator+(float scalar, const Vec2& vec2);
 	Vec2 operator-(float scalar) const;
+	friend Vec2 operator-(float scalar, const Vec2& vec2);
+
 	Vec2& operator+=(float s);
 	Vec2& operator-=(float s);
 	Vec2& operator*=(float s);
@@ -45,8 +49,5 @@ public:
 
 float dot(const Vec2& a, const Vec2& b);
 std::ostream& operator<<(std::ostream& os, const Vec2& vec2);
-Vec2 operator*(float scalar, const Vec2& vec2);
-Vec2 operator+(float scalar, const Vec2& vec2);
-Vec2 operator-(float scalar, const Vec2& vec2);
 
 #endif

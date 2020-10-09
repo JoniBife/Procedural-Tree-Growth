@@ -1,4 +1,7 @@
+#define _USE_MATH_DEFINES
+
 #include "MathAux.h"
+#include <Math.h>
 
 #define EPSILON 0.00005f
 
@@ -14,4 +17,8 @@ float round6(float number) {
 float randomFloat() {
     float a = 5.0;
     return (float(rand()) / float((RAND_MAX))) * a;
+}
+
+float degreesToRadians(float angle) {
+    return (angle * float(2 * M_PI)) / 360;
 }

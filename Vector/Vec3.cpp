@@ -119,7 +119,17 @@ float dot(const Vec3& a, const Vec3& b) {
 }
 
 Vec3 cross(const Vec3& a, const Vec3& b) {
-	return (a.y * b.z - a.z * b.y) * Vec3::X + (a.z * b.x - a.x * b.z) * Vec3::Y + (a.x * b.y - a.y * b.x) * Vec3::Z;
+	return Vec3((a.y * b.z - a.z * b.y),(a.z * b.x - a.x * b.z),(a.x * b.y - a.y * b.x));
+}
+
+// K has to be normalized
+// Thetha should be converted to radians
+// Vrot = v*cos() + (k x v)*sin() + k*(k.v) * (1- cos())  
+Vec3 rodrigues(Vec3 v, float thetaDegrees, Vec3 k) {
+	float thetaRadians = degreesToRadians(thetaDegrees);
+	Vec3 unitK = k.normalize();
+
+	return v * cosf(thetaRadians) + cross(unitK, v) * sinf(thetaRadians) + unitK*dot(unitK, v) * (1 - cosf(thetaRadians));
 }
 
 std::ostream& operator<<(std::ostream& os, const Vec3& vec3) {

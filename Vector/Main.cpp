@@ -1,42 +1,71 @@
 #include <iostream>
 #include "Vec3.h"
+#include <time.h>
 
 int main()
 {
-	// Rodrigues rotation formula
+	srand((unsigned int)time(NULL));
 
-	Vec3 v(1.5f, 3.2f, 0.8f);
-	float theta = 24;
-	Vec3 k(8, 2, 0);
+	std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
 
-	Vec3 vrot = rodrigues(v, theta, k);
-	std::cout << "vrot = " << vrot << std::endl;
+	for (int i = 0; i < 10; ++i) {
+		Vec3 a = Vec3::random();
+		Vec3 b = Vec3::random();
+		Vec3 c = Vec3::random();
 
-	Vec3 v2(0.5f, 1.0f, 1.0f);
-	float theta2 = 0;
-	Vec3 k2(8, 2, 0);
+		std::cout << "a = " << a << std::endl;
+		std::cout << "b = " << b << std::endl;
+		std::cout << "c = " << c << std::endl;
 
-	Vec3 vrot2 = rodrigues(v2, theta2, k2);
-	std::cout << "vrot2 = " << vrot2 << std::endl;
+		Vec3 left = cross(a, cross(b, c));
+		Vec3 right = dot(a, c) * b - dot(a, b) * c;
 
+		std::cout << "left = " << left << std::endl;
+		std::cout << "right = " << right << std::endl;
 
-	// Equalities and inequalities
-
-	Vec3 a(1, 2, 3);
-	Vec3 b(0.1f, 0.2f, 0.3f);
-	Vec3 c(-0.9f, -1.79f, -2.7f);
-	Vec3 d(1.1f, 2.2f, 3.3f);
-
-	if (a == (b * 10)) {
-		std::cout << "Success" << std::endl;
+		if (left == right) {
+			std::cout << "Success!" << "\n" << std::endl;
+		}
 	}
 
-	if ((a + b) == d) {
-		std::cout << "Success" << std::endl;
+	std::cout << "\n -------- WITH ZERO -----------" << std::endl;
+
+	for (int i = 0; i < 10; ++i) {
+		Vec3 a = Vec3::random();
+		Vec3 b = Vec3::random();
+		Vec3 c = Vec3::ZERO;
+
+		std::cout << "a = " << a << std::endl;
+		std::cout << "b = " << b << std::endl;
+		std::cout << "c = " << c << std::endl;
+
+		Vec3 left = cross(a, cross(b, c));
+		Vec3 right = dot(a, c) * b - dot(a, b) * c;
+
+		std::cout << "left = " << left << std::endl;
+		std::cout << "right = " << right << std::endl;
+
+		if (left == right) {
+			std::cout << "Success!" << "\n" << std::endl;
+		}
 	}
 
-	if ((a - b) != c) {
-		std::cout << "Success" << std::endl;
+	Vec3 a(1, 0, 0);
+	Vec3 b(0, 1, 0);
+	Vec3 c(0, 0, 1);
+
+	std::cout << "a = " << a << std::endl;
+	std::cout << "b = " << b << std::endl;
+	std::cout << "c = " << c << std::endl;
+
+	Vec3 left = cross(a, cross(b, c));
+	Vec3 right = dot(a, c) * b - dot(a, b) * c;
+
+	std::cout << "left = " << left << std::endl;
+	std::cout << "right = " << right << std::endl;
+
+	if (left == right) {
+		std::cout << "Success!" << "\n" << std::endl;
 	}
 }
 

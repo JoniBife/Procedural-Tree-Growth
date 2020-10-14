@@ -1,8 +1,11 @@
 #ifndef MATRIX_4_H
 #define MATRIX_4_H
 
+
 #include <iostream>
 #include "Vec4.h"
+#include "Vec3.h"
+
 
 struct Mat4 {
 
@@ -20,7 +23,7 @@ struct Mat4 {
 	static Mat4 scaling(const float xyz);
 	static Mat4 scaling(const float x, const float y, const float z);
 	static Mat4 translation(const float x, const float y, const float z);
-	// TODO static Mat4 rotation(float)
+	static Mat4 rotation(const float angleRad, const Vec3& axis);
 
 	Mat4& operator=(const Mat4& other);
 	Mat4& operator+=(const Mat4& other);
@@ -52,10 +55,11 @@ struct Mat4 {
 	}*/
 	
 	Mat4 transpose();
-	// TODO CONVERT TO OPENGL COLUMN MAJOR
-
+	float* toOpenGLFormat();
 
 	friend std::ostream& operator<<(std::ostream& os, const Mat4& mat4);
+	friend std::istream& operator>>(std::istream& is, const Mat4& mat4);
+	// TODO input
 
 };
 #endif

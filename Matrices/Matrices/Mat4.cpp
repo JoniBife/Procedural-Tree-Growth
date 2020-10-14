@@ -1,3 +1,4 @@
+#include <math.h>
 #include "Mat4.h"
 #include "MathAux.h"
 
@@ -36,7 +37,6 @@ Mat4::Mat4(const Mat4& other) {
 	}
 }
 
-
 Mat4 Mat4::IDENTITY = {1, 0, 0, 0,
 						0, 1, 0, 0,
 						0, 0, 1, 0,
@@ -62,7 +62,24 @@ Mat4 Mat4::translation(const float x, const float y, const float z)
 			0, 0, 1, z,
 			0, 0, 0, 1};
 }
-// TODO static Mat4 rotation(float)
+
+Mat4 Mat4::rotation(const float angleRad, const Vec3& axis) 
+{
+	Mat4 dualMatrix = {
+			0  ,-axis.z,  axis.y, 0,
+		 axis.z,   0   , -axis.x, 0,
+		-axis.y, axis.x,    0   , 0,
+			0  ,   0   ,    0   , 0 // Zero so that we don't have to set the last element of the matrix to 1
+	};
+	Mat4 dualMatrixSqr = {
+			-(axis.y*axis.y) - axis.z * axis.z, axis.x*axis.y, axis.x*axis.z, 0,
+			 axis.x* axis.y, -(axis.x*axis.x)-(axis.z*axis.z), axis.y*axis.z, 0,
+			 axis.x* axis.z, axis.y* axis.z, -(axis.x * axis.x)-(axis.y * axis.y), 0,
+					0      ,		0		,				0					, 0 // Zero so that we don't have to set the last element of the matrix to 1
+	};
+
+	return IDENTITY + sinf(angleRad) * dualMatrix + (1 - cosf(angleRad)) * dualMatrixSqr;
+}
 
 Mat4& Mat4::operator=(const Mat4& other)
 {
@@ -78,7 +95,7 @@ Mat4& Mat4::operator+=(const Mat4& other)
 {
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			m[l][c] += other.get(l, c);
+			m[l][c] += other.m[l][c];
 		}
 	}
 	return *this;
@@ -88,7 +105,7 @@ Mat4& Mat4::operator-=(const Mat4& other)
 {
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			m[l][c] -= other.get(l, c);
+			m[l][c] -= other.m[l][c];
 		}
 	}
 	return *this;
@@ -98,15 +115,19 @@ Mat4& Mat4::operator*=(const Mat4& other)
 {
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			m[l][c] = m[l][0]*other.get(0, l) + m[l][1]*other.get(1, l) + m[l][2]*other.get(2, l) + m[l][3]*other.get(3, l);
+			m[l][c] = m[l][0]*other.m[0][l] + 
+					  m[l][1]*other.m[1][l] + 
+					  m[l][2]*other.m[2][l] + 
+					  m[l][3]*other.m[3][l];
 		}
 	}
+	return *this;
 }
 
 bool Mat4::operator==(const Mat4& other) const {
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			if (!cmpf(m[l][c], other.get(l, c)))
+			if (!cmpf(m[l][c], other.m[l][c]))
 				return false;
 		}
 	}
@@ -130,7 +151,7 @@ Mat4 Mat4::operator-(const Mat4& other) {
 	Mat4 diff;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			diff.m[l][c] = m[l][c] + other.m[l][c];
+			diff.m[l][c] = m[l][c] - other.m[l][c];
 		}
 	}
 	return diff;
@@ -151,7 +172,7 @@ Mat4 Mat4::operator*(const float s) {
 	Mat4 prod;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			prod.m[l][c] *= m[l][c] * s;
+			prod.m[l][c] = m[l][c] * s;
 		}
 	}
 	return prod;
@@ -167,6 +188,7 @@ Mat4 operator*(const float s, const Mat4& mat4) {
 	}
 	return prod;
 }
+
 Vec4 Mat4::operator*(const Vec4& v) {
 	Vec4 prod;
 	prod.x = m[0][0]*v.x;
@@ -184,8 +206,18 @@ Mat4 Mat4::transpose() {
 	}
 	return trans;
 }
-// TODO CONVERT TO OPENGL COLUMN MAJOR
 
+float* Mat4::toOpenGLFormat() {
+	float mat[16];
+	int i = 0;
+	for (int c = 0; c < 4; c++) {
+		for (int l = 0; l < 4; l++) {
+			mat[i] = m[l][c];
+			++i;
+		}
+	}
+	return mat;
+}
 
 /*
  * Print result example:
@@ -195,9 +227,9 @@ Mat4 Mat4::transpose() {
  * [ 0 , 0 , 0 , 1 ]
 */
 std::ostream& operator<<(std::ostream& os, const Mat4& mat4) {
-	for (int l = 0; l < 4; ++l) {
+	for (int l = 0; l < 4; l++) {
 		os << "[ ";
-		for (int c = 0; c < 4; ++c) {
+		for (int c = 0; c < 4; c++) {
 			os << mat4.m[l][c];
 			if (c < 3) { // Only print comma until the third column
 				os << " , ";
@@ -206,4 +238,13 @@ std::ostream& operator<<(std::ostream& os, const Mat4& mat4) {
 		os << " ]" << std::endl;
 	}
 	return os;
+}
+
+std::istream& operator>>(std::istream& is, const Mat4& mat4) {
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			is >> mat4.m[l][c];
+		}
+	}
+	return is;
 }

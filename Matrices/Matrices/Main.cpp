@@ -1,14 +1,20 @@
 #include <iostream>
 #include "Vec3.h"
 #include <time.h>
+#include "Mat4.h"
 
 int main()
 {
-	srand((unsigned int)time(NULL));
+	//srand((unsigned int)time(NULL));
 
-	std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
+	//std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
 
-	for (int i = 0; i < 10; ++i) {
+	Mat4 in;
+	std::cin >> in;
+
+	std::cout << in;
+
+	/*for (int i = 0; i < 10; ++i) {
 		Vec3 a = Vec3::random();
 		Vec3 b = Vec3::random();
 		Vec3 c = Vec3::random();
@@ -66,7 +72,7 @@ int main()
 
 	if (left == right) {
 		std::cout << "Success!" << "\n" << std::endl;
-	}
+	}*/
 }
 
 

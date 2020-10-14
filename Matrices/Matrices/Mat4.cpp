@@ -240,7 +240,7 @@ std::ostream& operator<<(std::ostream& os, const Mat4& mat4) {
 	return os;
 }
 
-std::istream& operator>>(std::istream& is, const Mat4& mat4) {
+std::istream& operator>>(std::istream& is, Mat4& mat4) {
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
 			is >> mat4.m[l][c];

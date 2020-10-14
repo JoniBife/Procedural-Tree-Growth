@@ -58,8 +58,7 @@ struct Mat4 {
 	float* toOpenGLFormat();
 
 	friend std::ostream& operator<<(std::ostream& os, const Mat4& mat4);
-	friend std::istream& operator>>(std::istream& is, const Mat4& mat4);
-	// TODO input
+	friend std::istream& operator>>(std::istream& is, Mat4& mat4);
 
 };
 #endif

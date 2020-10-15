@@ -179,7 +179,7 @@ float* Mat2::toOpenGLFormat() {
 	int i = 0;
 	for (int c = 0; c < 2; c++) {
 		for (int l = 0; l < 2; l++) {
-			mat[i] = m[l][c];
+			mat[i] = m[c][l];
 			++i;
 		}
 	}

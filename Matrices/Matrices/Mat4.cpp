@@ -216,7 +216,7 @@ float* Mat4::toOpenGLFormat() {
 	int i = 0;
 	for (int c = 0; c < 4; c++) {
 		for (int l = 0; l < 4; l++) {
-			mat[i] = m[l][c];
+			mat[i] = m[c][l];
 			++i;
 		}
 	}

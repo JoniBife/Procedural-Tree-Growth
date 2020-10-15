@@ -1,9 +1,15 @@
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include "Vec3.h"
 #include "Vec2.h"
 #include <time.h>
 #include "Mat2.h"
 #include "Mat4.h"
+#include "Mat3.h"
+#include <math.h>
+
+
 
 // TODO Reduce the number of casts from integer to float (in situations like: 2 should be 2.0f)
 
@@ -13,13 +19,21 @@ int main()
 
 	//std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
 
-	Mat2 in1;
-	Mat2 in2;
-	std::cout << "insert matrix 2x2 A:" << std::endl;
+	Mat4 in1;
+	Mat4 in2;
+	std::cout << "insert matrix 4x4 A:" << std::endl;
 	std::cin >> in1;
+
+	float* opengl = in1.toOpenGLFormat();
+
+	for (int i = 0; i < 16; ++i) {
+		std::cout << *(opengl+i) << " ";
+	}
+	
+	/*
 	std::cout << "insert matrix 2x2 B:" << std::endl;
 	std::cin >> in2;
-
+	
 	std::cout << "\n-------SUM------\n"<< in1 + in2;
 	std::cout << "\n-------SUB------\n" << in1 - in2;
 	std::cout << "\n-------MUL------\n" << in1 * in2;
@@ -31,10 +45,11 @@ int main()
 	float s;
 	std::cin >> s;
 	std::cout << in1 * s;
-	std::cout << "\n-------MUL_V-----\n" << in1*Vec2(1,1);
+	std::cout << "\n-------MUL_V-----\n" << in1*Vec4(1,2,3,4);
+	
 	std::cout << "\n-------DET-----\n" << in1.determinant();
 	std::cout << "\n-------INV-----\n";
-	Mat2 inv;
+	Mat3 inv;
 	bool canInvert = in1.inverse(inv);
 	if (canInvert) {
 		std::cout << inv;
@@ -43,6 +58,13 @@ int main()
 		std::cout << "Can't invert matrix A";
 	}
 
+	std::cout << "\n-------DUAL-----\n" << Mat3::dual(Vec3(1, 2, 3));*/
+	/*
+	std::cout << "\n-------SCA_S------\n" << Mat4::scaling(3);
+	std::cout << "\n-------SCA------\n" << Mat4::scaling(1, 2, 3);
+	std::cout << "\n-------TRNSLT------\n" << Mat4::translation(1, 2 , 3);
+	std::cout << "\n-------ROT------\n" << Mat4::rotation(M_PI_2, Vec3::X);
+	*/
 	std::cout << std::endl;
 	
 

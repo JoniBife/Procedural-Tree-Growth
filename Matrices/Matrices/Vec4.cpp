@@ -6,6 +6,11 @@ Vec4::Vec4() : Vec4(0) {}
 Vec4::Vec4(float xyz) : Vec4(xyz,xyz,xyz,xyz) {}
 Vec4::Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
 
+Vec4 Vec4::ZERO = Vec4(0, 0, 0, 0);
+Vec4 Vec4::Z = Vec4(0, 0, 1, 1);
+Vec4 Vec4::Y = Vec4(0, 1, 0, 1);
+Vec4 Vec4::X = Vec4(1, 0, 0, 1);
+
 Vec4 Vec4::operator+(const Vec4& other) const {
 	return Vec4(this->x + other.x, this->y + other.y, this->z + other.z, this->w + other.w);
 }

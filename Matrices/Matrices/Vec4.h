@@ -12,6 +12,11 @@ public:
 	Vec4(float xyz);
 	Vec4(float x, float y, float z, float w);
 
+	static Vec4 ZERO;
+	static Vec4 Z;
+	static Vec4 Y;
+	static Vec4 X;
+
 	Vec4 operator+(const Vec4& other) const;
 	Vec4 operator-(const Vec4& other) const;
 	Vec4& operator=(const Vec4& other);

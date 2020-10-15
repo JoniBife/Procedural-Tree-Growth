@@ -113,14 +113,16 @@ Mat4& Mat4::operator-=(const Mat4& other)
 
 Mat4& Mat4::operator*=(const Mat4& other)
 {
+	Mat4 prod;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			m[l][c] = m[l][0]*other.m[0][l] + 
-					  m[l][1]*other.m[1][l] + 
-					  m[l][2]*other.m[2][l] + 
-					  m[l][3]*other.m[3][l];
+			prod.m[l][c] = m[l][0]*other.m[0][c] + 
+					  m[l][1]*other.m[1][c] + 
+					  m[l][2]*other.m[2][c] + 
+					  m[l][3]*other.m[3][c];
 		}
 	}
+	*this = prod;
 	return *this;
 }
 
@@ -160,10 +162,10 @@ Mat4 Mat4::operator*(const Mat4& other) {
 	Mat4 prod;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			prod.m[l][c] = m[l][0] * other.m[0][l] + 
-						   m[l][1] * other.m[1][l] + 
-						   m[l][2] * other.m[2][l] + 
-						   m[l][3] * other.m[3][l];
+			prod.m[l][c] = m[l][0] * other.m[0][c] + 
+						   m[l][1] * other.m[1][c] + 
+						   m[l][2] * other.m[2][c] + 
+						   m[l][3] * other.m[3][c];
 		}
 	}
 	return prod;
@@ -192,9 +194,10 @@ Mat4 operator*(const float s, const Mat4& mat4) {
 //TODO FIX THIS
 Vec4 Mat4::operator*(const Vec4& v) {
 	Vec4 prod;
-	prod.x = m[0][0]*v.x;
-	prod.y = m[1][1]*v.y;
-	prod.z = m[2][2]*v.z;
+	prod.x = m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z + m[0][3] * v.w;
+	prod.y = m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z + m[1][3] * v.w;
+	prod.z = m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z + m[2][3] * v.w;
+	prod.w = m[3][0] * v.x + m[3][1] * v.y + m[3][2] * v.z + m[3][3] * v.w;
 	return prod;
 }
 

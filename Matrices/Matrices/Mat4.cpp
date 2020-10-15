@@ -189,6 +189,7 @@ Mat4 operator*(const float s, const Mat4& mat4) {
 	return prod;
 }
 
+//TODO FIX THIS
 Vec4 Mat4::operator*(const Vec4& v) {
 	Vec4 prod;
 	prod.x = m[0][0]*v.x;

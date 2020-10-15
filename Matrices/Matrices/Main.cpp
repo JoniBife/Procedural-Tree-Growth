@@ -2,6 +2,7 @@
 #include "Vec3.h"
 #include <time.h>
 #include "Mat4.h"
+#include "Mat3.h"
 
 int main()
 {
@@ -9,7 +10,7 @@ int main()
 
 	//std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
 
-	Mat4 in;
+	Mat3 in;
 	std::cin >> in;
 
 	std::cout << in;

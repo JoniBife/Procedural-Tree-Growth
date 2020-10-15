@@ -1,8 +1,8 @@
 #include "Mat2.h"
 #include "MathAux.h"
 
-Mat2::Mat2() : Mat2(0) { }
-Mat2::Mat2(const float fill) : Mat2(fill,fill,fill,fill) { }
+Mat2::Mat2() : Mat2(0) {}
+Mat2::Mat2(const float fill) : Mat2(fill,fill,fill,fill) {}
 Mat2::Mat2(const float l1c1, const float l1c2, const float l2c1, const float l2c2) 
 {
 	m[0][0] = l1c1;
@@ -46,12 +46,15 @@ Mat2& Mat2::operator-=(const Mat2& other) {
 	return *this;
 }
 Mat2& Mat2::operator*=(const Mat2& other) {
+	// We have to put the result in another variable 
+	// otherwise we will be calculating the multiplication with the result at the same time
+	Mat2 prod; 
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
-			m[l][c] = m[l][0] * other.m[0][l] + 
-					  m[l][1] * other.m[1][l];
+			prod.m[l][c] = m[l][0] * other.m[0][c] + m[l][1] * other.m[1][c];
 		}
 	}
+	*this = prod;
 	return *this;
 }
 
@@ -108,8 +111,7 @@ Mat2 Mat2::operator*(const Mat2& other) {
 	Mat2 prod;
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
-			prod.m[l][c] = m[l][0] * other.m[0][l] +
-						   m[l][1] * other.m[1][l];
+			prod.m[l][c] = m[l][0] * other.m[0][c] + m[l][1] * other.m[1][c];
 		}
 	}
 	return prod;
@@ -145,8 +147,8 @@ Mat2 operator*(const float s, const Mat2& mat2) {
 }
 Vec2 Mat2::operator*(const Vec2& v) {
 	Vec2 prod;
-	prod.x = m[0][0] * v.x;
-	prod.y = m[1][1] * v.y;
+	prod.x = m[0][0] * v.x + m[0][1] * v.y;
+	prod.y = m[1][0] * v.x + m[1][1] * v.y;
 	return prod;
 }
 
@@ -159,18 +161,18 @@ Mat2 Mat2::transpose() {
 	}
 	return trans;
 }
-bool Mat2::inverse(Mat2& toInvert) {
-	float det = toInvert.determinant();
+bool Mat2::inverse(Mat2& inverse) {
+	float det = determinant();
 
-	if (cmpf(det,0)) // If the determinant is 0 the matrix is not invertible
+	if (cmpf(det, 0.0f)) // If the determinant is 0 the matrix is not invertible
 		return false;
 
-	toInvert = (1 / det) * Mat2(toInvert.m[1][1], -toInvert.m[0][1],
-							   -toInvert.m[1][0], toInvert.m[0][0]);
+	inverse = (1.0f / det) * Mat2(m[1][1], -m[0][1],
+								  -m[1][0], m[0][0]);
 	return true;
 }
 float Mat2::determinant() {
-	return m[0][0] * m[1][1] - m[0][1] * m[1][0];
+	return m[0][0]*m[1][1] - m[0][1]*m[1][0];
 }
 float* Mat2::toOpenGLFormat() {
 	float mat[4];

@@ -113,14 +113,16 @@ Mat4& Mat4::operator-=(const Mat4& other)
 
 Mat4& Mat4::operator*=(const Mat4& other)
 {
+	Mat4 prod;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			m[l][c] = m[l][0]*other.m[0][l] + 
-					  m[l][1]*other.m[1][l] + 
-					  m[l][2]*other.m[2][l] + 
-					  m[l][3]*other.m[3][l];
+			prod.m[l][c] = m[l][0]*other.m[0][c] + 
+					  m[l][1]*other.m[1][c] + 
+					  m[l][2]*other.m[2][c] + 
+					  m[l][3]*other.m[3][c];
 		}
 	}
+	*this = prod;
 	return *this;
 }
 
@@ -160,10 +162,10 @@ Mat4 Mat4::operator*(const Mat4& other) {
 	Mat4 prod;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			prod.m[l][c] = m[l][0] * other.m[0][l] + 
-						   m[l][1] * other.m[1][l] + 
-						   m[l][2] * other.m[2][l] + 
-						   m[l][3] * other.m[3][l];
+			prod.m[l][c] = m[l][0] * other.m[0][c] + 
+						   m[l][1] * other.m[1][c] + 
+						   m[l][2] * other.m[2][c] + 
+						   m[l][3] * other.m[3][c];
 		}
 	}
 	return prod;

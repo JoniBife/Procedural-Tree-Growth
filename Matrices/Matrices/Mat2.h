@@ -48,10 +48,11 @@ struct Mat2 {
 
 	Mat2 transpose();
 	/*
-	* Returns false if matrix toInvert is not invertible
+	* Returns false if this is not invertible
 	* else true;
+	* @param inverse will contain the inverse matrix of this
 	*/
-	bool inverse(Mat2& toInvert);
+	bool inverse(Mat2& inverse);
 	float determinant();
 	float* toOpenGLFormat();
 

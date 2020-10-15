@@ -212,11 +212,11 @@ Mat4 Mat4::transpose() {
 }
 
 float* Mat4::toOpenGLFormat() {
-	float mat[16];
+	float* mat = new float[16];
 	int i = 0;
 	for (int c = 0; c < 4; c++) {
 		for (int l = 0; l < 4; l++) {
-			mat[i] = m[c][l];
+			mat[i] = m[l][c];
 			++i;
 		}
 	}

@@ -19,16 +19,18 @@ int main()
 
 	//std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
 
-	Mat4 in1;
-	Mat4 in2;
+	Mat3 in1;
+	Mat3 in2;
 	std::cout << "insert matrix 4x4 A:" << std::endl;
 	std::cin >> in1;
 
 	float* opengl = in1.toOpenGLFormat();
 
-	for (int i = 0; i < 16; ++i) {
-		std::cout << *(opengl+i) << " ";
+	for (int i = 0; i < 9; ++i) {
+		std::cout << opengl[i] << " ";
 	}
+
+	delete[] opengl;
 	
 	/*
 	std::cout << "insert matrix 2x2 B:" << std::endl;

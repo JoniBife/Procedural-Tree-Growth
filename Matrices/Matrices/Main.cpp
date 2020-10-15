@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Vec3.h"
 #include <time.h>
-#include "Mat4.h"
+#include "Mat2.h"
 
 int main()
 {
@@ -9,10 +9,13 @@ int main()
 
 	//std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
 
-	Mat4 in;
-	std::cin >> in;
+	Mat2 in1;
+	Mat2 in2;
+	std::cin >> in1 >> in2;
 
-	std::cout << in;
+	std::cout << in1 + in2;
+	std::cout << in1 - in2;
+	std::cout << in1 * in2;
 
 	/*for (int i = 0; i < 10; ++i) {
 		Vec3 a = Vec3::random();

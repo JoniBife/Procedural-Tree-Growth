@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Mat2.h" />
     <ClInclude Include="Mat4.h" />
     <ClInclude Include="MathAux.h" />
     <ClInclude Include="Vec2.h" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mat2.cpp" />
     <ClCompile Include="MathAux.cpp" />
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Vec2.cpp" />

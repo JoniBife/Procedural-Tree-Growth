@@ -193,9 +193,10 @@ Mat4 operator*(const float s, const Mat4& mat4) {
 
 Vec4 Mat4::operator*(const Vec4& v) {
 	Vec4 prod;
-	prod.x = m[0][0]*v.x;
-	prod.y = m[1][1]*v.y;
-	prod.z = m[2][2]*v.z;
+	prod.x = m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z + m[0][3] * v.w;
+	prod.y = m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z + m[1][3] * v.w;
+	prod.z = m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z + m[2][3] * v.w;
+	prod.w = m[3][0] * v.x + m[3][1] * v.y + m[3][2] * v.z + m[3][3] * v.w;
 	return prod;
 }
 

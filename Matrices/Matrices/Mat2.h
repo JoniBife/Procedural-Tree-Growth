@@ -32,20 +32,6 @@ struct Mat2 {
 	Mat2 operator/(const float s);
 	Vec2 operator*(const Vec2& v);
 
-	/*class Mat4Im {
-	int lines;
-	Mat4& mat4;
-	Mat4Im(int lines, Mat4& mat4);
-
-	float operator[](int columns) {
-		return mat4.m[lines][columns];
-	}
-	};
-
-	Mat4Im operator[](int lines) {
-		return Mat4Im(lines);
-	}*/
-
 	Mat2 transpose();
 	/*
 	* Returns false if this is not invertible
@@ -54,7 +40,7 @@ struct Mat2 {
 	*/
 	bool inverse(Mat2& inverse);
 	float determinant();
-	float* toOpenGLFormat();
+	void toOpenGLFormat(float array[4]);
 
 	/*
 	 * Print result example:

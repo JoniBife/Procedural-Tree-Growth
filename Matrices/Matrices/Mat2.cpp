@@ -174,16 +174,14 @@ bool Mat2::inverse(Mat2& inverse) {
 float Mat2::determinant() {
 	return m[0][0]*m[1][1] - m[0][1]*m[1][0];
 }
-float* Mat2::toOpenGLFormat() {
-	float* mat = new float[4];
+void Mat2::toOpenGLFormat(float array[4]) {
 	int i = 0;
 	for (int c = 0; c < 2; c++) {
 		for (int l = 0; l < 2; l++) {
-			mat[i] = m[l][c];
+			array[i] = m[l][c];
 			++i;
 		}
 	}
-	return mat;
 }
 
 std::ostream& operator<<(std::ostream& os, const Mat2& mat2) {

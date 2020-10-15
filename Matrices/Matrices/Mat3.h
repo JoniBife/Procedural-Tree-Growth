@@ -43,7 +43,7 @@ struct Mat3 {
 	Mat3 transpose();
 	bool inverse(Mat3& mat3);
 	static Mat3 dual(const Vec3& v);
-	float* toOpenGLFormat();
+	void toOpenGLFormat(float array[9]);
 
 	friend std::ostream& operator<<(std::ostream& os, const Mat3& mat3);
 	friend std::istream& operator>>(std::istream& is, Mat3& mat3);

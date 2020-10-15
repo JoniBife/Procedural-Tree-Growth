@@ -3,9 +3,8 @@
 
 #include <iostream>
 
-class Vec4 {
+struct Vec4 {
 
-public:
 	float x, y, z, w;
 
 	Vec4();

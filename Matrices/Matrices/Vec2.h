@@ -5,12 +5,9 @@
 #include "Vec3.h"
 #include "Vec4.h"
 
-class Vec2 {
+struct Vec2 {
 
-public: 
 	float x, y;
-
-	// TODO Define some constants such as UP Vector, DOWN Vector, etc...
 
 	Vec2();
 	Vec2(float xy);

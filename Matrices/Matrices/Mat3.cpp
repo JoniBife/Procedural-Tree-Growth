@@ -196,16 +196,14 @@ Mat3 Mat3::dual(const Vec3& v) {
 	};
 }
 
-float* Mat3::toOpenGLFormat() {
-	float* mat = new float[9];
+void Mat3::toOpenGLFormat(float array[9]) {
 	int i = 0;
 	for (int c = 0; c < 3; c++) {
 		for (int l = 0; l < 3; l++) {
-			mat[i] = m[l][c];
+			array[i] = m[l][c];
 			++i;
 		}
 	}
-	return mat;
 }
 
 /*

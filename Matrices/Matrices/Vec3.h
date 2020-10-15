@@ -4,9 +4,8 @@
 #include <iostream>
 #include "Vec4.h"
 
-class Vec3 {
+struct Vec3 {
 
-public: 
 	float x, y, z;
 
 	Vec3();

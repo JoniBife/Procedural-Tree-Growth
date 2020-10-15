@@ -55,7 +55,7 @@ struct Mat4 {
 	}*/
 	
 	Mat4 transpose();
-	float* toOpenGLFormat();
+	void toOpenGLFormat(float array[16]);
 
 	friend std::ostream& operator<<(std::ostream& os, const Mat4& mat4);
 	friend std::istream& operator>>(std::istream& is, Mat4& mat4);

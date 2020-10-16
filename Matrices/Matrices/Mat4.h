@@ -50,7 +50,7 @@ struct Mat4 {
 	Mat4 operator/(const float s) const;
 	Vec4 operator*(const Vec4& v) const;
 
-	float* operator[](const int lines) const;
+	float* operator[](const int lines);
 	
 	Mat4 transpose() const;
 	void toOpenGLFormat(float array[16]) const;

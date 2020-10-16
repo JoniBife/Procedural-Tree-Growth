@@ -284,8 +284,8 @@ Vec4 Mat4::operator*(const Vec4& v) const {
 	return prod;
 }
 
-float* Mat4::operator[](const int lines) const {
-	return (float*) m[lines];
+float* Mat4::operator[](const int lines) {
+	return m[lines];
 }
 
 Mat4 Mat4::transpose() const {

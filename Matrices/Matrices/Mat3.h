@@ -42,6 +42,8 @@ struct Mat3 {
 	Mat3 operator/(const float s) const;
 	Vec3 operator*(const Vec3& v) const;
 
+	float* operator[](const int lines);
+
 	float determinant() const;
 	Mat3 transpose() const;
 	/*

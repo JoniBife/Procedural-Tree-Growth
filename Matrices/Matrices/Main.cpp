@@ -56,7 +56,9 @@ int main()
 		std::cout << opengl[i] << " ";
 	}
 
-	std::cout << "\n--------[][] Test--------\n" << scale2[0][0];
+	scale2[0][0] = 3;
+
+	std::cout << "\n--------[][] Test--------\n" << scale2;
 
 	std::cout << std::endl;
 

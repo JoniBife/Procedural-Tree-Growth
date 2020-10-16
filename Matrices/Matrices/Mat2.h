@@ -38,6 +38,8 @@ struct Mat2 {
 	Mat2 operator/(const float s) const;
 	Vec2 operator*(const Vec2& v) const;
 
+	float* operator[](const int lines);
+
 	Mat2 transpose() const;
 	/*
 	* Returns false if this is not invertible

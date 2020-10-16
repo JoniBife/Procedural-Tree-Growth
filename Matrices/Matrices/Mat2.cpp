@@ -218,6 +218,10 @@ Vec2 Mat2::operator*(const Vec2& v) const {
 	return prod;
 }
 
+float* Mat2::operator[](const int lines) {
+	return m[lines];
+}
+
 Mat2 Mat2::transpose() const {
 	Mat2 trans;
 	for (int l = 0; l < 2; l++) {

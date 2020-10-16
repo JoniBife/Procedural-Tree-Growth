@@ -239,6 +239,10 @@ Vec3 Mat3::operator*(const Vec3& v) const {
 	return prod;
 }
 
+float* Mat3::operator[](const int lines) {
+	return m[lines];
+}
+
 Mat3 Mat3::transpose() const {
 	Mat3 trans;
 	for (int l = 0; l < 3; l++) {

@@ -10,6 +10,7 @@ Mat2::Mat2(const float l1c1, const float l1c2, const float l2c1, const float l2c
 	m[1][0] = l2c1;
 	m[1][1] = l2c2;
 }
+
 Mat2::Mat2(const Mat2& other) {
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -29,6 +30,7 @@ Mat2& Mat2::operator=(const Mat2& other) {
 	}
 	return *this;
 }
+
 Mat2& Mat2::operator+=(const Mat2& other) {
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -37,6 +39,7 @@ Mat2& Mat2::operator+=(const Mat2& other) {
 	}
 	return *this;
 }
+
 Mat2& Mat2::operator-=(const Mat2& other) {
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -45,6 +48,7 @@ Mat2& Mat2::operator-=(const Mat2& other) {
 	}
 	return *this;
 }
+
 Mat2& Mat2::operator*=(const Mat2& other) {
 	// We have to put the result in another variable 
 	// otherwise we will be calculating the multiplication with the result at the same time
@@ -85,6 +89,7 @@ bool Mat2::operator==(const Mat2& other) const {
 	}
 	return true;
 }
+
 bool Mat2::operator!=(const Mat2& other) const {
 	return !(*this == other);
 }
@@ -98,6 +103,7 @@ Mat2 Mat2::operator+(const Mat2& other) {
 	}
 	return sum;
 }
+
 Mat2 Mat2::operator-(const Mat2& other) {
 	Mat2 diff;
 	for (int l = 0; l < 2; l++) {

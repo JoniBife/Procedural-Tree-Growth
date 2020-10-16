@@ -65,16 +65,18 @@ Mat4 Mat4::translation(const float x, const float y, const float z)
 
 Mat4 Mat4::rotation(const float angleRad, const Vec3& axis) 
 {
+	Vec3 a = axis.normalize();
+
 	Mat4 dualMatrix = {
-			0  ,-axis.z,  axis.y, 0,
-		 axis.z,   0   , -axis.x, 0,
-		-axis.y, axis.x,    0   , 0,
+			0  ,-a.z,  a.y, 0,
+		 a.z,   0   , -a.x, 0,
+		-a.y, a.x,    0   , 0,
 			0  ,   0   ,    0   , 0 // Zero so that we don't have to set the last element of the matrix to 1
 	};
 	Mat4 dualMatrixSqr = {
-			-(axis.y*axis.y) - axis.z * axis.z, axis.x*axis.y, axis.x*axis.z, 0,
-			 axis.x* axis.y, -(axis.x*axis.x)-(axis.z*axis.z), axis.y*axis.z, 0,
-			 axis.x* axis.z, axis.y* axis.z, -(axis.x * axis.x)-(axis.y * axis.y), 0,
+			-(a.y*a.y) - a.z * a.z, a.x*a.y, a.x*a.z, 0,
+			 a.x* a.y, -(a.x*a.x)-(a.z*a.z), a.y*a.z, 0,
+			 a.x* a.z, a.y* a.z, -(a.x * a.x)-(a.y * a.y), 0,
 					0      ,		0		,				0					, 0 // Zero so that we don't have to set the last element of the matrix to 1
 	};
 
@@ -219,6 +221,13 @@ void Mat4::toOpenGLFormat(float array[16]) {
 			++i;
 		}
 	}
+}
+
+Mat3 Mat4::toMat3() {
+
+	return { m[0][0], m[0][1], m[0][2],
+			m[1][0], m[1][1], m[1][2],
+			m[2][0], m[2][1], m[2][2] };
 }
 
 /*

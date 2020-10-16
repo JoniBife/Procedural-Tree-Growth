@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Vec4.h"
 #include "Vec3.h"
+#include "Mat3.h"
 
 
 struct Mat4 {
@@ -45,8 +46,8 @@ struct Mat4 {
 	Mat4& mat4;
 	Mat4Im(int lines, Mat4& mat4);
 
-	float operator[](int columns) {
-		return mat4.m[lines][columns];
+	float* operator[](int columns) {
+		return mat4.m[lines];
 	}
 	};
 
@@ -56,6 +57,8 @@ struct Mat4 {
 	
 	Mat4 transpose();
 	void toOpenGLFormat(float array[16]);
+
+	Mat3 toMat3(); //removes last line and column
 
 	friend std::ostream& operator<<(std::ostream& os, const Mat4& mat4);
 	friend std::istream& operator>>(std::istream& is, Mat4& mat4);

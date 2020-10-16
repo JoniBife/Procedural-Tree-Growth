@@ -17,7 +17,7 @@ int main()
 
 	//std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
 
-	Mat4 in1;
+	/*Mat4 in1;
 	Mat4 in2;
 	std::cout << "insert matrix 2x2 A:" << std::endl;
 	std::cin >> in1;
@@ -47,7 +47,7 @@ int main()
 	}
 	else {
 		std::cout << "Can't invert matrix A";
-	}*/
+	}
 	std::cout << "\n-------OPENGL_FORM-----\n";
 	float opengl[16];
 	in1.toOpenGLFormat(opengl);
@@ -55,14 +55,57 @@ int main()
 	for (int i = 0; i < 16; ++i) {
 		std::cout << opengl[i] << " ";
 	}
-
+	/*
 	std::cout << "\n-------DUAL-----\n" << Mat3::dual(Vec3(1, 2, 3));
 	
 	std::cout << "\n-------SCA_S------\n" << Mat4::scaling(3);
 	std::cout << "\n-------SCA------\n" << Mat4::scaling(1, 2, 3);
 	std::cout << "\n-------TRNSLT------\n" << Mat4::translation(1, 2 , 3);
 	std::cout << "\n-------ROT------\n" << Mat4::rotation(M_PI_2, Vec3::X);
+	*/
+
+	//CHALLENGE
+
+	Vec4 v(0.5f, 0, 0, 1);
+	Vec3 n(0, 1, 0);
+
+	Mat4 scale2 = Mat4::scaling(2);
+	Mat4 rotate = Mat4::rotation(M_PI_2, Vec3::Y);
+	Mat4 translate = Mat4::translation(1, 0, 0);
+
+	std::cout << "\n-------VECTOR-----\n" << v;
+	std::cout << "\n-------NORMAL-----\n" << n;
+
+	std::cout << "\n-------SCALE------\n" << scale2;
+	std::cout << "\n-------ROTATE------\n" << rotate;
+	std::cout << "\n-------TRNSLT------\n" << translate;
+
+	Mat4 model = translate*rotate*scale2;
 	
+	std::cout << "\n------MODEL---------\n" << model;
+
+	Vec4 modelV = model * v;
+
+	std::cout << "\n------MODEL*V-----------\n" << modelV;
+
+	Mat3 normalM = model.toMat3();
+
+	Mat3 normal;
+
+	bool invertable = normalM.inverse(normal);
+
+	normal = normal.transpose();
+
+	std::cout << "\n\n--------NORMAL M--------\n" << normal;
+	std::cout << "\n--------NORMAL*N--------\n" << normal * n;
+
+	float opengl[16];
+	model.toOpenGLFormat(opengl);
+
+	for (int i = 0; i < 16; ++i) {
+		std::cout << opengl[i] << " ";
+	}
+
 	std::cout << std::endl;
 	
 

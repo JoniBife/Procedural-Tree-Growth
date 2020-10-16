@@ -20,6 +20,8 @@ float round6(float number);
 
 float randomFloat();
 
+float randomFloat(float min, float max);
+
 float degreesToRadians(float angle);
 
 #endif

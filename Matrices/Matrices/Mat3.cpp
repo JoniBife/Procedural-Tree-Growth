@@ -39,6 +39,26 @@ Mat3 Mat3::IDENTITY = { 1, 0, 0,
 						0, 1, 0,
 						0, 0, 1 };
 
+Mat3 Mat3::dual(const Vec3& v) {
+	return { 0 , -v.z,  v.y,
+			v.z ,  0  , -v.x,
+			-v.y,  v.x,   0
+	};
+}
+
+Mat3 Mat3::randomMatrix(float min, float max) {
+
+	Mat3 randomM;
+
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			randomM.m[l][c] = randomFloat(min, max);
+		}
+	}
+	return randomM;
+ 
+}
+
 Mat3& Mat3::operator=(const Mat3& other)
 {
 	for (int l = 0; l < 3; l++) {
@@ -273,13 +293,6 @@ bool Mat3::inverse(Mat3& mat3) const {
 	mat3 = (1 / det) * adj;
 	
 	return true;
-}
-
-Mat3 Mat3::dual(const Vec3& v) {
-	return {  0 , -v.z,  v.y,
-			v.z ,  0  , -v.x,
-			-v.y,  v.x,   0
-	};
 }
 
 void Mat3::toOpenGLFormat(float array[9]) const {

@@ -17,6 +17,7 @@ struct Mat3 {
 
 	static Mat3 IDENTITY;
 	static Mat3 dual(const Vec3& v);
+	static Mat3 randomMatrix(float min, float max);
 
 	Mat3& operator=(const Mat3& other);
 	Mat3& operator+=(const Mat3& other);

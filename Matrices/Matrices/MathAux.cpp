@@ -19,6 +19,11 @@ float randomFloat() {
     return (float(rand()) / float((RAND_MAX))) * a;
 }
 
+float randomFloat(float min, float max) {
+
+    return static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max - min))) + min;
+}
+
 float degreesToRadians(float angle) {
     return (angle * float(2 * M_PI)) / 360;
 }

@@ -30,35 +30,32 @@ struct Mat4 {
 	Mat4& operator+=(const Mat4& other);
 	Mat4& operator-=(const Mat4& other);
 	Mat4& operator*=(const Mat4& other);
+	Mat4& operator*=(const float s);
+	Mat4& operator/=(const float s);
+	Mat4& operator+=(const float s);
+	Mat4& operator-=(const float s);
 
 	bool operator==(const Mat4& other) const;
 	bool operator!=(const Mat4& other) const;
 
-	Mat4 operator+(const Mat4& other);
-	Mat4 operator-(const Mat4& other);
-	Mat4 operator*(const Mat4& other);
-	Mat4 operator*(const float s);
+	Mat4 operator+(const Mat4& other) const;
+	Mat4 operator-(const Mat4& other) const;
+	Mat4 operator*(const Mat4& other)const;
+	Mat4 operator*(const float s) const;
 	friend Mat4 operator*(const float s, const Mat4& mat4);
-	Vec4 operator*(const Vec4& v);
+	Mat4 operator+(const float s) const;
+	friend Mat4 operator+(const float s, const Mat4& mat4);
+	Mat4 operator-(const float s) const;
+	friend Mat4 operator-(const float s, const Mat4& mat4);
+	Mat4 operator/(const float s) const;
+	Vec4 operator*(const Vec4& v) const;
 
-	/*class Mat4Im {
-	int lines;
-	Mat4& mat4;
-	Mat4Im(int lines, Mat4& mat4);
-
-	float* operator[](int columns) {
-		return mat4.m[lines];
-	}
-	};
-
-	Mat4Im operator[](int lines) {
-		return Mat4Im(lines);
-	}*/
+	float* operator[](const int lines) const;
 	
-	Mat4 transpose();
-	void toOpenGLFormat(float array[16]);
+	Mat4 transpose() const;
+	void toOpenGLFormat(float array[16]) const;
 
-	Mat3 toMat3(); //removes last line and column
+	Mat3 toMat3() const; //removes last line and column
 
 	friend std::ostream& operator<<(std::ostream& os, const Mat4& mat4);
 	friend std::istream& operator>>(std::istream& is, Mat4& mat4);

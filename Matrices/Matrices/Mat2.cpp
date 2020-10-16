@@ -80,6 +80,26 @@ Mat2& Mat2::operator/=(const float s) {
 	return *this;
 }
 
+Mat2& Mat2::operator+=(const float s) {
+	for (int l = 0; l < 2; l++) {
+		for (int c = 0; c < 2; c++) {
+			m[l][c] += s;
+		}
+	}
+	return *this;
+}
+
+Mat2& Mat2::operator-=(const float s) {
+	for (int l = 0; l < 2; l++) {
+		for (int c = 0; c < 2; c++) {
+			m[l][c] -= s;
+		}
+	}
+	return *this;
+}
+
+
+
 bool Mat2::operator==(const Mat2& other) const {
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -94,7 +114,7 @@ bool Mat2::operator!=(const Mat2& other) const {
 	return !(*this == other);
 }
 
-Mat2 Mat2::operator+(const Mat2& other) {
+Mat2 Mat2::operator+(const Mat2& other) const {
 	Mat2 sum;
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -104,7 +124,7 @@ Mat2 Mat2::operator+(const Mat2& other) {
 	return sum;
 }
 
-Mat2 Mat2::operator-(const Mat2& other) {
+Mat2 Mat2::operator-(const Mat2& other) const {
 	Mat2 diff;
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -113,7 +133,7 @@ Mat2 Mat2::operator-(const Mat2& other) {
 	}
 	return diff;
 }
-Mat2 Mat2::operator*(const Mat2& other) {
+Mat2 Mat2::operator*(const Mat2& other) const {
 	Mat2 prod;
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -122,7 +142,7 @@ Mat2 Mat2::operator*(const Mat2& other) {
 	}
 	return prod;
 }
-Mat2 Mat2::operator*(const float s) {
+Mat2 Mat2::operator*(const float s) const {
 	Mat2 prod;
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -131,7 +151,47 @@ Mat2 Mat2::operator*(const float s) {
 	}
 	return prod;
 }
-Mat2 Mat2::operator/(const float s) {
+
+Mat2 Mat2::operator+(const float s) const {
+	Mat2 sum;
+	for (int l = 0; l < 2; l++) {
+		for (int c = 0; c < 2; c++) {
+			sum.m[l][c] = m[l][c] + s;
+		}
+	}
+	return sum;
+}
+
+Mat2 operator+(const float s, const Mat2& mat2) {
+	Mat2 sum;
+	for (int l = 0; l < 2; l++) {
+		for (int c = 0; c < 2; c++) {
+			sum.m[l][c] = s + mat2.m[l][c];
+		}
+	}
+	return sum;
+}
+Mat2 Mat2::operator-(const float s) const {
+	Mat2 diff;
+	for (int l = 0; l < 2; l++) {
+		for (int c = 0; c < 2; c++) {
+			diff.m[l][c] = m[l][c] - s;
+		}
+	}
+	return diff;
+}
+
+Mat2 operator-(const float s, const Mat2& mat2) {
+	Mat2 diff;
+	for (int l = 0; l < 2; l++) {
+		for (int c = 0; c < 2; c++) {
+			diff.m[l][c] = mat2.m[l][c] - s;
+		}
+	}
+	return diff;
+}
+
+Mat2 Mat2::operator/(const float s) const {
 	Mat2 divid;
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -151,14 +211,14 @@ Mat2 operator*(const float s, const Mat2& mat2) {
 	}
 	return prod;
 }
-Vec2 Mat2::operator*(const Vec2& v) {
+Vec2 Mat2::operator*(const Vec2& v) const {
 	Vec2 prod;
 	prod.x = m[0][0] * v.x + m[0][1] * v.y;
 	prod.y = m[1][0] * v.x + m[1][1] * v.y;
 	return prod;
 }
 
-Mat2 Mat2::transpose() {
+Mat2 Mat2::transpose() const {
 	Mat2 trans;
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
@@ -167,7 +227,7 @@ Mat2 Mat2::transpose() {
 	}
 	return trans;
 }
-bool Mat2::inverse(Mat2& inverse) {
+bool Mat2::inverse(Mat2& inverse) const {
 	float det = determinant();
 
 	if (cmpf(det, 0.0f)) // If the determinant is 0 the matrix is not invertible
@@ -177,10 +237,10 @@ bool Mat2::inverse(Mat2& inverse) {
 								  -m[1][0], m[0][0]);
 	return true;
 }
-float Mat2::determinant() {
+float Mat2::determinant() const {
 	return m[0][0]*m[1][1] - m[0][1]*m[1][0];
 }
-void Mat2::toOpenGLFormat(float array[4]) {
+void Mat2::toOpenGLFormat(float array[4]) const {
 	int i = 0;
 	for (int c = 0; c < 2; c++) {
 		for (int l = 0; l < 2; l++) {

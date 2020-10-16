@@ -13,9 +13,54 @@
 
 int main()
 {
-	//srand((unsigned int)time(NULL));
 
-	//std::cout << "-------- WITHOUT ZERO -----------" << std::endl;
+	//CHALLENGE
+
+	Vec4 v(0.5f, 0, 0, 1);
+	Vec3 n(0, 1, 0);
+
+	Mat4 scale2 = Mat4::scaling(2);
+	Mat4 rotate = Mat4::rotation(M_PI_2, Vec3::Y);
+	Mat4 translate = Mat4::translation(1, 0, 0);
+
+	std::cout << "\n-------VECTOR-----\n" << v;
+	std::cout << "\n-------NORMAL-----\n" << n;
+
+	std::cout << "\n-------SCALE------\n" << scale2;
+	std::cout << "\n-------ROTATE------\n" << rotate;
+	std::cout << "\n-------TRNSLT------\n" << translate;
+
+	Mat4 model = translate * rotate * scale2;
+
+	std::cout << "\n------MODEL---------\n" << model;
+
+	Vec4 modelV = model * v;
+
+	std::cout << "\n------MODEL*V-----------\n" << modelV;
+
+	Mat3 normalM = model.toMat3();
+
+	Mat3 normal;
+
+	bool invertable = normalM.inverse(normal);
+
+	normal = normal.transpose();
+
+	std::cout << "\n\n--------NORMAL M--------\n" << normal;
+	std::cout << "\n--------NORMAL*N--------\n" << normal * n;
+
+	float opengl[16];
+	model.toOpenGLFormat(opengl);
+
+	for (int i = 0; i < 16; ++i) {
+		std::cout << opengl[i] << " ";
+	}
+
+	std::cout << "\n--------[][] Test--------\n" << scale2[0][0];
+
+	std::cout << std::endl;
+
+	//srand((unsigned int)time(NULL));
 
 	/*Mat4 in1;
 	Mat4 in2;
@@ -64,110 +109,7 @@ int main()
 	std::cout << "\n-------ROT------\n" << Mat4::rotation(M_PI_2, Vec3::X);
 	*/
 
-	//CHALLENGE
-
-	Vec4 v(0.5f, 0, 0, 1);
-	Vec3 n(0, 1, 0);
-
-	Mat4 scale2 = Mat4::scaling(2);
-	Mat4 rotate = Mat4::rotation(M_PI_2, Vec3::Y);
-	Mat4 translate = Mat4::translation(1, 0, 0);
-
-	std::cout << "\n-------VECTOR-----\n" << v;
-	std::cout << "\n-------NORMAL-----\n" << n;
-
-	std::cout << "\n-------SCALE------\n" << scale2;
-	std::cout << "\n-------ROTATE------\n" << rotate;
-	std::cout << "\n-------TRNSLT------\n" << translate;
-
-	Mat4 model = translate*rotate*scale2;
 	
-	std::cout << "\n------MODEL---------\n" << model;
-
-	Vec4 modelV = model * v;
-
-	std::cout << "\n------MODEL*V-----------\n" << modelV;
-
-	Mat3 normalM = model.toMat3();
-
-	Mat3 normal;
-
-	bool invertable = normalM.inverse(normal);
-
-	normal = normal.transpose();
-
-	std::cout << "\n\n--------NORMAL M--------\n" << normal;
-	std::cout << "\n--------NORMAL*N--------\n" << normal * n;
-
-	float opengl[16];
-	model.toOpenGLFormat(opengl);
-
-	for (int i = 0; i < 16; ++i) {
-		std::cout << opengl[i] << " ";
-	}
-
-	std::cout << std::endl;
-	
-
-	/*for (int i = 0; i < 10; ++i) {
-		Vec3 a = Vec3::random();
-		Vec3 b = Vec3::random();
-		Vec3 c = Vec3::random();
-
-		std::cout << "a = " << a << std::endl;
-		std::cout << "b = " << b << std::endl;
-		std::cout << "c = " << c << std::endl;
-
-		Vec3 left = cross(a, cross(b, c));
-		Vec3 right = dot(a, c) * b - dot(a, b) * c;
-
-		std::cout << "left = " << left << std::endl;
-		std::cout << "right = " << right << std::endl;
-
-		if (left == right) {
-			std::cout << "Success!" << "\n" << std::endl;
-		}
-	}
-
-	std::cout << "\n -------- WITH ZERO -----------" << std::endl;
-
-	for (int i = 0; i < 10; ++i) {
-		Vec3 a = Vec3::random();
-		Vec3 b = Vec3::random();
-		Vec3 c = Vec3::ZERO;
-
-		std::cout << "a = " << a << std::endl;
-		std::cout << "b = " << b << std::endl;
-		std::cout << "c = " << c << std::endl;
-
-		Vec3 left = cross(a, cross(b, c));
-		Vec3 right = dot(a, c) * b - dot(a, b) * c;
-
-		std::cout << "left = " << left << std::endl;
-		std::cout << "right = " << right << std::endl;
-
-		if (left == right) {
-			std::cout << "Success!" << "\n" << std::endl;
-		}
-	}
-
-	Vec3 a(1, 0, 0);
-	Vec3 b(0, 1, 0);
-	Vec3 c(0, 0, 1);
-
-	std::cout << "a = " << a << std::endl;
-	std::cout << "b = " << b << std::endl;
-	std::cout << "c = " << c << std::endl;
-
-	Vec3 left = cross(a, cross(b, c));
-	Vec3 right = dot(a, c) * b - dot(a, b) * c;
-
-	std::cout << "left = " << left << std::endl;
-	std::cout << "right = " << right << std::endl;
-
-	if (left == right) {
-		std::cout << "Success!" << "\n" << std::endl;
-	}*/
 }
 
 

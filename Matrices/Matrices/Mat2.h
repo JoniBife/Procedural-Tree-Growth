@@ -20,27 +20,33 @@ struct Mat2 {
 	Mat2& operator*=(const Mat2& other);
 	Mat2& operator*=(const float s);
 	Mat2& operator/=(const float s);
+	Mat2& operator+=(const float s);
+	Mat2& operator-=(const float s);
 
 	bool operator==(const Mat2& other) const;
 	bool operator!=(const Mat2& other) const;
 
-	Mat2 operator+(const Mat2& other);
-	Mat2 operator-(const Mat2& other);
-	Mat2 operator*(const Mat2& other);
-	Mat2 operator*(const float s);
+	Mat2 operator+(const Mat2& other) const;
+	Mat2 operator-(const Mat2& other) const;
+	Mat2 operator*(const Mat2& other) const;
+	Mat2 operator*(const float s) const;
 	friend Mat2 operator*(const float s, const Mat2& mat2);
-	Mat2 operator/(const float s);
-	Vec2 operator*(const Vec2& v);
+	Mat2 operator+(const float s) const;
+	friend Mat2 operator+(const float s, const Mat2& mat2);
+	Mat2 operator-(const float s) const;
+	friend Mat2 operator-(const float s, const Mat2& mat2);
+	Mat2 operator/(const float s) const;
+	Vec2 operator*(const Vec2& v) const;
 
-	Mat2 transpose();
+	Mat2 transpose() const;
 	/*
 	* Returns false if this is not invertible
 	* else true;
 	* @param inverse will contain the inverse matrix of this
 	*/
-	bool inverse(Mat2& inverse);
-	float determinant();
-	void toOpenGLFormat(float array[4]);
+	bool inverse(Mat2& inverse) const;
+	float determinant() const;
+	void toOpenGLFormat(float array[4]) const;
 
 	/*
 	 * Print result example:

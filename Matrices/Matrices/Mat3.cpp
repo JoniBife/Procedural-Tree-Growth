@@ -29,7 +29,7 @@ Mat3::Mat3(const Mat3& other) {
 	}
 }
 
-float Mat3::determinant(){
+float Mat3::determinant() const {
 	return	m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
 			m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
 			m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
@@ -85,6 +85,42 @@ Mat3& Mat3::operator*=(const Mat3& other)
 	return *this;
 }
 
+Mat3& Mat3::operator*=(const float s) {
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			m[l][c] *= s;
+		}
+	}
+	return *this;
+}
+
+Mat3& Mat3::operator/=(const float s) {
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			m[l][c] /= s;
+		}
+	}
+	return *this;
+}
+
+Mat3& Mat3::operator+=(const float s) {
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			m[l][c] += s;
+		}
+	}
+	return *this;
+}
+
+Mat3& Mat3::operator-=(const float s) {
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			m[l][c] -= s;
+		}
+	}
+	return *this;
+}
+
 bool Mat3::operator==(const Mat3& other) const {
 	for (int l = 0; l < 3; l++) {
 		for (int c = 0; c < 3; c++) {
@@ -99,7 +135,7 @@ bool Mat3::operator!=(const Mat3& other) const {
 	return !(*this == other);
 }
 
-Mat3 Mat3::operator+(const Mat3& other) {
+Mat3 Mat3::operator+(const Mat3& other) const {
 	Mat3 sum;
 	for (int l = 0; l < 3; l++) {
 		for (int c = 0; c < 3; c++) {
@@ -108,7 +144,7 @@ Mat3 Mat3::operator+(const Mat3& other) {
 	}
 	return sum;
 }
-Mat3 Mat3::operator-(const Mat3& other) {
+Mat3 Mat3::operator-(const Mat3& other) const {
 	Mat3 diff;
 	for (int l = 0; l < 3; l++) {
 		for (int c = 0; c < 3; c++) {
@@ -117,7 +153,7 @@ Mat3 Mat3::operator-(const Mat3& other) {
 	}
 	return diff;
 }
-Mat3 Mat3::operator*(const Mat3& other) {
+Mat3 Mat3::operator*(const Mat3& other) const {
 	Mat3 prod;
 	for (int l = 0; l < 3; l++) {
 		for (int c = 0; c < 3; c++) {
@@ -128,7 +164,7 @@ Mat3 Mat3::operator*(const Mat3& other) {
 	}
 	return prod;
 }
-Mat3 Mat3::operator*(const float s) {
+Mat3 Mat3::operator*(const float s) const {
 	Mat3 prod;
 	for (int l = 0; l < 3; l++) {
 		for (int c = 0; c < 3; c++) {
@@ -149,7 +185,53 @@ Mat3 operator*(const float s, const Mat3& mat3) {
 	return prod;
 }
 
-Vec3 Mat3::operator*(const Vec3& v) {
+Mat3 Mat3::operator+(const float s) const {
+	Mat3 sum;
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			sum.m[l][c] = m[l][c] + s;
+		}
+	}
+	return sum;
+}
+Mat3 operator+(const float s, const Mat3& mat3) {
+	Mat3 sum;
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			sum.m[l][c] = s + mat3.m[l][c];
+		}
+	}
+	return sum;
+}
+Mat3 Mat3::operator-(const float s) const {
+	Mat3 diff;
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			diff.m[l][c] = m[l][c] - s;
+		}
+	}
+	return diff;
+}
+Mat3 operator-(const float s, const Mat3& mat3) {
+	Mat3 diff;
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			diff.m[l][c] = mat3.m[l][c] - s;
+		}
+	}
+	return diff;
+}
+Mat3 Mat3::operator/(const float s) const {
+	Mat3 divid;
+	for (int l = 0; l < 3; l++) {
+		for (int c = 0; c < 3; c++) {
+			divid.m[l][c] = m[l][c] / s;
+		}
+	}
+	return divid;
+}
+
+Vec3 Mat3::operator*(const Vec3& v) const {
 	Vec3 prod;
 	prod.x = m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z;
 	prod.y = m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z;
@@ -157,7 +239,7 @@ Vec3 Mat3::operator*(const Vec3& v) {
 	return prod;
 }
 
-Mat3 Mat3::transpose() {
+Mat3 Mat3::transpose() const {
 	Mat3 trans;
 	for (int l = 0; l < 3; l++) {
 		for (int c = 0; c < 3; c++) {
@@ -167,7 +249,7 @@ Mat3 Mat3::transpose() {
 	return trans;
 }
 
-bool Mat3::inverse(Mat3& mat3) {
+bool Mat3::inverse(Mat3& mat3) const {
 	Mat3 adj;
 	Mat3 trans = this->transpose();
 	float det = this->determinant();
@@ -196,7 +278,7 @@ Mat3 Mat3::dual(const Vec3& v) {
 	};
 }
 
-void Mat3::toOpenGLFormat(float array[9]) {
+void Mat3::toOpenGLFormat(float array[9]) const {
 	int i = 0;
 	for (int c = 0; c < 3; c++) {
 		for (int l = 0; l < 3; l++) {
@@ -208,17 +290,16 @@ void Mat3::toOpenGLFormat(float array[9]) {
 
 /*
  * Print result example:
- * [ 1 , 0 , 0 , 0 ]
- * [ 0 , 1 , 0 , 0 ]
- * [ 0 , 0 , 1 , 0 ]
- * [ 0 , 0 , 0 , 1 ]
+ * [ 1 , 0 , 0 ]
+ * [ 0 , 1 , 0 ]
+ * [ 0 , 0 , 1 ]
 */
 std::ostream& operator<<(std::ostream& os, const Mat3& mat3) {
 	for (int l = 0; l < 3; l++) {
 		os << "[ ";
 		for (int c = 0; c < 3; c++) {
 			os << mat3.m[l][c];
-			if (c < 2) { // Only print comma until the third column
+			if (c < 2) { // Only print comma until the second column
 				os << " , ";
 			}
 		}

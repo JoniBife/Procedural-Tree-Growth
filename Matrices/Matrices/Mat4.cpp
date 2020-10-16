@@ -128,6 +128,42 @@ Mat4& Mat4::operator*=(const Mat4& other)
 	return *this;
 }
 
+Mat4& Mat4::operator*=(const float s) {
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			m[l][c] *= s;
+		}
+	}
+	return *this;
+}
+
+Mat4& Mat4::operator/=(const float s) {
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			m[l][c] /= s;
+		}
+	}
+	return *this;
+}
+
+Mat4& Mat4::operator+=(const float s) {
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			m[l][c] += s;
+		}
+	}
+	return *this;
+}
+
+Mat4& Mat4::operator-=(const float s) {
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			m[l][c] -= s;
+		}
+	}
+	return *this;
+}
+
 bool Mat4::operator==(const Mat4& other) const {
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
@@ -142,7 +178,7 @@ bool Mat4::operator!=(const Mat4& other) const {
 	return !(*this == other);
 }
 
-Mat4 Mat4::operator+(const Mat4& other) {
+Mat4 Mat4::operator+(const Mat4& other) const {
 	Mat4 sum;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
@@ -151,7 +187,7 @@ Mat4 Mat4::operator+(const Mat4& other) {
 	}
 	return sum;
 }
-Mat4 Mat4::operator-(const Mat4& other) {
+Mat4 Mat4::operator-(const Mat4& other) const {
 	Mat4 diff;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
@@ -160,7 +196,7 @@ Mat4 Mat4::operator-(const Mat4& other) {
 	}
 	return diff;
 }
-Mat4 Mat4::operator*(const Mat4& other) {
+Mat4 Mat4::operator*(const Mat4& other) const {
 	Mat4 prod;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
@@ -172,7 +208,7 @@ Mat4 Mat4::operator*(const Mat4& other) {
 	}
 	return prod;
 }
-Mat4 Mat4::operator*(const float s) {
+Mat4 Mat4::operator*(const float s) const {
 	Mat4 prod;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
@@ -193,8 +229,53 @@ Mat4 operator*(const float s, const Mat4& mat4) {
 	return prod;
 }
 
-//TODO FIX THIS
-Vec4 Mat4::operator*(const Vec4& v) {
+Mat4 Mat4::operator+(const float s) const {
+	Mat4 sum;
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			sum.m[l][c] = m[l][c] + s;
+		}
+	}
+	return sum;
+}
+Mat4 operator+(const float s, const Mat4& mat4) {
+	Mat4 sum;
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			sum.m[l][c] = s + mat4.m[l][c];
+		}
+	}
+	return sum;
+}
+Mat4 Mat4::operator-(const float s) const {
+	Mat4 diff;
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			diff.m[l][c] = m[l][c] - s;
+		}
+	}
+	return diff;
+}
+Mat4 operator-(const float s, const Mat4& mat4) {
+	Mat4 diff;
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			diff.m[l][c] = mat4.m[l][c] - s;
+		}
+	}
+	return diff;
+}
+Mat4 Mat4::operator/(const float s) const {
+	Mat4 divid;
+	for (int l = 0; l < 4; l++) {
+		for (int c = 0; c < 4; c++) {
+			divid.m[l][c] = m[l][c] / s;
+		}
+	}
+	return divid;
+}
+
+Vec4 Mat4::operator*(const Vec4& v) const {
 	Vec4 prod;
 	prod.x = m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z + m[0][3] * v.w;
 	prod.y = m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z + m[1][3] * v.w;
@@ -203,7 +284,11 @@ Vec4 Mat4::operator*(const Vec4& v) {
 	return prod;
 }
 
-Mat4 Mat4::transpose() {
+float* Mat4::operator[](const int lines) const {
+	return (float*) m[lines];
+}
+
+Mat4 Mat4::transpose() const {
 	Mat4 trans;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
@@ -213,7 +298,7 @@ Mat4 Mat4::transpose() {
 	return trans;
 }
 
-void Mat4::toOpenGLFormat(float array[16]) {
+void Mat4::toOpenGLFormat(float array[16]) const {
 	int i = 0;
 	for (int c = 0; c < 4; c++) {
 		for (int l = 0; l < 4; l++) {
@@ -223,7 +308,7 @@ void Mat4::toOpenGLFormat(float array[16]) {
 	}
 }
 
-Mat3 Mat4::toMat3() {
+Mat3 Mat4::toMat3() const {
 
 	return { m[0][0], m[0][1], m[0][2],
 			m[1][0], m[1][1], m[1][2],

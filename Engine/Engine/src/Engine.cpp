@@ -168,13 +168,13 @@ const GLchar* FragmentShader =
 
 void createShaderProgram()
 {
-	/*ShaderProgram sp("C:\Dev\CGJ-AVT\Engine\Engine\shaders\vertexShader.glsl", "C:\Dev\CGJ-AVT\Engine\Engine\shaders\fragmentShader.glsl");
-	glBindAttribLocation(sp.programID, VERTICES, "in_Position");
-	glBindAttribLocation(sp.programID, COLORS, "in_Color");
-	UniformId = glGetUniformLocation(sp.programID, "Matrix");*/
+	ShaderProgram sp("C:/Dev/CGJ-AVT/Engine/Engine/shaders/vertexShader.glsl", "C:/Dev/CGJ-AVT/Engine/Engine/shaders/fragmentShader.glsl");
+	ProgramId = sp.programID;
+	glBindAttribLocation(ProgramId, VERTICES, "in_Position");
+	glBindAttribLocation(ProgramId, COLORS, "in_Color");
+	UniformId = glGetUniformLocation(ProgramId, "Matrix");
 
-
-	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+	/*VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
 	glCompileShader(VertexShaderId);
 
@@ -195,7 +195,7 @@ void createShaderProgram()
 	glDetachShader(ProgramId, VertexShaderId);
 	glDeleteShader(VertexShaderId);
 	glDetachShader(ProgramId, FragmentShaderId);
-	glDeleteShader(FragmentShaderId);
+	glDeleteShader(FragmentShaderId);*/
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create shaders.");
@@ -298,7 +298,6 @@ const Matrix M = {
 void drawScene()
 {
 	// Drawing directly in clip space
-
 	glBindVertexArray(VaoId);
 	glUseProgram(ProgramId);
 

@@ -7,11 +7,17 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#define _USE_MATH_DEFINES
+
+#include <Math.h>
 #include <iostream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "shaders/shaderProgram.h"
+
+#include "math/Vec4.h"
+#include "math/Mat4.h"
+#include "utils/ColorRGBA.h"
 
 #define VERTICES 0
 #define COLORS 1
@@ -168,13 +174,7 @@ const GLchar* FragmentShader =
 
 void createShaderProgram()
 {
-	ShaderProgram sp("C:/Dev/CGJ-AVT/Engine/Engine/shaders/vertexShader.glsl", "C:/Dev/CGJ-AVT/Engine/Engine/shaders/fragmentShader.glsl");
-	ProgramId = sp.programID;
-	glBindAttribLocation(ProgramId, VERTICES, "in_Position");
-	glBindAttribLocation(ProgramId, COLORS, "in_Color");
-	UniformId = glGetUniformLocation(ProgramId, "Matrix");
-
-	/*VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
 	glCompileShader(VertexShaderId);
 
@@ -195,7 +195,7 @@ void createShaderProgram()
 	glDetachShader(ProgramId, VertexShaderId);
 	glDeleteShader(VertexShaderId);
 	glDetachShader(ProgramId, FragmentShaderId);
-	glDeleteShader(FragmentShaderId);*/
+	glDeleteShader(FragmentShaderId);
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create shaders.");
@@ -219,6 +219,51 @@ typedef struct
 	GLfloat XYZW[4];
 	GLfloat RGBA[4];
 } Vertex;
+
+const Vec4 avtVertices[] = {
+	{ 0.01f, 0.58f, 0.0f, 1.0f }, {1.0f, 0.0f, 0.0f, 1.0f},
+	{ 0.01f, 0.34f, 0.0f, 1.0f }, {1.0f, 0.0f, 0.0f, 1.0f},
+	{ -0.605f, -0.48f, 0.0f, 1.0f }, {0.0f, 0.0f, 0.0f, 1.0f},
+	{ -0.54f, -0.605f, 0.0f, 1.0f }, {0.0f, 0.0f, 0.0f, 1.0f},
+	{ 0.56f, -0.37f, 0.0f, 1.0f }, {0.0f, 0.0f, 0.0f, 1.0f},
+	{ 0.42f, -0.37f, 0.0f, 1.0f }, {0.0f, 0.0f, 0.0f, 1.0f},
+};
+
+const GLubyte avtIndices[] = { 
+	0,2,3, // left-most triangle
+	0,3,1,
+	0,1,5,
+	0,5,4, // right-most triangle
+};
+
+void createBufferObjectsAvt()
+{
+	glGenVertexArrays(1, &VaoId);
+	glBindVertexArray(VaoId);
+	{
+		glGenBuffers(2, VboId);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
+		{
+			glBufferData(GL_ARRAY_BUFFER, sizeof(avtVertices), avtVertices, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(VERTICES);
+			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4) * 2, 0);
+			glEnableVertexAttribArray(COLORS);
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4) * 2, (GLvoid*)sizeof(avtVertices[1]));
+		}
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
+		{
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(avtIndices), avtIndices, GL_STATIC_DRAW);
+		}
+	}
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+#ifndef ERROR_CALLBACK
+	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
+#endif
+}
 
 const Vertex Vertices[] =
 {
@@ -295,6 +340,8 @@ const Matrix M = {
 	0.0f,  0.0f,  0.0f,  1.0f
 }; // Row Major (GLSL is Column Major)
 
+
+
 void drawScene()
 {
 	// Drawing directly in clip space
@@ -302,10 +349,39 @@ void drawScene()
 	glUseProgram(ProgramId);
 
 	glUniformMatrix4fv(UniformId, 1, GL_TRUE, I);
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, M);
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
+	Vec4 dir1 = avtVertices[0] - avtVertices[8];
+	Vec4 dir2 = avtVertices[4]- avtVertices[0];
+	//Vec4 dir1 = avtVertices[0] - avtVertices[4];
+	//Vec4 dir2 = avtVertices[8] - avtVertices[0];
+	dir1.w = 0;
+	dir2.w = 0;
+
+	float cosine = dot(dir1, dir2) / (dir1.magnitude() * dir2.magnitude());
+	float angleRad = acosf(cosine);
+
+	Mat4 T1 = Mat4::rotation(-(2*M_PI/3), Vec3::Z);
+	Mat4 T2 = Mat4::rotation((2*M_PI/3), Vec3::Z);
+
+	Vec4 translationGreen = avtVertices[8] - (T1 * avtVertices[2]);
+	Vec4 translationBlue = avtVertices[6] - (T2* avtVertices[0]);
+
+	T1 = Mat4::translation(translationGreen.x, translationGreen.y, 0.0f) * T1;
+	T2 = Mat4::translation(translationBlue.x, translationBlue.y, 0.0f) * T2;
+
+	float T1OpenGL[16];
+	T1.toOpenGLFormat(T1OpenGL);
+	glUniformMatrix4fv(UniformId, 1, GL_FALSE, T1OpenGL);
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, (GLvoid*)0);
+
+	float T2OpenGL[16];
+	T2.toOpenGLFormat(T2OpenGL);
+	glUniformMatrix4fv(UniformId, 1, GL_FALSE, T2OpenGL);
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, (GLvoid*)0);
+
+	//glUniformMatrix4fv(UniformId, 1, GL_TRUE, M);
+	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -431,7 +507,7 @@ GLFWwindow* setup(int major, int minor,
 	setupErrorCallback();
 #endif
 	createShaderProgram();
-	createBufferObjects();
+	createBufferObjectsAvt();
 	return win;
 }
 

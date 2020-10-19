@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "shaderProgram.h"
+#include "shaderProgramOld.h"
 
 // creates and compiles a shader 
 static unsigned int compileShader(GLenum type, const std::string& source)

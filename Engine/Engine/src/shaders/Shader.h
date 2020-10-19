@@ -8,7 +8,7 @@
 * Usage example:
 * 
 * // Creating a vertex shader
-* Shader s(GL_VERTEX_SHADER, "C:/Dev/CGJ-AVT/Engine/Engine/shaders/vertexShader.glsl"");
+* Shader s(GL_VERTEX_SHADER, "C:/Dev/CGJ-AVT/Engine/Engine/shaders/vertexShader.glsl");
 * 
 * // Obtaining the vertex shader id
 * s.getId();

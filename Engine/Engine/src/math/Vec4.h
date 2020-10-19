@@ -41,6 +41,8 @@ struct Vec4 {
 	float magnitude() const;
 	float sqrMagnitude() const;
 	Vec4 normalize() const;
+
+	void toOpenGLFormat(float array[4]) const;
 };
 
 float dot(const Vec4& a, const Vec4& b);

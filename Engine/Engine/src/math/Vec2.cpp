@@ -89,6 +89,11 @@ float Vec2::sqrMagnitude() const {
 	return this->x * this->x + this->y * this->y;
 }
 
+void Vec2::toOpenGLFormat(float array[2]) const {
+	array[0] = this->x;
+	array[1] = this->y;
+}
+
 //TODO We should consider if this returns a new vector, or if it normalizes the current vector
 Vec2 Vec2::normalize() const {
 	return (*this)/(this->magnitude());
@@ -101,6 +106,9 @@ Vec3 Vec2::toVec3() const {
 Vec4 Vec2::toVec4() const {
 	return Vec4(this->x, this->y, 0, 0);
 }
+
+
+
 
 
 float dot(const Vec2& a, const Vec2& b) {

@@ -45,7 +45,7 @@
 class ShaderProgram {
 
 private:
-	GLuint shaderProgramId;
+	GLuint id;
 	Shader& vertexShader;
 	Shader& fragmentShader;
 
@@ -54,11 +54,14 @@ public:
 	ShaderProgram(Shader& vertexShader, Shader& fragmentShader);
 	~ShaderProgram();
 
+	ShaderProgram& operator=(const ShaderProgram& sp);
+
 	void use();
 	void stopUsing();
 
+	GLuint getProgramId() const;
+
 	// All theses methods se the value of a specific uniform
-	void setUniform(const GLint location, const GLboolean value);
 	void setUniform(const GLint location, const GLint value);
 	void setUniform(const GLint location, const GLfloat value);
 	void setUniform(const GLint location, const Vec2& value);
@@ -73,10 +76,6 @@ public:
 
 	// Output, prints the id
 	friend std::ostream& operator<<(std::ostream& os, const ShaderProgram& sp);
-
-private: 
-	void attachShaders();
-	void detachShaders();
 };
 
 #endif

@@ -42,10 +42,13 @@
     <ClCompile Include="src\utils\OpenGLUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaders\shaderProgramOld.cpp">
+    <ClCompile Include="src\utils\ColorRGBA.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\ColorRGBA.cpp">
+    <ClCompile Include="src\shaders\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaders\ShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,9 +78,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\OpenGLUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\shaders\shaderProgramOld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shaders\ShaderProgram.h">

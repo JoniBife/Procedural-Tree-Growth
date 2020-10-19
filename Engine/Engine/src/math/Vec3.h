@@ -43,6 +43,9 @@ struct Vec3 {
 
 	float magnitude() const;
 	float sqrMagnitude() const;
+
+	void toOpenGLFormat(float array[3]) const;
+
 	Vec3 normalize() const;
 	Vec4 toVec4() const;	
 };

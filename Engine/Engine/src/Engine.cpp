@@ -18,6 +18,7 @@
 #include "math/Vec4.h"
 #include "math/Mat4.h"
 #include "utils/ColorRGBA.h"
+#include "shaders/ShaderProgram.h"
 
 #define VERTICES 0
 #define COLORS 1
@@ -174,7 +175,9 @@ const GLchar* FragmentShader =
 
 void createShaderProgram()
 {
-	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+	
+
+	/*VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
 	glCompileShader(VertexShaderId);
 
@@ -195,7 +198,7 @@ void createShaderProgram()
 	glDetachShader(ProgramId, VertexShaderId);
 	glDeleteShader(VertexShaderId);
 	glDetachShader(ProgramId, FragmentShaderId);
-	glDeleteShader(FragmentShaderId);
+	glDeleteShader(FragmentShaderId);*/
 
 #ifndef ERROR_CALLBACK
 	checkOpenGLError("ERROR: Could not create shaders.");
@@ -342,13 +345,13 @@ const Matrix M = {
 
 
 
-void drawScene()
+void drawScene(ShaderProgram& sp)
 {
 	// Drawing directly in clip space
 	glBindVertexArray(VaoId);
-	glUseProgram(ProgramId);
+	sp.use();
 
-	glUniformMatrix4fv(UniformId, 1, GL_TRUE, I);
+	sp.setUniform(UniformId, Mat4::IDENTITY);
 	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
 	Vec4 dir1 = avtVertices[0] - avtVertices[8];
@@ -370,20 +373,16 @@ void drawScene()
 	T1 = Mat4::translation(translationGreen.x, translationGreen.y, 0.0f) * T1;
 	T2 = Mat4::translation(translationBlue.x, translationBlue.y, 0.0f) * T2;
 
-	float T1OpenGL[16];
-	T1.toOpenGLFormat(T1OpenGL);
-	glUniformMatrix4fv(UniformId, 1, GL_FALSE, T1OpenGL);
+	sp.setUniform(UniformId, T1);
 	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
-	float T2OpenGL[16];
-	T2.toOpenGLFormat(T2OpenGL);
-	glUniformMatrix4fv(UniformId, 1, GL_FALSE, T2OpenGL);
+	sp.setUniform(UniformId, T2);
 	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
 	//glUniformMatrix4fv(UniformId, 1, GL_TRUE, M);
 	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
 
-	glUseProgram(0);
+	sp.stopUsing();
 	glBindVertexArray(0);
 
 #ifndef ERROR_CALLBACK
@@ -515,7 +514,13 @@ GLFWwindow* setup(int major, int minor,
 
 void display(GLFWwindow* win, double elapsed_sec)
 {
-	drawScene();
+	Shader vs(GL_VERTEX_SHADER, "C:/Dev/CGJ-AVT/Engine/Engine/shaders/vertexShader.glsl");
+	Shader fs(GL_FRAGMENT_SHADER, "C:/Dev/CGJ-AVT/Engine/Engine/shaders/fragmentShader.glsl");
+	ShaderProgram sp(vs, fs);
+	glBindAttribLocation(sp.getProgramId(), VERTICES, "in_Position");
+	glBindAttribLocation(sp.getProgramId(), COLORS, "in_Color");
+	UniformId = sp.getUniformLocation("Matrix");
+	drawScene(sp);
 }
 
 void run(GLFWwindow* win)

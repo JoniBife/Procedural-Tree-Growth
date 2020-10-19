@@ -46,7 +46,7 @@ public:
 private: 
 
 	// Obtains the shader code from the filePath. Returns false if an error occurred while trying to read the file
-	bool readShaderFromFile(const std::string& filePath, std::string& shaderCode);
+	bool readShaderFromFile();
 
 	// Compiles the shader and returns false if compilation failed
 	bool compileShader();

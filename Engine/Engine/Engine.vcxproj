@@ -27,9 +27,10 @@
     <ClCompile Include="src\math\Vec2.cpp" />
     <ClCompile Include="src\math\Vec3.cpp" />
     <ClCompile Include="src\math\Vec4.cpp" />
+    <ClCompile Include="src\shaders\Shader.cpp" />
+    <ClCompile Include="src\shaders\ShaderProgram.cpp" />
     <ClCompile Include="src\utils\ColorRGBA.cpp" />
     <ClCompile Include="src\utils\OpenGLUtils.cpp" />
-    <ClCompile Include="src\shaders\shaderProgramOld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h" />
@@ -41,7 +42,6 @@
     <ClInclude Include="src\math\Vec4.h" />
     <ClInclude Include="src\shaders\Shader.h" />
     <ClInclude Include="src\shaders\ShaderProgram.h" />
-    <ClInclude Include="src\shaders\shaderProgramOld.h" />
     <ClInclude Include="src\shapes\Drawable.h" />
     <ClInclude Include="src\shapes\Shape.h" />
     <ClInclude Include="src\utils\ColorRGBA.h" />

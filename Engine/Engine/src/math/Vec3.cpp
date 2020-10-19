@@ -104,6 +104,13 @@ float Vec3::sqrMagnitude() const {
 	return this->x * this->x + this->y * this->y + this->z * this->z;
 }
 
+void Vec3::toOpenGLFormat(float array[3]) const {
+	array[0] = this->x;
+	array[1] = this->y;
+	array[2] = this->z;
+}
+
+
 Vec3 Vec3::normalize() const {
 	return (*this) / (this->magnitude());
 }

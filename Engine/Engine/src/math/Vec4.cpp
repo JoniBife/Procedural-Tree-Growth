@@ -117,6 +117,13 @@ Vec4 Vec4::normalize() const {
 	return (*this) / (this->magnitude());
 }
 
+void Vec4::toOpenGLFormat(float array[4]) const {
+	array[0] = this->x;
+	array[1] = this->y;
+	array[2] = this->z;
+	array[3] = this->w;
+}
+
 float dot(const Vec4& a, const Vec4& b) {
 	return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }

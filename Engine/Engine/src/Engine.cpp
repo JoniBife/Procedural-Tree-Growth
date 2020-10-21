@@ -520,7 +520,7 @@ GLFWwindow* setup(int major, int minor,
 
 ////////////////////////////////////////////////////////////////////////// RUN
 
-void display(GLFWwindow* win, double elapsed_sec, Shape &shape, ShaderProgram &sp)
+void display(GLFWwindow* win, double elapsed_sec, ShaderProgram &sp, Shape& shape)
 {
 	
 	//glBindAttribLocation(sp.getProgramId(), VERTICES, "in_Position");
@@ -537,7 +537,8 @@ void run(GLFWwindow* win)
 	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShader.glsl");
 	ShaderProgram sp(vs, fs);
 
-	Shape triangle = Shape::triangle();
+
+	Shape triangle = Shape::square();
 	triangle.init();
 
 	/*Shape square = Shape::square();
@@ -553,7 +554,7 @@ void run(GLFWwindow* win)
 
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		display(win, elapsed_time, triangle, sp);
+		display(win, elapsed_time, sp, triangle);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 #ifndef ERROR_CALLBACK

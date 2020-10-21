@@ -61,13 +61,13 @@ public:
 	void draw() override;
 
 	// Creates a square centered in clip space (0,0,0)
-	static Shape square(const float width = 0.5f);
+	static Shape square(const float width = 0.75);
 
 	// Creates a rectangle centered in clip space (0,0,0)
-	static Shape rectangle(const float width=0.5f, const float height=0.25f);
+	static Shape rectangle(const float width=1, const float height=0.75);
 
 	// Creates a triangle centered in clip space (0,0,0)
-	static Shape triangle(const float width=0.6f, const float height=0.5f);
+	static Shape triangle(const float width=1, const float height=1);
 };
 
 #endif

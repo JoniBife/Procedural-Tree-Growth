@@ -3,9 +3,8 @@
 
 #include "../math/Vec4.h"
 
-class ColorRGBA {
+struct ColorRGBA {
 
-public:
 	static Vec4 RED;
 	static Vec4 MAGENTA;
 	static Vec4 BLUE;

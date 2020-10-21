@@ -11,6 +11,6 @@
 * 
 * Closes the program if an error occurs.
 */
-static void checkForOpenGLErrors(std::string error);
+void checkForOpenGLErrors(std::string error);
 
 #endif

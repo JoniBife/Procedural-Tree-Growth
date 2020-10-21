@@ -1,7 +1,7 @@
 #include <GL/glew.h>
 #include "OpenGLUtils.h"
 
-static const std::string errorString(GLenum error)
+const std::string errorString(GLenum error)
 {
 	switch (error) {
 	case GL_NO_ERROR:
@@ -24,7 +24,7 @@ static const std::string errorString(GLenum error)
 	}
 }
 
-static bool isOpenGLError()
+bool isOpenGLError()
 {
 	bool isError = false;
 	GLenum errCode;
@@ -35,7 +35,7 @@ static bool isOpenGLError()
 	return isError;
 }
 
-static void checkForOpenGLErrors(std::string error)
+void checkForOpenGLErrors(std::string error)
 {
 	if (isOpenGLError()) {
 		std::cerr << error << std::endl;

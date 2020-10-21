@@ -37,6 +37,8 @@ private:
 	GLuint vboVerticesId;
 	GLuint eboVerticesId; // Is the Id of the GL_ELEMENT_ARRAY_BUFFER, that contains the order in which the vertices should be drawn
 	GLuint vboColorsId;
+	bool hasBeenInitialized = false;
+	bool hasBeenBound = false;
 
 public:
 

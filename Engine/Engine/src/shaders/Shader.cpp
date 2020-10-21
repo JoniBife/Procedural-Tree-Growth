@@ -3,6 +3,8 @@
 #include "Shader.h"
 #include "../utils/OpenGLUtils.h"
 
+
+
 // Receives the shader file path and compiles the shader
 Shader::Shader(const GLenum shaderType, const std::string& filePath) : type(shaderType), filePath(filePath) {
 
@@ -14,7 +16,7 @@ Shader::Shader(const GLenum shaderType, const std::string& filePath) : type(shad
         exit(EXIT_FAILURE);
     }
 
-    //checkForOpenGLErrors("Error while creating a shader");
+    checkForOpenGLErrors("Error while creating a shader");
 }
 // Deletes the shader using glDeleteShader
 Shader::~Shader() {

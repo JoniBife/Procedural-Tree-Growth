@@ -175,8 +175,6 @@ const GLchar* FragmentShader =
 
 void createShaderProgram()
 {
-	
-
 	/*VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
 	glCompileShader(VertexShaderId);
@@ -517,8 +515,8 @@ void display(GLFWwindow* win, double elapsed_sec)
 	Shader vs(GL_VERTEX_SHADER, "C:/Dev/CGJ-AVT/Engine/Engine/shaders/vertexShader.glsl");
 	Shader fs(GL_FRAGMENT_SHADER, "C:/Dev/CGJ-AVT/Engine/Engine/shaders/fragmentShader.glsl");
 	ShaderProgram sp(vs, fs);
-	glBindAttribLocation(sp.getProgramId(), VERTICES, "in_Position");
-	glBindAttribLocation(sp.getProgramId(), COLORS, "in_Color");
+	//glBindAttribLocation(sp.getProgramId(), VERTICES, "in_Position");
+	//glBindAttribLocation(sp.getProgramId(), COLORS, "in_Color");
 	UniformId = sp.getUniformLocation("Matrix");
 	drawScene(sp);
 }

@@ -1,17 +1,28 @@
 #include "ShaderProgram.h"
 
+#define VERTICES 0
+#define COLORS 1
+
 // In the future we should add other constructors to support other types of shaders
 ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : vertexShader(vertexShader), fragmentShader(fragmentShader) 
 {
 	id = glCreateProgram();
+
+    // Attaching shaders to program
     glAttachShader(id, vertexShader.getId());
     glAttachShader(id, fragmentShader.getId());
+    
+    // This step is unnecessary if you use the location specifier in your shader
+    // e.g. layout (location = 0) in vec3 in_Position;
+    glBindAttribLocation(id, VERTICES, "in_Position");
+    glBindAttribLocation(id, COLORS, "in_Color");
+
 	glLinkProgram(id);
 
-    GLint success;
-    glGetProgramiv(id, GL_LINK_STATUS, &success);
+    GLint programLinked;
+    glGetProgramiv(id, GL_LINK_STATUS, &programLinked);
 
-    if (!success) {
+    if (programLinked != GL_TRUE) {
         int logLength;
         glGetProgramiv(id, GL_INFO_LOG_LENGTH, &logLength);
         char* infoLog = new char[logLength]();
@@ -23,20 +34,13 @@ ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : ver
         exit(EXIT_FAILURE);
     }
 
+    // Program has been created and successfully linked so we detach the shaders
     glDetachShader(id, vertexShader.getId());
     glDetachShader(id, fragmentShader.getId());
 }
 
-
 ShaderProgram::~ShaderProgram() {
     glDeleteProgram(id);
-}
-
-ShaderProgram& ShaderProgram::operator=(const ShaderProgram& sp) {
-    id = sp.id;
-    vertexShader = sp.vertexShader;
-    fragmentShader = sp.fragmentShader;
-    return *this;
 }
 
 void ShaderProgram::use() {

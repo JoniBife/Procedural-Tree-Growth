@@ -540,8 +540,8 @@ void run(GLFWwindow* win)
 	Shape triangle = Shape::triangle();
 	triangle.init();
 
-	Shape square = Shape::square();
-	square.init();
+	/*Shape square = Shape::square();
+	square.init();*/
 
 	UniformId = sp.getUniformLocation("Matrix");
 
@@ -553,7 +553,7 @@ void run(GLFWwindow* win)
 
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		display(win, elapsed_time, square, sp);
+		display(win, elapsed_time, triangle, sp);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 #ifndef ERROR_CALLBACK

@@ -1,5 +1,9 @@
 #include "Shape.h"
 #include "../utils/ColorRGBA.h"
+#include "../utils/OpenGLUtils.h"
+
+#define VERTICES 0
+#define COLORS 1
 
 
 Shape::Shape() {}
@@ -45,7 +49,7 @@ void Shape::init() {
 		glGenBuffers(2, vbos);
 
 		vboVerticesId = vbos[0];
-		//vboColorsId = vbos[1];
+		vboColorsId = vbos[1];
 
 		// Binding the vertices to the first vbo
 		glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId);
@@ -53,27 +57,33 @@ void Shape::init() {
 			// The spec ensures that vectors store their elements contiguously
 			// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
+			glEnableVertexAttribArray(VERTICES);
+			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
 		}
+
+		checkForOpenGLErrors("failed to bind vertices buffer");
 		/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
 		{
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 		}*/
 
 		// Binding the colors to the second vbo
-		/*glBindBuffer(GL_ARRAY_BUFFER, vboColorsId);
+		glBindBuffer(GL_ARRAY_BUFFER, vboColorsId);
 		{
 			glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
-		}*/
+			glEnableVertexAttribArray(COLORS);
+			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
+		}
+
+		checkForOpenGLErrors("failed to bind color buffer");
 	}
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	hasBeenInitialized = true;
+
+	checkForOpenGLErrors("failed to initialize shape");
 }
 
 // Binds the vertex array object with glBindArray

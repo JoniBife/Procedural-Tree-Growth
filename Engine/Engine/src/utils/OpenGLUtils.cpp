@@ -24,20 +24,24 @@ const std::string errorString(GLenum error)
 	}
 }
 
-bool isOpenGLError()
+bool isOpenGLError(std::string error)
 {
+	
 	bool isError = false;
 	GLenum errCode;
 	while ((errCode = glGetError()) != GL_NO_ERROR) {
 		isError = true;
 		std::cerr << "OpenGL ERROR [" << errorString(errCode) << "]." << std::endl;
+		std::cout << error << std::endl;
 	}
 	return isError;
 }
 
 void checkForOpenGLErrors(std::string error)
 {
-	if (isOpenGLError()) {
+	
+	if (isOpenGLError(error)) {
+
 		std::cerr << error << std::endl;
 		exit(EXIT_FAILURE);
 	}

@@ -56,7 +56,7 @@ void Shape::init() {
 		{
 			// The spec ensures that vectors store their elements contiguously
 			// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vec4), &vertices[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
 			glEnableVertexAttribArray(VERTICES);
 			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
 		}

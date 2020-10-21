@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include "OpenGLUtils.h"
+#include <iostream>
 
 const std::string errorString(GLenum error)
 {
@@ -24,7 +25,7 @@ const std::string errorString(GLenum error)
 	}
 }
 
-bool isOpenGLError(std::string error)
+bool isOpenGLError()
 {
 	
 	bool isError = false;
@@ -32,7 +33,6 @@ bool isOpenGLError(std::string error)
 	while ((errCode = glGetError()) != GL_NO_ERROR) {
 		isError = true;
 		std::cerr << "OpenGL ERROR [" << errorString(errCode) << "]." << std::endl;
-		std::cout << error << std::endl;
 	}
 	return isError;
 }
@@ -40,9 +40,12 @@ bool isOpenGLError(std::string error)
 void checkForOpenGLErrors(std::string error)
 {
 	
-	if (isOpenGLError(error)) {
+	if (isOpenGLError()) {
 
 		std::cerr << error << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
+
+
+

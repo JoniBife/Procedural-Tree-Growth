@@ -1,4 +1,5 @@
 #include "Shape.h"
+#include "../utils/ColorRGBA.h"
 
 
 Shape::Shape() {}
@@ -11,7 +12,7 @@ Shape::Shape(std::vector<Vec4>& vertices, std::vector<Vec4>& colors) : vertices(
 // Deletes all the vbos, vaos and disables the vertex array atributes
 Shape::~Shape() {
 
-	if (hasBeenInitialized) {
+	if (!hasBeenInitialized) {
 		std::cout << "Shape has not been initialized!" << std::endl;
 		return;
 	}
@@ -44,7 +45,7 @@ void Shape::init() {
 		glGenBuffers(2, vbos);
 
 		vboVerticesId = vbos[0];
-		vboColorsId = vbos[1];
+		//vboColorsId = vbos[1];
 
 		// Binding the vertices to the first vbo
 		glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId);
@@ -61,12 +62,12 @@ void Shape::init() {
 		}*/
 
 		// Binding the colors to the second vbo
-		glBindBuffer(GL_ARRAY_BUFFER, vboColorsId);
+		/*glBindBuffer(GL_ARRAY_BUFFER, vboColorsId);
 		{
 			glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors[0], GL_STATIC_DRAW);
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
-		}
+		}*/
 	}
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -81,17 +82,17 @@ void Shape::bind() {
 		std::cout << "Cannot bind shape if it has not been initialized" << std::endl;
 		return;
 	}
-	glEnableVertexAttribArray(vaoId);
+	glBindVertexArray(vaoId);
 	hasBeenBound = true;
 }
 // Unbinds the vertex array object with glBindArray(0)
 void Shape::unBind() {
-	glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
 }
 
 // Draws the shape using glDrawArrays
 void Shape::draw() {
-	if (hasBeenInitialized && hasBeenBound) {
+	if (!hasBeenInitialized || !hasBeenBound) {
 		std::cout << "Cannot draw shape if it has not been initialized and bound" << std::endl;
 	}
 	glDrawElements(GL_TRIANGLES, vertices.size() / 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
@@ -102,27 +103,65 @@ void Shape::draw() {
 Shape Shape::square(const float width) {
 	std::vector<Vec4> vertices = {
 		// first triangle
-		{width/2, -width/2, 0, 0}, // bottom right vertex
-		{-width / 2, width / 2, 0, 0}, // top left vertex
-		{width/2, width/2, 0, 0}, // top right vertex
+		{width/2, -width/2, 0.0f, 1.0f}, // bottom right vertex
+		{-width / 2, width / 2, 0.0f, 1.0f}, // top left vertex
+		{width/2, width/2, 0.0f, 1.0f}, // top right vertex
 		// second triangle
-		{width / 2, -width / 2, 0, 0}, // bottom right vertex
-		{-width / 2, -width / 2, 0, 0}, // bottom left vertex
-		{-width / 2, width / 2, 0, 0} // top left vertex
+		{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
+		{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
+		{-width / 2, width / 2, 0.0f, 1.0f} // top left vertex
 
 	};
 	std::vector<Vec4> colors = {
-		ColorRGB::WHITE,
-		ColorRGB::WHITE,
-		ColorRGB::WHITE,
-		ColorRGB::WHITE,
-		ColorRGB::WHITE
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE
 	};
 	return Shape(vertices, colors);
 }
 
 // Creates a white rectangle centered in clip space (0,0,0)
-Shape Shape::rectangle(const float width, const float height) {}
+Shape Shape::rectangle(const float width, const float height) {
+
+	std::vector<Vec4> vertices = {
+		// first triangle
+		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+		{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+		{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
+		// second triangle
+		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+		{-width / 2, height / 2, 0.0f, 1.0f} // top left vertex
+
+	};
+	std::vector<Vec4> colors = {
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE
+	};
+	return Shape(vertices, colors);
+
+}
 
 // Creates a white triangle centered in clip space (0,0,0)
-Shape Shape::triangle(const float width, const float height) {}
+Shape Shape::triangle(const float width, const float height) {
+	std::vector<Vec4> vertices = {
+		
+		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+		{0, height / 2, 0.0f, 1.0f}, // top center vertex		
+
+	};
+	std::vector<Vec4> colors = {
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE,
+		ColorRGBA::WHITE
+	};
+	return Shape(vertices, colors);
+}

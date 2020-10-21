@@ -29,6 +29,7 @@
     <ClCompile Include="src\math\Vec4.cpp" />
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\shaders\ShaderProgram.cpp" />
+    <ClCompile Include="src\shapes\Shape.cpp" />
     <ClCompile Include="src\utils\ColorRGBA.cpp" />
     <ClCompile Include="src\utils\OpenGLUtils.cpp" />
   </ItemGroup>

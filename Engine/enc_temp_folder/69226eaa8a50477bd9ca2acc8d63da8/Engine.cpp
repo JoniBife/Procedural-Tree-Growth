@@ -507,7 +507,7 @@ GLFWwindow* setup(int major, int minor,
 	int winx, int winy, const char* title, int is_fullscreen, int is_vsync)
 {
 	GLFWwindow* win =
-	setupGLFW(major, minor, winx, winy, title, is_fullscreen, is_vsync);
+		setupGLFW(major, minor, winx, winy, title, is_fullscreen, is_vsync);
 	setupGLEW();
 	setupOpenGL(winx, winy);
 #ifdef ERROR_CALLBACK

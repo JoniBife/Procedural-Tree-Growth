@@ -265,9 +265,9 @@ ShapeGroup createLineTetromino(float width, float offset) {
 	Shape square1 = Shape::square(width);
 	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
 
-	Vec4 color = ColorRGBA::BLUE;
+	Vec4 color = ColorRGBA::CYAN;
 	square1.paint(color);
-
+	
 	Shape square2 = square1;
 	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
 
@@ -312,11 +312,12 @@ ShapeGroup createSquareTetromino(float width, float offset) {
 
 	return squareTetromino;
 }
+
 ShapeGroup createLTetromino(float width, float offset) {
 	Shape square1 = Shape::square(width);
-	square1.transform(Mat4::translation(-(0.5*width + 0.5*offset), 0.0f, 0.0f));
+	square1.transform(Mat4::translation(-(0.5*width + 0.5*offset), width + offset, 0.0f));
 
-	Vec4 color = { 1.0f, 0.5f, 0.0f, 1.0f };
+	Vec4 color = ColorRGBA::ORANGE;
 	square1.paint(color);
 
 	Shape square2 = square1;
@@ -326,7 +327,7 @@ ShapeGroup createLTetromino(float width, float offset) {
 	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
 
 	Shape square4 = square3;
-	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square4.transform(Mat4::translation(width + offset, 0.0f, 0.0f));
 
 	ShapeGroup lineTetromino({
 			square1,
@@ -339,7 +340,7 @@ ShapeGroup createLTetromino(float width, float offset) {
 }
 ShapeGroup createReverseLTetromino(float width, float offset) {
 	Shape square1 = Shape::square(width);
-	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+	square1.transform(Mat4::translation(0.5 * width + 0.5 * offset, width + offset, 0.0f));
 
 	Vec4 color = ColorRGBA::BLUE;
 	square1.paint(color);
@@ -351,7 +352,7 @@ ShapeGroup createReverseLTetromino(float width, float offset) {
 	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
 
 	Shape square4 = square3;
-	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square4.transform(Mat4::translation(-(width + offset), 0.0f, 0.0f));
 
 	ShapeGroup lineTetromino({
 			square1,
@@ -364,19 +365,19 @@ ShapeGroup createReverseLTetromino(float width, float offset) {
 }
 ShapeGroup createTTetromino(float width, float offset) {
 	Shape square1 = Shape::square(width);
-	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+	square1.transform(Mat4::translation(0.0f, -(0.5f * width + 0.5f * offset), 0.0f));
 
-	Vec4 color = ColorRGBA::BLUE;
+	Vec4 color = ColorRGBA::PURPLE;
 	square1.paint(color);
 
 	Shape square2 = square1;
-	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square2.transform(Mat4::translation(-(width + offset), (width + offset), 0.0f));
 
 	Shape square3 = square2;
-	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square3.transform(Mat4::translation(width + offset, 0.0f, 0.0f));
 
 	Shape square4 = square3;
-	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square4.transform(Mat4::translation(width + offset, 0.0f, 0.0f));
 
 	ShapeGroup lineTetromino({
 			square1,
@@ -389,19 +390,19 @@ ShapeGroup createTTetromino(float width, float offset) {
 }
 ShapeGroup createSTetromino(float width, float offset) {
 	Shape square1 = Shape::square(width);
-	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+	square1.transform(Mat4::translation(width+offset, 0.5f * width + 0.5f * offset, 0.0f));
 
-	Vec4 color = ColorRGBA::BLUE;
+	Vec4 color = ColorRGBA::GREEN;
 	square1.paint(color);
 
 	Shape square2 = square1;
-	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square2.transform(Mat4::translation(-(width + offset), 0.0f, 0.0f));
 
 	Shape square3 = square2;
 	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
 
 	Shape square4 = square3;
-	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square4.transform(Mat4::translation(-(width + offset), 0.0f, 0.0f));
 
 	ShapeGroup lineTetromino({
 			square1,
@@ -414,19 +415,19 @@ ShapeGroup createSTetromino(float width, float offset) {
 }
 ShapeGroup createReverseSTetromino(float width, float offset) {
 	Shape square1 = Shape::square(width);
-	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+	square1.transform(Mat4::translation(-(width + offset), 0.5f * width + 0.5f * offset, 0.0f));
 
-	Vec4 color = ColorRGBA::BLUE;
+	Vec4 color = ColorRGBA::RED;
 	square1.paint(color);
 
 	Shape square2 = square1;
-	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square2.transform(Mat4::translation(width + offset, 0.0f, 0.0f));
 
 	Shape square3 = square2;
 	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
 
 	Shape square4 = square3;
-	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	square4.transform(Mat4::translation(width + offset, 0.0f, 0.0f));
 
 	ShapeGroup lineTetromino({
 			square1,
@@ -467,18 +468,24 @@ void runCGJ(GLFWwindow* win)
 
 	ShapeGroup squareTetromino = createSquareTetromino(width, offset);
 	squareTetromino.init();
-	
 
-	/*ShapeGroup square({
+	ShapeGroup lineTetromino = createLineTetromino(width, offset);
+	lineTetromino.init();
+
+	ShapeGroup LTetromino = createLTetromino(width, offset);
+	LTetromino.init();
+
+	ShapeGroup reverseLTetromino = createSquareTetromino(width, offset);
+	reverseLTetromino.init();
+	
+	ShapeGroup square({
 		lineTetromino,
 		squareTetromino,
 		LTetromino,
 		reverseLTetromino
-		});*/
-	//square.init();
-
-	//CreateLineTetromino(squares);
-
+		});
+	square.init();
+	
 	while (!glfwWindowShouldClose(win))
 	{
 		double time = glfwGetTime();

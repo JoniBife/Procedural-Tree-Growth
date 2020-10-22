@@ -158,3 +158,21 @@ Shape Shape::triangle(const float width, const float height) {
 	};
 	return triangle;
 }
+
+void Shape::transform(const Mat4& transformation) {
+
+	if(!vertices.empty())
+		for (Vec4& vert : vertices) {
+			vert = transformation * vert;
+		}
+
+}
+
+void Shape::paint(const Vec4& color) {
+
+	if (!colors.empty())
+		for (Vec4& vec : colors) {
+			vec = color;
+		}
+
+}

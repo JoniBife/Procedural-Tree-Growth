@@ -73,6 +73,9 @@ public:
 
 	// Creates a black centered in clip space (0,0,0)
 	static Shape triangle(const float width=1, const float height=1);
+
+	void transform(const Mat4& transformation);
+	void paint(const Vec4& color);
 };
 
 #endif

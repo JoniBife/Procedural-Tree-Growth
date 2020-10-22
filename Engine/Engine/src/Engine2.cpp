@@ -260,15 +260,50 @@ void runAVT(GLFWwindow* win)
 
 ////////////////////////////////////////////////////////////////////////// RUN CGJ
 
-void drawCGJ(float uniformLocation, ShaderProgram& sp, Shape& shape) {
+void CreateLineTetromino(Shape* shapes) {
+
+	float offset = 0.05f;
+	float width = 0.375f;
+
+	Shape square1 = Shape::square(width);
+	square1.transform(Mat4::translation(0.0f, 1.5f*width + 1.5f*offset, 0.0f));
+	//square1.paint(ColorRGBA::BLUE);
+
+	Shape square2 = square1;
+	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square3 = square2;
+	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square4 = square3;
+	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+	
+	square1.init();
+	square2.init();
+	square3.init();
+	square4.init();
+
+	shapes[0] = square1;
+	shapes[1] = square2;
+	shapes[2] = square3;
+	shapes[3] = square4;
+}
+
+void drawCGJ(float uniformLocation, ShaderProgram& sp, Shape* shapes) {
 
 	sp.use();
 
-	shape.bind();
+	//sp.setUniform(uniformLocation, Mat4::IDENTITY);
 
-	sp.setUniform(uniformLocation, Mat4::IDENTITY);
-	shape.draw();
-	shape.unBind();
+	for (int i=0; i < 4; i++) {
+		shapes[i].bind();
+		checkForOpenGLErrors("failed to bind square"); 
+		sp.setUniform(uniformLocation, Mat4::IDENTITY);
+		shapes[i].draw();
+		checkForOpenGLErrors("failed to draw square");
+	}
+
+	shapes[3].unBind();
 
 	sp.stopUsing();
 
@@ -284,8 +319,9 @@ void runCGJ(GLFWwindow* win)
 
 	const float uniformLocation = sp.getUniformLocation("Matrix");
 
-	Shape square = Shape::square();
-	square.init();
+	Shape squares[4];
+
+	CreateLineTetromino(squares);
 
 	while (!glfwWindowShouldClose(win))
 	{
@@ -296,7 +332,7 @@ void runCGJ(GLFWwindow* win)
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//display(win, elapsed_time, sp, triangle);
-		drawCGJ(uniformLocation, sp, square);
+		drawCGJ(uniformLocation, sp, squares);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 #ifndef ERROR_CALLBACK

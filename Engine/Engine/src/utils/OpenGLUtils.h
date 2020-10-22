@@ -15,9 +15,8 @@ const std::string errorString(GLenum error);
 */
 void checkForOpenGLErrors(std::string error);
 
-
-#define ASSERT(x) if (!(x)) __debugbreak();
 #if _DEBUG
+#define ASSERT(x) if (x) __debugbreak();
 #define glCall(x) clearError();\
 	x;\
 	ASSERT(hasOpenGLError(#x,__FILE__, __LINE__))

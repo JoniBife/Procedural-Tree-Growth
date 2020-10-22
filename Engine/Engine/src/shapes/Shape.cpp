@@ -5,13 +5,12 @@
 #define VERTICES 0
 #define COLORS 1
 
-
 Shape::Shape() {}
 
-Shape::Shape(std::vector<Vec4>& vertices, std::vector<Vec4>& colors) : vertices(vertices), colors(colors)
-{
-	
-}
+Shape::Shape(std::vector<Vec4>& vertices, std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
+
+Shape::Shape(std::vector<Vec4>& vertices, std::vector<Vec4>& colors, std::vector<GLubyte>& indices) : 
+	vertices(vertices), colors(colors), indices(indices), withIndices(true) {}
 
 // Deletes all the vbos, vaos and disables the vertex array atributes
 Shape::~Shape() {
@@ -27,11 +26,13 @@ Shape::~Shape() {
 	glDisableVertexAttribArray(1);
 	glDeleteBuffers(1, &vboVerticesId);
 	glDeleteBuffers(1, &vboColorsId);
+	if (withIndices) {
+		glDeleteBuffers(1, &eboIndicesId);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
 	glDeleteVertexArrays(1, &vaoId);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
 }
 
 // Initializes the vao and vbos, required so that we can change the vertices after creating the shape
@@ -42,43 +43,50 @@ void Shape::init() {
 		return;
 	}
 
-	glGenVertexArrays(1, &vaoId);
-	glBindVertexArray(vaoId);
-	{
-		GLuint vbos[2];
-		glGenBuffers(2, vbos);
-
-		vboVerticesId = vbos[0];
-		vboColorsId = vbos[1];
-
-		// Binding the vertices to the first vbo
-		glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId);
+	if (!vertices.empty()) {
+		glGenVertexArrays(1, &vaoId);
+		glBindVertexArray(vaoId);
 		{
-			// The spec ensures that vectors store their elements contiguously
-			// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(VERTICES);
-			glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
+			glGenBuffers(1, &vboVerticesId);
+			// Binding the vertices to the first vbo
+			glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId);
+			{
+				// The spec ensures that vectors store their elements contiguously
+				// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
+				glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
+				glEnableVertexAttribArray(VERTICES);
+				glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
+			}
+
+			// If this shape was created with indices then they will be placed in an element array buffer
+			if (withIndices) {
+				glGenBuffers(1, &eboIndicesId);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIndicesId);
+				{
+					glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(Vec4), &indices[0], GL_STATIC_DRAW);
+				}
+			}
+
+			if (!colors.empty()) {
+				glGenBuffers(1, &vboColorsId);
+				// Binding the colors to the second vbo
+				glBindBuffer(GL_ARRAY_BUFFER, vboColorsId);
+				{
+					glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(Vec4), &colors[0], GL_STATIC_DRAW);
+					glEnableVertexAttribArray(COLORS);
+					glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
+				}
+			}
 		}
-		/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VboId[1]);
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
-		}*/
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		// Binding the colors to the second vbo
-		glBindBuffer(GL_ARRAY_BUFFER, vboColorsId);
-		{
-			glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(Vec4), &colors[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(COLORS);
-			glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0);
-		}
+		if (withIndices)
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		checkForOpenGLErrors("failed to initialize shape");
+		hasBeenInitialized = true;
 	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	checkForOpenGLErrors("failed to initialize shape");
-	hasBeenInitialized = true;
 }
 
 // Binds the vertex array object with glBindArray
@@ -101,13 +109,16 @@ void Shape::draw() {
 		std::cout << "Cannot draw shape if it has not been initialized and bound" << std::endl;
 	}
 
-	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, (GLvoid*)0);
-	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+	if(withIndices)
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, (GLvoid*)0);
+	else
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
 }
 
-// Creates a white square centered in clip space (0,0,0)
+// Creates a black square centered in clip space (0,0,0)
 Shape Shape::square(const float width) {
-	std::vector<Vec4> vertices = {
+	Shape square;
+	square.vertices = {
 		// first triangle
 		{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
 		{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
@@ -117,21 +128,13 @@ Shape Shape::square(const float width) {
 		{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
 		{width / 2, width / 2, 0.0f, 1.0f} // top right vertex
 	};
-	std::vector<Vec4> colors = {
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE
-	};
-	return Shape(vertices, colors);
+	return square;
 }
 
-// Creates a white rectangle centered in clip space (0,0,0)
+// Creates a black rectangle centered in clip space (0,0,0)
 Shape Shape::rectangle(const float width, const float height) {
-
-	std::vector<Vec4> vertices = {
+	Shape rectangle;
+	rectangle.vertices = {
 		// first triangle
 		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
 		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
@@ -141,29 +144,17 @@ Shape Shape::rectangle(const float width, const float height) {
 		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
 		{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
 	};
-	std::vector<Vec4> colors = {
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE
-	};
-	return Shape(vertices, colors);
+	return rectangle;
 
 }
 
-// Creates a white triangle centered in clip space (0,0,0)
+// Creates a black triangle centered in clip space (0,0,0)
 Shape Shape::triangle(const float width, const float height) {
-	std::vector<Vec4> vertices = {	
+	Shape triangle;
+	triangle.vertices = {	
 		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
 		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
 		{0, height / 2, 0.0f, 1.0f} // top center vertex		
 	};
-	std::vector<Vec4> colors = {
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE,
-		ColorRGBA::WHITE
-	};
-	return Shape(vertices, colors);
+	return triangle;
 }

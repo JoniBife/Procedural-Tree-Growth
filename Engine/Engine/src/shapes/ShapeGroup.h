@@ -8,13 +8,15 @@
 
 class ShapeGroup : Drawable {
 
-
 public:
 	std::vector<Shape> shapes;
 
+	ShapeGroup(const ShapeGroup& shapeGroup);
 	ShapeGroup(const std::vector<ShapeGroup>& shapeGroups);
 	ShapeGroup(const std::vector<Shape>& shapes);
 	ShapeGroup(const std::vector<Shape>& shapes, const std::vector<ShapeGroup>& shapeGroups);
+
+	ShapeGroup& operator=(const ShapeGroup& shapeGroup);
 
 	void init() override;
 

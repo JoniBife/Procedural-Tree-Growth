@@ -312,7 +312,6 @@ ShapeGroup createSquareTetromino(float width, float offset) {
 
 	return squareTetromino;
 }
-
 ShapeGroup createLTetromino(float width, float offset) {
 	Shape square1 = Shape::square(width);
 	square1.transform(Mat4::translation(-(0.5*width + 0.5*offset), width + offset, 0.0f));
@@ -467,16 +466,9 @@ void runCGJ(GLFWwindow* win)
 	float width = 0.25f;
 
 	ShapeGroup squareTetromino = createSquareTetromino(width, offset);
-	squareTetromino.init();
-
 	ShapeGroup lineTetromino = createLineTetromino(width, offset);
-	lineTetromino.init();
-
 	ShapeGroup LTetromino = createLTetromino(width, offset);
-	LTetromino.init();
-
-	ShapeGroup reverseLTetromino = createSquareTetromino(width, offset);
-	reverseLTetromino.init();
+	ShapeGroup reverseLTetromino = createReverseLTetromino(width, offset);
 	
 	ShapeGroup square({
 		lineTetromino,
@@ -484,6 +476,7 @@ void runCGJ(GLFWwindow* win)
 		LTetromino,
 		reverseLTetromino
 		});
+
 	square.init();
 	
 	while (!glfwWindowShouldClose(win))
@@ -495,7 +488,7 @@ void runCGJ(GLFWwindow* win)
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//display(win, elapsed_time, sp, triangle);
-		drawCGJ(uniformLocation, sp, squareTetromino);
+		drawCGJ(uniformLocation, sp, square);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 #ifndef ERROR_CALLBACK
@@ -513,8 +506,9 @@ int main(int argc, char* argv[])
 	int gl_major = 4, gl_minor = 0;
 	int is_fullscreen = 0;
 	int is_vsync = 1;
+
 	GLFWwindow* win = setup(gl_major, gl_minor,
-		640, 640, "Hello Modern 2D World", is_fullscreen, is_vsync);
+		640, 640, "Engine", is_fullscreen, is_vsync);
 	//runAVT(win);
 	runCGJ(win);
 	exit(EXIT_SUCCESS);

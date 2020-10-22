@@ -7,10 +7,20 @@
 
 Shape::Shape() {}
 
+Shape::Shape(const Shape& shape) {
+	vertices = shape.vertices;
+	colors = shape.colors;
+
+	if (shape.hasIndices) {
+		indices = shape.indices;
+		hasIndices = true;
+	}
+}
+
 Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
 
 Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors, const std::vector<GLubyte>& indices) : 
-	vertices(vertices), colors(colors), indices(indices), withIndices(true) {}
+	vertices(vertices), colors(colors), indices(indices), hasIndices(true) {}
 
 // Deletes all the vbos, vaos and disables the vertex array atributes
 Shape::~Shape() {
@@ -26,13 +36,23 @@ Shape::~Shape() {
 	glDisableVertexAttribArray(1);
 	glDeleteBuffers(1, &vboVerticesId);
 	glDeleteBuffers(1, &vboColorsId);
-	if (withIndices) {
+	if (hasIndices) {
 		glDeleteBuffers(1, &eboIndicesId);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	glDeleteVertexArrays(1, &vaoId);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+}
+
+Shape& Shape::operator=(const Shape& shape) {
+	vertices = shape.vertices;
+	colors = shape.colors;
+	if (shape.hasIndices) {
+		indices = shape.indices;
+		hasIndices = true;
+	}
+	return *this;
 }
 
 // Initializes the vao and vbos, required so that we can change the vertices after creating the shape
@@ -47,6 +67,7 @@ void Shape::init() {
 		glGenVertexArrays(1, &vaoId);
 		glBindVertexArray(vaoId);
 		{
+			// Todo generate all buffers at once
 			glGenBuffers(1, &vboVerticesId);
 			// Binding the vertices to the first vbo
 			glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId);
@@ -59,7 +80,7 @@ void Shape::init() {
 			}
 
 			// If this shape was created with indices then they will be placed in an element array buffer
-			if (withIndices) {
+			if (hasIndices) {
 				glGenBuffers(1, &eboIndicesId);
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIndicesId);
 				{
@@ -81,7 +102,7 @@ void Shape::init() {
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		if (withIndices)
+		if (hasIndices)
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		checkForOpenGLErrors("failed to initialize shape");
@@ -111,7 +132,7 @@ void Shape::draw() {
 		std::cout << "Cannot draw shape if it has not been initialized and bound" << std::endl;
 	}
 
-	if(withIndices)
+	if(hasIndices)
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, (GLvoid*)0);
 	else
 		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));

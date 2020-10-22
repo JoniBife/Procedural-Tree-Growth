@@ -1,5 +1,9 @@
 #include "ShapeGroup.h"
 
+ShapeGroup::ShapeGroup(const ShapeGroup& shapeGroup) {
+	shapes = shapeGroup.shapes;
+}
+
 ShapeGroup::ShapeGroup(const std::vector<ShapeGroup>& shapeGroups) {
 	for (ShapeGroup sg : shapeGroups) {
 		for (Shape sp : sg.shapes) {
@@ -16,6 +20,11 @@ ShapeGroup::ShapeGroup(const std::vector<Shape>& shapes, const std::vector<Shape
 			this->shapes.push_back(sp);
 		}
 	}
+}
+
+ShapeGroup& ShapeGroup::operator=(const ShapeGroup& shapeGroup) {
+	shapes = shapeGroup.shapes;
+	return *this;
 }
 
 void ShapeGroup::init() {

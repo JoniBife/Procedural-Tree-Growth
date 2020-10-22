@@ -40,11 +40,14 @@ private:
 	GLuint eboIndicesId; // Is the Id of the GL_ELEMENT_ARRAY_BUFFER, that contains the order in which the vertices should be drawn
 	bool hasBeenInitialized = false;
 	bool hasBeenBound = false;
-	bool withIndices = false;
+	bool hasIndices = false;
 
 public:
 
 	Shape();
+
+	// Copy constructor
+	Shape(const Shape& shape);
 
 	Shape(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors);
 
@@ -53,6 +56,8 @@ public:
 	// Deletes all the vbos, vaos and disables the vertex array atributes
 	~Shape() override;
 
+	// Assignment
+	Shape& operator=(const Shape& shape);
 
 	// Initializes the vao and vbo, required so that we can change the vertices after creating the shape
 	void init() override;

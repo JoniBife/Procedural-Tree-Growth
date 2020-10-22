@@ -46,16 +46,16 @@ public:
 
 	Shape();
 
-	Shape(std::vector<Vec4>& vertices, std::vector<Vec4>& colors);
+	Shape(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors);
 
-	Shape(std::vector<Vec4>& vertices, std::vector<Vec4>& colors, std::vector<GLubyte>& indices);
+	Shape(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors,const std::vector<GLubyte>& indices);
 
 	// Deletes all the vbos, vaos and disables the vertex array atributes
 	~Shape() override;
 
 
 	// Initializes the vao and vbo, required so that we can change the vertices after creating the shape
-	void init();
+	void init() override;
 
 	// Binds the vertex array object with glBindArray
 	void bind() override;

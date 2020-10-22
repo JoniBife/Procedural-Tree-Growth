@@ -7,9 +7,9 @@
 
 Shape::Shape() {}
 
-Shape::Shape(std::vector<Vec4>& vertices, std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
+Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
 
-Shape::Shape(std::vector<Vec4>& vertices, std::vector<Vec4>& colors, std::vector<GLubyte>& indices) : 
+Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors, const std::vector<GLubyte>& indices) : 
 	vertices(vertices), colors(colors), indices(indices), withIndices(true) {}
 
 // Deletes all the vbos, vaos and disables the vertex array atributes
@@ -96,11 +96,13 @@ void Shape::bind() {
 		return;
 	}
 	glBindVertexArray(vaoId);
+	checkForOpenGLErrors("failed to bind shape");
 	hasBeenBound = true;
 }
 // Unbinds the vertex array object with glBindArray(0)
 void Shape::unBind() {
 	glBindVertexArray(0);
+	checkForOpenGLErrors("failed to unBind shape");
 }
 
 // Draws the shape using glDrawArrays
@@ -113,6 +115,8 @@ void Shape::draw() {
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_BYTE, (GLvoid*)0);
 	else
 		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+
+	checkForOpenGLErrors("failed to draw shape");
 }
 
 // Creates a black square centered in clip space (0,0,0)
@@ -160,19 +164,23 @@ Shape Shape::triangle(const float width, const float height) {
 }
 
 void Shape::transform(const Mat4& transformation) {
-
-	if(!vertices.empty())
-		for (Vec4& vert : vertices) {
-			vert = transformation * vert;
-		}
-
+	for (Vec4& vert : vertices) {
+		vert = transformation * vert;
+	}
 }
 
 void Shape::paint(const Vec4& color) {
 
-	if (!colors.empty())
+	if (colors.empty()) {
+		float colorSize = vertices.size();
+
+		for (int i = 0; i < colorSize; i++) {
+			colors.push_back(color);
+		}
+	}
+	else {
 		for (Vec4& vec : colors) {
 			vec = color;
 		}
-
+	}
 }

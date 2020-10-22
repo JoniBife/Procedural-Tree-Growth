@@ -20,6 +20,7 @@
 #include "utils/ColorRGBA.h"
 #include "shaders/ShaderProgram.h"
 #include "shapes/Shape.h"
+#include "shapes/ShapeGroup.h"
 #include "utils/OpenGLUtils.h"
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
@@ -260,14 +261,12 @@ void runAVT(GLFWwindow* win)
 
 ////////////////////////////////////////////////////////////////////////// RUN CGJ
 
-void CreateLineTetromino(Shape* shapes) {
-
-	float offset = 0.05f;
-	float width = 0.375f;
-
+ShapeGroup createLineTetromino(float width, float offset) {
 	Shape square1 = Shape::square(width);
-	square1.transform(Mat4::translation(0.0f, 1.5f*width + 1.5f*offset, 0.0f));
-	//square1.paint(ColorRGBA::BLUE);
+	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+
+	Vec4 color = ColorRGBA::BLUE;
+	square1.paint(color);
 
 	Shape square2 = square1;
 	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
@@ -277,33 +276,177 @@ void CreateLineTetromino(Shape* shapes) {
 
 	Shape square4 = square3;
 	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
-	
-	square1.init();
-	square2.init();
-	square3.init();
-	square4.init();
 
-	shapes[0] = square1;
-	shapes[1] = square2;
-	shapes[2] = square3;
-	shapes[3] = square4;
+	ShapeGroup lineTetromino({
+			square1,
+			square2,
+			square3,
+			square4
+		});
+
+	return lineTetromino;
+}
+ShapeGroup createSquareTetromino(float width, float offset) {
+
+	Shape square1 = Shape::square(width);
+	square1.transform(Mat4::translation(-(0.5f * width + 0.5f * offset), 0.5f * width + 0.5f * offset, 0.0f));
+
+	Vec4 color = ColorRGBA::YELLOW;
+	square1.paint(color);
+
+	Shape square2 = square1;
+	square2.transform(Mat4::translation((width + offset), 0.0f, 0.0f));
+
+	Shape square3 = square2;
+	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square4 = square3;
+	square4.transform(Mat4::translation(-(width + offset), 0.0f, 0.0f));
+
+	ShapeGroup squareTetromino({
+			square1,
+			square2,
+			square3,
+			square4
+		});
+
+	return squareTetromino;
+}
+ShapeGroup createLTetromino(float width, float offset) {
+	Shape square1 = Shape::square(width);
+	square1.transform(Mat4::translation(-(0.5*width + 0.5*offset), 0.0f, 0.0f));
+
+	Vec4 color = { 1.0f, 0.5f, 0.0f, 1.0f };
+	square1.paint(color);
+
+	Shape square2 = square1;
+	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square3 = square2;
+	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square4 = square3;
+	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	ShapeGroup lineTetromino({
+			square1,
+			square2,
+			square3,
+			square4
+		});
+
+	return lineTetromino;
+}
+ShapeGroup createReverseLTetromino(float width, float offset) {
+	Shape square1 = Shape::square(width);
+	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+
+	Vec4 color = ColorRGBA::BLUE;
+	square1.paint(color);
+
+	Shape square2 = square1;
+	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square3 = square2;
+	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square4 = square3;
+	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	ShapeGroup lineTetromino({
+			square1,
+			square2,
+			square3,
+			square4
+		});
+
+	return lineTetromino;
+}
+ShapeGroup createTTetromino(float width, float offset) {
+	Shape square1 = Shape::square(width);
+	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+
+	Vec4 color = ColorRGBA::BLUE;
+	square1.paint(color);
+
+	Shape square2 = square1;
+	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square3 = square2;
+	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square4 = square3;
+	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	ShapeGroup lineTetromino({
+			square1,
+			square2,
+			square3,
+			square4
+		});
+
+	return lineTetromino;
+}
+ShapeGroup createSTetromino(float width, float offset) {
+	Shape square1 = Shape::square(width);
+	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+
+	Vec4 color = ColorRGBA::BLUE;
+	square1.paint(color);
+
+	Shape square2 = square1;
+	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square3 = square2;
+	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square4 = square3;
+	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	ShapeGroup lineTetromino({
+			square1,
+			square2,
+			square3,
+			square4
+		});
+
+	return lineTetromino;
+}
+ShapeGroup createReverseSTetromino(float width, float offset) {
+	Shape square1 = Shape::square(width);
+	square1.transform(Mat4::translation(0.0f, 1.5f * width + 1.5f * offset, 0.0f));
+
+	Vec4 color = ColorRGBA::BLUE;
+	square1.paint(color);
+
+	Shape square2 = square1;
+	square2.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square3 = square2;
+	square3.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	Shape square4 = square3;
+	square4.transform(Mat4::translation(0.0f, -(width + offset), 0.0f));
+
+	ShapeGroup lineTetromino({
+			square1,
+			square2,
+			square3,
+			square4
+		});
+
+	return lineTetromino;
 }
 
-void drawCGJ(float uniformLocation, ShaderProgram& sp, Shape* shapes) {
+void drawCGJ(float uniformLocation, ShaderProgram& sp, ShapeGroup& sg) {
 
 	sp.use();
 
-	//sp.setUniform(uniformLocation, Mat4::IDENTITY);
+	sp.setUniform(uniformLocation, Mat4::rotation(M_PI_4,Vec3::Z));
 
-	for (int i=0; i < 4; i++) {
-		shapes[i].bind();
-		checkForOpenGLErrors("failed to bind square"); 
-		sp.setUniform(uniformLocation, Mat4::IDENTITY);
-		shapes[i].draw();
-		checkForOpenGLErrors("failed to draw square");
-	}
-
-	shapes[3].unBind();
+	sg.bind();
+	sg.draw();
+	sg.unBind();
 
 	sp.stopUsing();
 
@@ -319,9 +462,22 @@ void runCGJ(GLFWwindow* win)
 
 	const float uniformLocation = sp.getUniformLocation("Matrix");
 
-	Shape squares[4];
+	float offset = 0.025f;
+	float width = 0.25f;
 
-	CreateLineTetromino(squares);
+	ShapeGroup squareTetromino = createSquareTetromino(width, offset);
+	squareTetromino.init();
+	
+
+	/*ShapeGroup square({
+		lineTetromino,
+		squareTetromino,
+		LTetromino,
+		reverseLTetromino
+		});*/
+	//square.init();
+
+	//CreateLineTetromino(squares);
 
 	while (!glfwWindowShouldClose(win))
 	{
@@ -332,7 +488,7 @@ void runCGJ(GLFWwindow* win)
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//display(win, elapsed_time, sp, triangle);
-		drawCGJ(uniformLocation, sp, squares);
+		drawCGJ(uniformLocation, sp, squareTetromino);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 #ifndef ERROR_CALLBACK

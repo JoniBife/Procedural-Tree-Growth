@@ -12,7 +12,6 @@
 * for (Drawable dr : drawables) {
 *	dr.bind();
 *	dr.draw();
-*	dr.unBind();
 * }
 * 
 */
@@ -20,6 +19,7 @@ class Drawable {
 
 public:
 	virtual ~Drawable() = default;
+	virtual void init() = 0;
 	virtual void bind() = 0;
 	virtual void unBind() = 0;
 	virtual void draw() = 0;

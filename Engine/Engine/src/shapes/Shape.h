@@ -34,10 +34,10 @@ public:
 	std::vector<GLubyte> indices;
 
 private:
-	GLuint vaoId;
-	GLuint vboVerticesId;
-	GLuint vboColorsId;
-	GLuint eboIndicesId; // Is the Id of the GL_ELEMENT_ARRAY_BUFFER, that contains the order in which the vertices should be drawn
+	GLuint vaoId = GLuint(0);
+	GLuint vboVerticesId = GLuint(0);
+	GLuint vboColorsId = GLuint(0);
+	GLuint eboIndicesId = GLuint(0);
 	bool hasBeenInitialized = false;
 	bool hasBeenBound = false;
 	bool hasIndices = false;
@@ -74,10 +74,10 @@ public:
 	static Shape square(const float width = 0.75);
 
 	// Creates a black centered in clip space (0,0,0)
-	static Shape rectangle(const float width=1, const float height=0.75);
+	static Shape rectangle(const float width = 1, const float height = 0.75);
 
 	// Creates a black centered in clip space (0,0,0)
-	static Shape triangle(const float width=1, const float height=1);
+	static Shape triangle(const float width = 1, const float height = 1);
 
 	void transform(const Mat4& transformation);
 	void paint(const Vec4& color);

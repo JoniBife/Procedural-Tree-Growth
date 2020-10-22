@@ -4,7 +4,6 @@
 #include "../utils/OpenGLUtils.h"
 
 
-
 // Receives the shader file path and compiles the shader
 Shader::Shader(const GLenum shaderType, const std::string& filePath) : type(shaderType), filePath(filePath) {
 
@@ -15,12 +14,10 @@ Shader::Shader(const GLenum shaderType, const std::string& filePath) : type(shad
     if (!compileShader()) {
         exit(EXIT_FAILURE);
     }
-
-    checkForOpenGLErrors("Error while creating a shader");
 }
 // Deletes the shader using glDeleteShader
 Shader::~Shader() {
-    glDeleteShader(id);
+    glCall(glDeleteShader(id));
 }
 
 // Getters
@@ -42,7 +39,6 @@ std::ostream& operator<<(std::ostream& os, const Shader& s) {
     // TODO
     return os;
 }
-
 
 // Obtains the shader code from the filePath. Returns false if an error occurred while trying to read the file
 bool Shader::readShaderFromFile() {
@@ -74,39 +70,37 @@ bool Shader::readShaderFromFile() {
     }
 }
 
-
-std::string getShaderTypeName(GLenum shaderType);
+std::string getShaderTypeName(GLenum shaderType) {
+    switch (shaderType) {
+    case GL_VERTEX_SHADER: return "Vertex shader";
+    case GL_FRAGMENT_SHADER: return "Fragment shader";
+    default: return "no shader type";
+    };
+    return "";
+}
 // Compiles the shader and returns false if compilation failed
 bool Shader::compileShader() {
-    id = glCreateShader(type);
+    id = glCreateShader(type); // TODO add glCall
     const char* src = code.c_str();
-    glShaderSource(id, 1, &src, NULL);
-    glCompileShader(id);
+    glCall(glShaderSource(id, 1, &src, NULL));
+    glCall(glCompileShader(id));
 
     GLint compileStatus;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &compileStatus);
+    glCall(glGetShaderiv(id, GL_COMPILE_STATUS, &compileStatus));
     if (compileStatus != GL_TRUE)
     {
         int logLength;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logLength);
+        glCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logLength));
         char* infoLog = new char[logLength]();
-        glGetShaderInfoLog(id, logLength, &logLength, infoLog);
+        glCall(glGetShaderInfoLog(id, logLength, &logLength, infoLog));
 
         std::cout << "Shader compilation ERROR [ Failed to compile a " 
             << getShaderTypeName(type) << " | log: " << infoLog << " ]" << std::endl;
 
         delete[] infoLog;
-        glDeleteShader(id);
+        glCall(glDeleteShader(id));
         return false;
     }
     return true;
 }
 
-std::string getShaderTypeName(GLenum shaderType) {
-    switch (shaderType) {
-        case GL_VERTEX_SHADER: return "Vertex shader";
-        case GL_FRAGMENT_SHADER: return "Fragment shader";
-        default: return "no shader type";
-    };
-    return "";
-}

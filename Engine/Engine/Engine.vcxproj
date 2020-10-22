@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\Engine2.cpp" />
     <ClCompile Include="src\math\Mat2.cpp" />
     <ClCompile Include="src\math\Mat3.cpp" />
     <ClCompile Include="src\math\Mat4.cpp" />

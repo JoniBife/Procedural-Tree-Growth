@@ -1,6 +1,8 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+// TODO Create Engine.cpp that implements all this functions
+
 // Sets up everything related to glew
 void setupGlew();
 
@@ -19,7 +21,7 @@ void run();
 /*
 * Called every frame
 * 
-* @param elapsedSec is elpased time from last frame
+* @param elapsedSec is elapsed time from last frame
 */
 void update(double elapsedSec);
 

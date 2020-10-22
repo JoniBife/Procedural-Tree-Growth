@@ -38,10 +38,8 @@ bool isOpenGLError()
 }
 
 void checkForOpenGLErrors(std::string error)
-{
-	
+{	
 	if (isOpenGLError()) {
-
 		std::cerr << error << std::endl;
 		exit(EXIT_FAILURE);
 	}

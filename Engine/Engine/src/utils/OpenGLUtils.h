@@ -15,16 +15,21 @@ const std::string errorString(GLenum error);
 */
 void checkForOpenGLErrors(std::string error);
 
+
+/*
+* Original solution by The Cherno:
+* https://www.youtube.com/watch?v=FBbPWSOQ0-w&t=847s&ab_channel=TheCherno
+*/
 #if _DEBUG
-#define ASSERT(x) if (x) __debugbreak();
 #define glCall(x) clearError();\
 	x;\
-	ASSERT(hasOpenGLError(#x,__FILE__, __LINE__))
+	if(hasOpenGLError(#x,__FILE__, __LINE__)) __debugbreak() // WARNING This function (__debugbreak) is compiler specific 
 
 static void clearError() { while (glGetError() != GL_NO_ERROR); }
 static bool hasOpenGLError(const char* function, const char* file, int line) {
 	while (GLenum errCode = glGetError()) {
-		std::cerr << "OpenGL ERROR [" << errorString(errCode) << "]." << std::endl;
+		std::cerr << "OpenGL ERROR [" << errorString(errCode) 
+			<< " line: " << line << " file: " << file << " function: " << function << "]." << std::endl;
 		return true;
 	}
 	return false;

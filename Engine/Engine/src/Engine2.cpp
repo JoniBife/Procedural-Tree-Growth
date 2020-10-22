@@ -439,11 +439,14 @@ ShapeGroup createReverseSTetromino(float width, float offset) {
 	return lineTetromino;
 }
 
-void drawCGJ(float uniformLocation, ShaderProgram& sp, ShapeGroup& sg) {
+float angularSpeed = (M_PI / 2); //degrees
+float orientation = M_PI/4;
+
+void drawCGJ(float uniformLocation, ShaderProgram& sp, ShapeGroup& sg, double elapsed_time) {
 
 	sp.use();
 
-	sp.setUniform(uniformLocation, Mat4::rotation(M_PI_4,Vec3::Z));
+	sp.setUniform(uniformLocation, Mat4::rotation(orientation+=angularSpeed*elapsed_time,Vec3::Z));
 
 	sg.bind();
 	sg.draw();
@@ -463,26 +466,28 @@ void runCGJ(GLFWwindow* win)
 
 	const float uniformLocation = sp.getUniformLocation("Matrix");
 
-	float offset = 0.025f;
-	float width = 0.25f;
+	float offset = 0.02f;
+	float width = 0.3f;
 
 	ShapeGroup squareTetromino = createSquareTetromino(width, offset);
-	squareTetromino.init();
 
 	ShapeGroup lineTetromino = createLineTetromino(width, offset);
-	lineTetromino.init();
+	lineTetromino.transform(Mat4::translation(1.5 * (width + offset), 0.0f, 0.0f));
 
 	ShapeGroup LTetromino = createLTetromino(width, offset);
-	LTetromino.init();
+	LTetromino.transform(Mat4::translation(-0.5*(width + offset), width + offset, 0.0f) * Mat4::rotation(-M_PI_2, Vec3::Z));
 
-	ShapeGroup reverseLTetromino = createSquareTetromino(width, offset);
-	reverseLTetromino.init();
+	ShapeGroup reverseLTetromino = createReverseLTetromino(width, offset);
+	reverseLTetromino.transform(Mat4::translation(-0.5*(width + offset), -(width + offset), 0.0f) * Mat4::rotation(-M_PI_2, Vec3::Z));
 	
+	ShapeGroup TTetromino = createTTetromino(width, offset);
+
 	ShapeGroup square({
 		lineTetromino,
 		squareTetromino,
 		LTetromino,
-		reverseLTetromino
+		reverseLTetromino,
+		TTetromino
 		});
 	square.init();
 	
@@ -495,7 +500,7 @@ void runCGJ(GLFWwindow* win)
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//display(win, elapsed_time, sp, triangle);
-		drawCGJ(uniformLocation, sp, squareTetromino);
+		drawCGJ(uniformLocation, sp, square, elapsed_time);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 #ifndef ERROR_CALLBACK

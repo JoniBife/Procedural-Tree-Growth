@@ -145,10 +145,13 @@ void Shape::draw() {
 		return;
 	}
 
-	if(hasIndices)
+	if (hasIndices) {
 		GL_CALL(glDrawElements(GL_TRIANGLES, GLsizei(indices.size()), GL_UNSIGNED_BYTE, (GLvoid*)0));
+	}
 	else
+	{
 		GL_CALL(glDrawArrays(GL_TRIANGLES, 0, GLsizei(vertices.size())));
+	}
 }
 
 // Creates a black square centered in clip space (0,0,0)

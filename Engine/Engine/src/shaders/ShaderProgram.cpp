@@ -97,7 +97,8 @@ void ShaderProgram::setUniform(const GLint location, const Mat4& value) {
 
 // Used to obtain the location of uniforms, this way we avoid doing this in every setUniform
 GLint ShaderProgram::getUniformLocation(const GLchar* name) const {
-    return glGetUniformLocation(id, name); // TODO Add glCall
+    GL_CALL(GLint location =  glGetUniformLocation(id, name));
+    return location;
 }
 
 // Output, prints the id

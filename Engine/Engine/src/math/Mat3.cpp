@@ -236,7 +236,7 @@ Mat3 operator-(const float s, const Mat3& mat3) {
 	Mat3 diff;
 	for (int l = 0; l < 3; l++) {
 		for (int c = 0; c < 3; c++) {
-			diff.m[l][c] = mat3.m[l][c] - s;
+			diff.m[l][c] = s - mat3.m[l][c];
 		}
 	}
 	return diff;

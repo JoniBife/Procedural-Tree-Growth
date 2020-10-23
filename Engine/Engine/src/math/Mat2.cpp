@@ -185,7 +185,7 @@ Mat2 operator-(const float s, const Mat2& mat2) {
 	Mat2 diff;
 	for (int l = 0; l < 2; l++) {
 		for (int c = 0; c < 2; c++) {
-			diff.m[l][c] = mat2.m[l][c] - s;
+			diff.m[l][c] = s - mat2.m[l][c];
 		}
 	}
 	return diff;

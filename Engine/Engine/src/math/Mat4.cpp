@@ -260,7 +260,7 @@ Mat4 operator-(const float s, const Mat4& mat4) {
 	Mat4 diff;
 	for (int l = 0; l < 4; l++) {
 		for (int c = 0; c < 4; c++) {
-			diff.m[l][c] = mat4.m[l][c] - s;
+			diff.m[l][c] = s - mat4.m[l][c];
 		}
 	}
 	return diff;

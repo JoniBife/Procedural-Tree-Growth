@@ -21,7 +21,7 @@ void checkForOpenGLErrors(std::string error);
 * https://www.youtube.com/watch?v=FBbPWSOQ0-w&t=847s&ab_channel=TheCherno
 */
 #if _DEBUG
-#define glCall(x) clearError();\
+#define GL_CALL(x) clearError();\
 	x;\
 	if(hasOpenGLError(#x,__FILE__, __LINE__)) __debugbreak() // WARNING This function (__debugbreak) is compiler specific 
 
@@ -35,7 +35,7 @@ static bool hasOpenGLError(const char* function, const char* file, int line) {
 	return false;
 }
 #else
-#define glCall(x) x;
+#define GL_CALL(x) x;
 #endif
 
 #endif

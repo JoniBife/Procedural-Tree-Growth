@@ -17,7 +17,7 @@ Shader::Shader(const GLenum shaderType, const std::string& filePath) : type(shad
 }
 // Deletes the shader using glDeleteShader
 Shader::~Shader() {
-    glCall(glDeleteShader(id));
+    GL_CALL(glDeleteShader(id));
 }
 
 // Getters
@@ -80,25 +80,25 @@ std::string getShaderTypeName(GLenum shaderType) {
 }
 // Compiles the shader and returns false if compilation failed
 bool Shader::compileShader() {
-    id = glCreateShader(type); // TODO add glCall
+    GL_CALL(id = glCreateShader(type));
     const char* src = code.c_str();
-    glCall(glShaderSource(id, 1, &src, NULL));
-    glCall(glCompileShader(id));
+    GL_CALL(glShaderSource(id, 1, &src, NULL));
+    GL_CALL(glCompileShader(id));
 
     GLint compileStatus;
-    glCall(glGetShaderiv(id, GL_COMPILE_STATUS, &compileStatus));
+    GL_CALL(glGetShaderiv(id, GL_COMPILE_STATUS, &compileStatus));
     if (compileStatus != GL_TRUE)
     {
         int logLength;
-        glCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logLength));
+        GL_CALL(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logLength));
         char* infoLog = new char[logLength]();
-        glCall(glGetShaderInfoLog(id, logLength, &logLength, infoLog));
+        GL_CALL(glGetShaderInfoLog(id, logLength, &logLength, infoLog));
 
         std::cout << "Shader compilation ERROR [ Failed to compile a " 
             << getShaderTypeName(type) << " | log: " << infoLog << " ]" << std::endl;
 
         delete[] infoLog;
-        glCall(glDeleteShader(id));
+        GL_CALL(glDeleteShader(id));
         return false;
     }
     return true;

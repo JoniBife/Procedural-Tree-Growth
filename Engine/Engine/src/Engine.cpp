@@ -19,6 +19,9 @@
 void window_close_callback(GLFWwindow* win)
 {
 	// TODO
+	// For now the shaders and shapes are being deleted at the end
+	// of the runCGJ and runAVT functions automatically becauses 
+	// they go out of scope so the destructor is called automatically
 }
 
 void window_size_callback(GLFWwindow* win, int winx, int winy)
@@ -106,16 +109,16 @@ void setupOpenGL(int winx, int winy)
 #if _DEBUG
 	checkOpenGLInfo();
 #endif
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-	glDepthRange(0.0, 1.0);
-	glClearDepth(1.0);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
-	glViewport(0, 0, winx, winy);
+	GL_CALL(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
+	GL_CALL(glEnable(GL_DEPTH_TEST));
+	GL_CALL(glDepthFunc(GL_LEQUAL));
+	GL_CALL(glDepthMask(GL_TRUE));
+	GL_CALL(glDepthRange(0.0, 1.0));
+	GL_CALL(glClearDepth(1.0));
+	GL_CALL(glEnable(GL_CULL_FACE));
+	GL_CALL(glCullFace(GL_BACK));
+	GL_CALL(glFrontFace(GL_CCW));
+	GL_CALL(glViewport(0, 0, winx, winy));
 }
 
 GLFWwindow* setup(int major, int minor,
@@ -483,7 +486,7 @@ void runCGJ(GLFWwindow* win)
 		last_time = time;
 
 		// Double Buffers
-		glCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		//display(win, elapsed_time, sp, triangle);
 		drawCGJ(uniformLocation, sp, square, float(elapsed_time));
 		glfwSwapBuffers(win);

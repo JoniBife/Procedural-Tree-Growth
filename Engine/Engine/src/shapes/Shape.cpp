@@ -31,18 +31,18 @@ Shape::~Shape() {
 	}
 
 	// Bind the the vao so that we can disable the vertex attrib array
-	glCall(glBindVertexArray(vaoId));
-	glCall(glDisableVertexAttribArray(0));
-	glCall(glDisableVertexAttribArray(1));
-	glCall(glDeleteBuffers(1, &vboVerticesId));
-	glCall(glDeleteBuffers(1, &vboColorsId));
+	GL_CALL(glBindVertexArray(vaoId));
+	GL_CALL(glDisableVertexAttribArray(0));
+	GL_CALL(glDisableVertexAttribArray(1));
+	GL_CALL(glDeleteBuffers(1, &vboVerticesId));
+	GL_CALL(glDeleteBuffers(1, &vboColorsId));
 	if (hasIndices) {
-		glCall(glDeleteBuffers(1, &eboIndicesId));
-		glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+		GL_CALL(glDeleteBuffers(1, &eboIndicesId));
+		GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	}
-	glCall(glDeleteVertexArrays(1, &vaoId));
-	glCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-	glCall(glBindVertexArray(0));
+	GL_CALL(glDeleteVertexArrays(1, &vaoId));
+	GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GL_CALL(glBindVertexArray(0));
 }
 
 Shape& Shape::operator=(const Shape& shape) {
@@ -63,8 +63,8 @@ void Shape::init() {
 	}
 
 	if (!vertices.empty()) {
-		glCall(glGenVertexArrays(1, &vaoId));
-		glCall(glBindVertexArray(vaoId));
+		GL_CALL(glGenVertexArrays(1, &vaoId));
+		GL_CALL(glBindVertexArray(vaoId));
 		{
 			// Obtaining the number of buffers that need to be created
 			GLsizei numberOfBuffers = 1;
@@ -77,47 +77,47 @@ void Shape::init() {
 			GLuint* bufferIds = new GLuint[numberOfBuffers];
 			
 			// Generating all buffers at once, its better than generating each of them separately 
-			glCall(glGenBuffers(numberOfBuffers, bufferIds));
+			GL_CALL(glGenBuffers(numberOfBuffers, bufferIds));
 
 			vboVerticesId = bufferIds[0];
 			// Binding the vertices to the first vbo
-			glCall(glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId));
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId));
 			{
 				// The spec ensures that vectors store their elements contiguously
 				// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
-				glCall(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW));
-				glCall(glEnableVertexAttribArray(VERTICES));
-				glCall(glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices), &vertices[0], GL_STATIC_DRAW));
+				GL_CALL(glEnableVertexAttribArray(VERTICES));
+				GL_CALL(glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
 			}
 
 			// If this shape was created with indices then they will be placed in an element array buffer
 			if (hasIndices) {
 				eboIndicesId = bufferIds[1];
-				glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIndicesId));
+				GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIndicesId));
 				{
-					glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(Vec4), &indices[0], GL_STATIC_DRAW));
+					GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(Vec4), &indices[0], GL_STATIC_DRAW));
 				}
 			}
 
 			if (!colors.empty()) {
 				vboColorsId = bufferIds[numberOfBuffers-1];
 				// Binding the colors to the second vbo
-				glCall(glBindBuffer(GL_ARRAY_BUFFER, vboColorsId));
+				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboColorsId));
 				{
-					glCall(glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(Vec4), &colors[0], GL_STATIC_DRAW));
-					glCall(glEnableVertexAttribArray(COLORS));
-					glCall(glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
+					GL_CALL(glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(Vec4), &colors[0], GL_STATIC_DRAW));
+					GL_CALL(glEnableVertexAttribArray(COLORS));
+					GL_CALL(glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
 				}
 			}
 
 			// BufferIds was allocated on the heap therefore we delete it because we no longer need it
 			delete[] bufferIds;
 		}
-		glCall(glBindVertexArray(0));
-		glCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		GL_CALL(glBindVertexArray(0));
+		GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
 		if (hasIndices)
-			glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+			GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
 		hasBeenInitialized = true;
 	}
@@ -129,12 +129,12 @@ void Shape::bind() {
 		std::cout << "Cannot bind shape if it has not been initialized" << std::endl;
 		return;
 	}
-	glCall(glBindVertexArray(vaoId));
+	GL_CALL(glBindVertexArray(vaoId));
 	hasBeenBound = true;
 }
 // Unbinds the vertex array object with glBindArray(0)
 void Shape::unBind() {
-	glCall(glBindVertexArray(0));
+	GL_CALL(glBindVertexArray(0));
 }
 
 // Draws the shape using glDrawArrays
@@ -145,9 +145,9 @@ void Shape::draw() {
 	}
 
 	if(hasIndices)
-		glCall(glDrawElements(GL_TRIANGLES, GLsizei(indices.size()), GL_UNSIGNED_BYTE, (GLvoid*)0));
+		GL_CALL(glDrawElements(GL_TRIANGLES, GLsizei(indices.size()), GL_UNSIGNED_BYTE, (GLvoid*)0));
 	else
-		glCall(glDrawArrays(GL_TRIANGLES, 0, GLsizei(vertices.size())));
+		GL_CALL(glDrawArrays(GL_TRIANGLES, 0, GLsizei(vertices.size())));
 }
 
 // Creates a black square centered in clip space (0,0,0)

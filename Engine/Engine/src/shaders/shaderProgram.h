@@ -54,8 +54,6 @@ public:
 	ShaderProgram(Shader& vertexShader, Shader& fragmentShader);
 	~ShaderProgram();
 
-	ShaderProgram& operator=(const ShaderProgram& sp);
-
 	void use();
 	void stopUsing();
 

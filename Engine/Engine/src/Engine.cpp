@@ -220,14 +220,6 @@ void runAVT(GLFWwindow* win)
 	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShader.glsl");
 	ShaderProgram sp(vs, fs);
 
-	Vec4 dir1 = semiTriangleRed.vertices[0] - semiTriangleRed.vertices[4];
-	Vec4 dir2 = semiTriangleRed.vertices[2] - semiTriangleRed.vertices[0];
-
-	dir1.w = 0;
-	dir2.w = 0;
-	float cosine = dot(dir1, dir2) / (dir1.magnitude() * dir2.magnitude());
-	float angleRad = acosf(cosine);
-
 	Mat4 transformationBlue = Mat4::rotation(float((2* M_PI)/3), Vec3::Z);
 	Mat4 transformationGreen = Mat4::rotation(float(-(2 * M_PI)/3), Vec3::Z);
 

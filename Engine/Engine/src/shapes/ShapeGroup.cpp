@@ -1,3 +1,4 @@
+#include "../utils/OpenGLUtils.h"
 #include "ShapeGroup.h"
 
 ShapeGroup::ShapeGroup(const ShapeGroup& shapeGroup) {
@@ -38,7 +39,7 @@ void ShapeGroup::bind() {
 }
 
 void ShapeGroup::unBind() {
-	glBindVertexArray(0);
+	GL_CALL(glBindVertexArray(0));
 }
 
 void ShapeGroup::draw() {

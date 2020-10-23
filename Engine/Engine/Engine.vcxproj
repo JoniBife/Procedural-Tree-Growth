@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\Engine2.cpp" />
     <ClCompile Include="src\math\Mat2.cpp" />
     <ClCompile Include="src\math\Mat3.cpp" />
     <ClCompile Include="src\math\Mat4.cpp" />
@@ -53,7 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShader.glsl" />
+    <None Include="shaders\fragmentShaderCGJ.glsl" />
     <None Include="shaders\vertexShader.glsl" />
+    <None Include="shaders\vertexShaderCGJ.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

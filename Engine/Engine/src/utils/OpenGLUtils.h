@@ -2,6 +2,7 @@
 #define OPEN_GL_UTILS_H
 
 #include <iostream>
+#include <GL/glew.h>
 
 const std::string errorString(GLenum error);
 

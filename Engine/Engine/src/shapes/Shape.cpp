@@ -35,7 +35,8 @@ Shape::~Shape() {
 	GL_CALL(glDisableVertexAttribArray(0));
 	GL_CALL(glDisableVertexAttribArray(1));
 	GL_CALL(glDeleteBuffers(1, &vboVerticesId));
-	GL_CALL(glDeleteBuffers(1, &vboColorsId));
+	if (colors.size() > 0)
+		GL_CALL(glDeleteBuffers(1, &vboColorsId));
 	if (hasIndices) {
 		GL_CALL(glDeleteBuffers(1, &eboIndicesId));
 		GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));

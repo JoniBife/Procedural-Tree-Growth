@@ -254,10 +254,10 @@ void drawReverseSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform,
 float orientation = float(M_PI / 4.0);
 Mat4 rotation = Mat4::rotation(orientation, { 0, 0, 1 }); //to rotate the group of tetrominos
 
-Mat4 transformationLine = rotation * Mat4::translation(1.5f * (width + offset), 0.0f, 0.0f);
-Mat4 transformationSquare = rotation;
-Mat4 transformationL = rotation * Mat4::translation(-0.5f * (width + offset), width + offset, 0.0f) * Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
-Mat4 transformationReverseL = rotation * Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f) * Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
+Mat4 transformationLine = rotation * Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f) * Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
+Mat4 transformationT1 = rotation * Mat4::translation(0.5f * (width + offset), 0.0f, 0.0f);
+Mat4 transformationT2 = rotation * Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
+Mat4 transformationL = rotation * Mat4::translation(0.5f * (width + offset), -1.0f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
 
 void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& square, float elapsed_time) {
 
@@ -266,9 +266,9 @@ void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& s
 	square.bind();
 
 	drawLineTetromino(sp, square, colorUniform, modelUniform, transformationLine);
-	drawSquareTetromino(sp, square, colorUniform, modelUniform, transformationSquare);
+	drawTTetromino(sp, square, colorUniform, modelUniform, transformationT1);
+	drawTTetromino(sp, square, colorUniform, modelUniform, transformationT2);
 	drawLTetromino(sp, square, colorUniform, modelUniform, transformationL);
-	drawReverseLTetromino(sp, square, colorUniform, modelUniform, transformationReverseL);
 
 	square.unBind();
 

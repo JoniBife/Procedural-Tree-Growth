@@ -546,7 +546,7 @@ float orientation = float(M_PI / 4.0);
 Mat4 linePos = Mat4::translation(1.5f * (width + offset), 0.0f, 0.0f);
 
 Mat4 LPos = Mat4::translation(-0.5f * (width + offset), width + offset, 0.0f);
-Mat4 LOrientation = Mat4::rotation(float(-M_PI_2), Vec3::Z);
+Mat4 LOrientation = Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
 
 Mat4 reverseLPos = Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f);
 

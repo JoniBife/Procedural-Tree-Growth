@@ -8,7 +8,7 @@
 
 Shape::Shape() {}
 
-Shape::Shape(const Shape& shape) {
+/*Shape::Shape(const Shape& shape) {
 	vertices = shape.vertices;
 	colors = shape.colors;
 
@@ -16,7 +16,7 @@ Shape::Shape(const Shape& shape) {
 		indices = shape.indices;
 		hasIndices = true;
 	}
-}
+}*/
 
 Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
 
@@ -46,7 +46,7 @@ Shape::~Shape() {
 	GL_CALL(glBindVertexArray(0));
 }
 
-Shape& Shape::operator=(const Shape& shape) {
+/*Shape& Shape::operator=(const Shape& shape) {
 	vertices = shape.vertices;
 	colors = shape.colors;
 	if (shape.hasIndices) {
@@ -54,7 +54,7 @@ Shape& Shape::operator=(const Shape& shape) {
 		hasIndices = true;
 	}
 	return *this;
-}
+}*/
 
 // Initializes the vao and vbos, required so that we can change the vertices after creating the shape
 void Shape::init() {
@@ -68,19 +68,19 @@ void Shape::init() {
 		GL_CALL(glBindVertexArray(vaoId));
 		{
 			// Obtaining the number of buffers that need to be created
-			/*GLsizei numberOfBuffers = 1;
+			GLsizei numberOfBuffers = 1;
 			if (!colors.empty())
 				++numberOfBuffers;
 			if (!indices.empty())
 				++numberOfBuffers;
 
 			// Allocated on the heap because the numberOfBuffers is only known on run-time
-			GLuint* bufferIds = new GLuint[numberOfBuffers];*/
+			GLuint* bufferIds = new GLuint[numberOfBuffers];
 			
 			// Generating all buffers at once, its better than generating each of them separately 
-			GL_CALL(glGenBuffers(1, &vboVerticesId));
+			GL_CALL(glGenBuffers(numberOfBuffers, bufferIds));
 
-			//vboVerticesId = bufferIds[0];
+			vboVerticesId = bufferIds[0];
 			// Binding the vertices to the first vbo
 			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId));
 			{
@@ -93,7 +93,7 @@ void Shape::init() {
 
 			// If this shape was created with indices then they will be placed in an element array buffer
 			if (hasIndices) {
-				GL_CALL(glGenBuffers(1, &eboIndicesId));
+				eboIndicesId = bufferIds[1];
 				GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIndicesId));
 				{
 					GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(Vec4), &indices[0], GL_STATIC_DRAW));
@@ -101,7 +101,7 @@ void Shape::init() {
 			}
 
 			if (!colors.empty()) {
-				GL_CALL(glGenBuffers(1, &vboColorsId));
+				vboColorsId = bufferIds[numberOfBuffers - 1];
 				// Binding the colors to the second vbo
 				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboColorsId));
 				{

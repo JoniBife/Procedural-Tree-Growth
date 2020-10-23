@@ -63,7 +63,7 @@ Mat4 Mat4::translation(const float x, const float y, const float z)
 			0, 0, 0, 1};
 }
 
-Mat4 Mat4::rotation(const float angleRad, const Vec3& axis) 
+Mat4 Mat4::rotation(const float angleRad, const Vec3& axis)
 {
 	Vec3 a = axis.normalize();
 
@@ -80,7 +80,12 @@ Mat4 Mat4::rotation(const float angleRad, const Vec3& axis)
 					0      ,		0		,				0					, 0 // Zero so that we don't have to set the last element of the matrix to 1
 	};
 
-	return IDENTITY + sinf(angleRad) * dualMatrix + (1 - cosf(angleRad)) * dualMatrixSqr;
+	Mat4 identity = { 1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1 };
+
+	return identity + sinf(angleRad) * dualMatrix + (1 - cosf(angleRad)) * dualMatrixSqr;
 }
 
 Mat4& Mat4::operator=(const Mat4& other)

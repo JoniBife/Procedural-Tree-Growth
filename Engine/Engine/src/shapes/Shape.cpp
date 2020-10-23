@@ -8,7 +8,7 @@
 
 Shape::Shape() {}
 
-/*Shape::Shape(const Shape& shape) {
+Shape::Shape(const Shape& shape) {
 	vertices = shape.vertices;
 	colors = shape.colors;
 
@@ -16,7 +16,7 @@ Shape::Shape() {}
 		indices = shape.indices;
 		hasIndices = true;
 	}
-}*/
+}
 
 Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
 
@@ -46,7 +46,7 @@ Shape::~Shape() {
 	GL_CALL(glBindVertexArray(0));
 }
 
-/*Shape& Shape::operator=(const Shape& shape) {
+Shape& Shape::operator=(const Shape& shape) {
 	vertices = shape.vertices;
 	colors = shape.colors;
 	if (shape.hasIndices) {
@@ -54,7 +54,7 @@ Shape::~Shape() {
 		hasIndices = true;
 	}
 	return *this;
-}*/
+}
 
 // Initializes the vao and vbos, required so that we can change the vertices after creating the shape
 void Shape::init() {
@@ -112,13 +112,14 @@ void Shape::init() {
 			}
 
 			// BufferIds was allocated on the heap therefore we delete it because we no longer need it
-			//delete[] bufferIds;
+			delete[] bufferIds;
 		}
 		GL_CALL(glBindVertexArray(0));
 		GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
-		if (hasIndices)
+		if (hasIndices) {
 			GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+		}
 
 		hasBeenInitialized = true;
 	}

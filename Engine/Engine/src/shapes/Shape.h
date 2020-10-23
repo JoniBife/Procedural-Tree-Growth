@@ -47,7 +47,7 @@ public:
 	Shape();
 
 	// Copy constructor
-	//Shape(const Shape& shape);
+	Shape(const Shape& shape);
 
 	Shape(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors);
 
@@ -57,7 +57,7 @@ public:
 	~Shape() override;
 
 	// Assignment
-	//Shape& operator=(const Shape& shape);
+	Shape& operator=(const Shape& shape);
 
 	// Initializes the vao and vbo, required so that we can change the vertices after creating the shape
 	void init() override;

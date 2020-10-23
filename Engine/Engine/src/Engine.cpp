@@ -176,26 +176,26 @@ void runAVT(GLFWwindow* win)
 	std::vector<Vec4> colorsRed = {
 		ColorRGBA::RED,
 		ColorRGBA::RED,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
+		{ 0.3f, 0.0f, 0.0f, 1.0f },
+		{ 0.3f, 0.0f, 0.0f, 1.0f },
+		{ 0.3f, 0.0f, 0.0f, 1.0f },
+		{ 0.3f, 0.0f, 0.0f, 1.0f }
 	};
 	std::vector<Vec4> colorsBlue = {
 		ColorRGBA::BLUE,
 		ColorRGBA::BLUE,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
+		{ 0.0f, 0.0f, 0.3f, 1.0f },
+		{ 0.0f, 0.0f, 0.3f, 1.0f },
+		{ 0.0f, 0.0f, 0.3f, 1.0f },
+		{ 0.0f, 0.0f, 0.3f, 1.0f }
 	};
 	std::vector<Vec4> colorsGreen = {
 		ColorRGBA::GREEN,
 		ColorRGBA::GREEN,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
-		ColorRGBA::BLACK,
+		{ 0.0f, 0.3f, 0.0f, 1.0f },
+		{ 0.0f, 0.3f, 0.0f, 1.0f },
+		{ 0.0f, 0.3f, 0.0f, 1.0f },
+		{ 0.0f, 0.3f, 0.0f, 1.0f },
 	};
 	std::vector<GLubyte> indices = {
 		0,2,3, // left-most triangle
@@ -237,8 +237,10 @@ void runAVT(GLFWwindow* win)
 	Vec4 translationBlue = semiTriangleRed.vertices[3] - (transformationBlue * semiTriangleRed.vertices[0]);
 	Vec4 translationGreen = semiTriangleRed.vertices[4] - (transformationGreen * semiTriangleRed.vertices[1]);
 
+	float translationOffsetX = 0.006f;
+
 	transformationBlue = Mat4::translation(translationBlue.x, translationBlue.y, translationBlue.z) * transformationBlue;
-	transformationGreen = Mat4::translation(translationGreen.x - 0.006f, translationGreen.y, translationGreen.z) * transformationGreen;
+	transformationGreen = Mat4::translation(translationGreen.x - translationOffsetX, translationGreen.y, translationGreen.z) * transformationGreen;
 
 	const GLint uniformLocation = sp.getUniformLocation("Matrix");
 

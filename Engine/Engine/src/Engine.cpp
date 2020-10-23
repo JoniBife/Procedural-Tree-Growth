@@ -222,15 +222,12 @@ void runAVT(GLFWwindow* win)
 
 	Vec4 dir1 = semiTriangleRed.vertices[0] - semiTriangleRed.vertices[4];
 	Vec4 dir2 = semiTriangleRed.vertices[2] - semiTriangleRed.vertices[0];
-	//Vec4 dir1 = avtVertices[0] - avtVertices[4];
-	//Vec4 dir2 = avtVertices[8] - avtVertices[0];
+
 	dir1.w = 0;
 	dir2.w = 0;
 	float cosine = dot(dir1, dir2) / (dir1.magnitude() * dir2.magnitude());
 	float angleRad = acosf(cosine);
 
-	//Mat4 transformationBlue = Mat4::rotation(angleRad, Vec3::Z);
-	//Mat4 transformationGreen = Mat4::rotation(-angleRad, Vec3::Z);
 	Mat4 transformationBlue = Mat4::rotation(float((2* M_PI)/3), Vec3::Z);
 	Mat4 transformationGreen = Mat4::rotation(float(-(2 * M_PI)/3), Vec3::Z);
 
@@ -264,178 +261,6 @@ void runAVT(GLFWwindow* win)
 	glfwTerminate();
 }
 
-////////////////////////////////////////////////////////////////////////// CGJ
-const float offset = 0.02f;
-const float width = 0.3f;
-
-void drawLineTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	
-	sp.setUniform(colorUniform, ColorRGBA::CYAN);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -1.5f * (width + offset), 0.0f));
-	square.draw();
-}
-void drawSquareTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::YELLOW);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset),  0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation( 0.5f * (width + offset), -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation( 0.5f * (width + offset),  0.5f * (width + offset), 0.0f));
-	square.draw();
-}
-void drawLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::ORANGE);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), width + offset, 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), 0.0f, 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation( 0.5f * (width + offset), -(width + offset), 0.0f));
-	square.draw();
-}
-void drawReverseLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::BLUE);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation( 0.5f * (width + offset), width + offset, 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation( 0.5f * (width + offset), 0.0f, 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation( 0.5f * (width + offset), -(width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f));
-	square.draw();
-}
-void drawTTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::PURPLE);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation( 1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
-	square.draw();
-}
-void drawSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::GREEN);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation( 1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), 0.0f));
-	square.draw();
-}
-void drawReverseSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::RED);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(1.0f * (width + offset), -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-}
-
-const float angularSpeed = float(M_PI / 4);
-float orientation = float(M_PI / 4.0);
-
-Mat4 linePos = Mat4::translation(1.5f * (width + offset), 0.0f, 0.0f);
-
-Mat4 LPos = Mat4::translation(-0.5f * (width + offset), width + offset, 0.0f);
-Mat4 LOrientation = Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
-
-Mat4 reverseLPos = Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f);
-
-void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& square, float elapsed_time) {
-
-	sp.use();
-
-	orientation += angularSpeed*elapsed_time;
-	Mat4 rotation = Mat4::rotation(orientation, Vec3::Z); //to rotate the group of tetrominos
-	
-	square.bind();
-
-	drawLineTetromino(sp, square, colorUniform, modelUniform, rotation * linePos);
-	drawSquareTetromino(sp, square, colorUniform, modelUniform, rotation);
-	drawLTetromino(sp, square, colorUniform, modelUniform, rotation * LPos * LOrientation);
-	drawReverseLTetromino(sp, square, colorUniform, modelUniform, rotation * reverseLPos * LOrientation);
-
-	square.unBind();
-
-	sp.stopUsing();
-}
-
-void runCGJ(GLFWwindow* win)
-{
-	double last_time = glfwGetTime();
-
-	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderCGJ.glsl");
-	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderCGJ.glsl");
-	ShaderProgram sp(vs, fs);
-
-	GLint modelUniform = sp.getUniformLocation("Matrix");
-	GLint colorUniform = sp.getUniformLocation("Color");
-
-	Shape square = Shape::square(width);
-	square.init();
-
-	while (!glfwWindowShouldClose(win))
-	{
-		double time = glfwGetTime();
-		double elapsed_time = time - last_time;
-		last_time = time;
-
-		// Double Buffers
-		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-		//display(win, elapsed_time, sp, triangle);
-		drawCGJ(colorUniform, modelUniform, sp, square, float(elapsed_time));
-		glfwSwapBuffers(win);
-		glfwPollEvents();
-		checkForOpenGLErrors("ERROR: MAIN/RUN");
-	}
-	glfwDestroyWindow(win);
-	glfwTerminate();
-}
-
 ////////////////////////////////////////////////////////////////////////// MAIN
 
 int main(int argc, char* argv[])
@@ -446,7 +271,6 @@ int main(int argc, char* argv[])
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		640, 640, "Engine", is_fullscreen, is_vsync);
 	runAVT(win);
-	//runCGJ(win);
 	exit(EXIT_SUCCESS);
 }
 

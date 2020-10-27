@@ -31,6 +31,7 @@
     <ClCompile Include="src\shaders\ShaderProgram.cpp" />
     <ClCompile Include="src\shapes\Shape.cpp" />
     <ClCompile Include="src\shapes\ShapeGroup.cpp" />
+    <ClCompile Include="src\utils\Color.cpp" />
     <ClCompile Include="src\utils\ColorRGBA.cpp" />
     <ClCompile Include="src\utils\OpenGLUtils.cpp" />
   </ItemGroup>
@@ -48,6 +49,7 @@
     <ClInclude Include="src\shapes\Drawable.h" />
     <ClInclude Include="src\shapes\Shape.h" />
     <ClInclude Include="src\shapes\ShapeGroup.h" />
+    <ClInclude Include="src\utils\Color.h" />
     <ClInclude Include="src\utils\ColorRGBA.h" />
     <ClInclude Include="src\utils\OpenGLUtils.h" />
     <ClInclude Include="src\view\Camera.h" />

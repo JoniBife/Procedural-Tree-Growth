@@ -156,46 +156,113 @@ void Shape::draw() {
 }
 
 // Creates a black square centered in clip space (0,0,0)
-Shape Shape::square(const float width) {
+Shape Shape::square(const float width, const bool doubleFaced) {
 	Shape square;
-	square.vertices = {
-		// first triangle
-		{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
-		{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
-		{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
-		// second triangle
-		{-width / 2, width / 2, 0.0f, 1.0f}, // top left vertex
-		{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
-		{width / 2, width / 2, 0.0f, 1.0f} // top right vertex
-	};
+
+	if (doubleFaced) {
+		square.vertices = {
+			// first triangle front
+			{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
+			{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
+
+			// first triangle back
+			{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
+			{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
+			
+			// second triangle front
+			{-width / 2, width / 2, 0.0f, 1.0f}, // top left vertex
+			{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
+
+			//second triangle back
+			{-width / 2, width / 2, 0.0f, 1.0f}, // top left vertex
+			{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
+			{-width / 2, -width / 2, 0.0f, 1.0f} // bottom left vertex
+			
+
+		};
+	}
+	else{
+		square.vertices = {
+			// first triangle
+			{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
+			{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
+			// second triangle
+			{-width / 2, width / 2, 0.0f, 1.0f}, // top left vertex
+			{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, width / 2, 0.0f, 1.0f} // top right vertex
+		};
+	}
 	return square;
 }
 
 // Creates a black rectangle centered in clip space (0,0,0)
-Shape Shape::rectangle(const float width, const float height) {
+Shape Shape::rectangle(const float width, const float height, const bool doubleFaced) {
 	Shape rectangle;
-	rectangle.vertices = {
-		// first triangle
-		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
-		{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
-		// second triangle
-		{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
-		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-		{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
-	};
+	if(doubleFaced) {
+		rectangle.vertices = {
+			// first triangle
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+			{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
+
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
+			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+					
+
+			// second triangle
+			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
+
+			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+			{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
+			{-width / 2, -height / 2, 0.0f, 1.0f} // bottom left vertex
+			
+		};
+	}
+	else {
+		rectangle.vertices = {
+			// first triangle
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+			{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
+			// second triangle
+			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
+		};
+	}
 	return rectangle;
 
 }
 
 // Creates a black triangle centered in clip space (0,0,0)
-Shape Shape::triangle(const float width, const float height) {
+Shape Shape::triangle(const float width, const float height, const bool doubleFaced) {
 	Shape triangle;
-	triangle.vertices = {	
-		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
-		{0, height / 2, 0.0f, 1.0f} // top center vertex		
-	};
+
+	if (doubleFaced) {
+		triangle.vertices = {
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+			{0, height / 2, 0.0f, 1.0f}, // top center vertex		
+
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{0, height / 2, 0.0f, 1.0f}, // top center vertex	
+			{width / 2, -height / 2, 0.0f, 1.0f} // bottom right vertex
+		};
+	}
+	else {
+		triangle.vertices = {
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+			{0, height / 2, 0.0f, 1.0f} // top center vertex		
+		};
+	}
 	return triangle;
 }
 

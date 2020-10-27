@@ -117,7 +117,7 @@ void setupOpenGL(int winx, int winy)
 	GL_CALL(glClearDepth(1.0));
 	GL_CALL(glEnable(GL_CULL_FACE));
 	GL_CALL(glCullFace(GL_BACK));
-	GL_CALL(glFrontFace(GL_CCW));
+	GL_CALL(glFrontFace(GL_CW));
 	GL_CALL(glViewport(0, 0, winx, winy));
 }
 
@@ -257,9 +257,10 @@ void runAVT(GLFWwindow* win)
 const float offset = 0.02f;
 const float width = 0.3f;
 
-void drawLineTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
+void drawLineTetromino(ShaderProgram& sp, Shape& square, GLint colorFrontUniform, GLint colorBackUniform, GLint modelUniform, Mat4 transform) {
 
-	sp.setUniform(colorUniform, ColorRGBA::CYAN);
+	sp.setUniform(colorFrontUniform, ColorRGBA::CYAN);
+	sp.setUniform(colorBackUniform, ColorRGBA::BLUE);
 
 	// TEACHER: (IMPORTANT INFORMATION) ///////////////////////////////////////////////////////////////
 	// Ideally, all translation matrix used in the tetromino functions should be placed outside the functions
@@ -278,8 +279,8 @@ void drawLineTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLi
 	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -1.5f * (width + offset), 0.0f));
 	square.draw();
 }
-void drawSquareTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::YELLOW);
+void drawSquareTetromino(ShaderProgram& sp, Shape& square, GLint colorFrontUniform, GLint colorBackUniform, GLint modelUniform, Mat4 transform) {
+	sp.setUniform(colorFrontUniform, ColorRGBA::YELLOW);
 
 	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), 0.5f * (width + offset), 0.0f));
 	square.draw();
@@ -293,8 +294,8 @@ void drawSquareTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, G
 	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), 0.5f * (width + offset), 0.0f));
 	square.draw();
 }
-void drawLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::ORANGE);
+void drawLTetromino(ShaderProgram& sp, Shape& square, GLint colorFrontUniform, GLint colorBackUniform, GLint modelUniform, Mat4 transform) {
+	sp.setUniform(colorFrontUniform, ColorRGBA::ORANGE);
 
 	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), width + offset, 0.0f));
 	square.draw();
@@ -308,8 +309,8 @@ void drawLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint 
 	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), -(width + offset), 0.0f));
 	square.draw();
 }
-void drawReverseLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::BLUE);
+void drawReverseLTetromino(ShaderProgram& sp, Shape& square, GLint colorFrontUniform, GLint colorBackUniform, GLint modelUniform, Mat4 transform) {
+	sp.setUniform(colorFrontUniform, ColorRGBA::BLUE);
 
 	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), width + offset, 0.0f));
 	square.draw();
@@ -323,8 +324,8 @@ void drawReverseLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform,
 	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f));
 	square.draw();
 }
-void drawTTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
-	sp.setUniform(colorUniform, color);
+void drawTTetromino(ShaderProgram& sp, Shape& square, GLint colorFrontUniform, GLint colorBackUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
+	sp.setUniform(colorFrontUniform, color);
 
 	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
 	square.draw();
@@ -338,8 +339,8 @@ void drawTTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint 
 	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
 	square.draw();
 }
-void drawSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::GREEN);
+void drawSTetromino(ShaderProgram& sp, Shape& square, GLint colorFrontUniform, GLint colorBackUniform, GLint modelUniform, Mat4 transform) {
+	sp.setUniform(colorFrontUniform, ColorRGBA::GREEN);
 
 	sp.setUniform(modelUniform, transform * Mat4::translation(1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
 	square.draw();
@@ -353,8 +354,8 @@ void drawSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint 
 	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), 0.0f));
 	square.draw();
 }
-void drawReverseSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::RED);
+void drawReverseSTetromino(ShaderProgram& sp, Shape& square, GLint colorFrontUniform, GLint colorBackUniform, GLint modelUniform, Mat4 transform) {
+	sp.setUniform(colorFrontUniform, ColorRGBA::RED);
 
 	sp.setUniform(modelUniform, transform * Mat4::translation(1.0f * (width + offset), -0.5f * (width + offset), 0.0f));
 	square.draw();
@@ -377,17 +378,17 @@ Mat4 transformationT1 = rotation * Mat4::translation(0.5f * (width + offset), 0.
 Mat4 transformationT2 = rotation * Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
 Mat4 transformationL = rotation * Mat4::translation(0.5f * (width + offset), -1.0f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
 
-void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& square, float elapsed_time) {
+void drawCGJ(GLint colorFrontUniform, GLint colorBackUniform, GLint modelUniform, ShaderProgram& sp, Shape& square, float elapsed_time) {
 
 	sp.use();
 
 	square.bind();
 
-	drawLineTetromino(sp, square, colorUniform, modelUniform, transformationLine);
+	drawLineTetromino(sp, square, colorFrontUniform, colorBackUniform, modelUniform, transformationLine);
 	// drawTTetromino receives color as parameter so that we can destinguish both T tetrominoes
-	drawTTetromino(sp, square, colorUniform, modelUniform, transformationT1, ColorRGBA::PURPLE);
-	drawTTetromino(sp, square, colorUniform, modelUniform, transformationT2, ColorRGBA::RED);
-	drawLTetromino(sp, square, colorUniform, modelUniform, transformationL);
+	//drawTTetromino(sp, square, colorFrontUniform, colorBackUniform, modelUniform, transformationT1, ColorRGBA::PURPLE);
+	//drawTTetromino(sp, square, colorFrontUniform, colorBackUniform, modelUniform, transformationT2, ColorRGBA::RED);
+	//drawLTetromino(sp, square, colorFrontUniform, colorBackUniform, modelUniform, transformationL);
 
 	square.unBind();
 
@@ -403,9 +404,12 @@ void runCGJ(GLFWwindow* win)
 	ShaderProgram sp(vs, fs);
 
 	GLint modelUniform = sp.getUniformLocation("Matrix");
-	GLint colorUniform = sp.getUniformLocation("Color");
 
-	Shape square = Shape::square(width);
+	GLint colorFrontUniform = sp.getUniformLocation("Color_front");
+
+	GLint colorBackUniform = sp.getUniformLocation("Color_back");
+
+	Shape square = Shape::square(width, true);
 	square.init();
 
 	while (!glfwWindowShouldClose(win))
@@ -416,7 +420,54 @@ void runCGJ(GLFWwindow* win)
 
 		// Double Buffers
 		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-		drawCGJ(colorUniform, modelUniform, sp, square, float(elapsed_time));
+		drawCGJ(colorFrontUniform, colorBackUniform, modelUniform, sp, square, float(elapsed_time));
+		glfwSwapBuffers(win);
+		glfwPollEvents();
+		checkForOpenGLErrors("ERROR: MAIN/RUN");
+	}
+	glfwDestroyWindow(win);
+	glfwTerminate();
+}
+
+void drawTest(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& shape, float elapsed_time) {
+
+	sp.use();
+
+	shape.bind();
+
+	sp.setUniform(modelUniform, Mat4::IDENTITY);
+	sp.setUniform(colorUniform, ColorRGBA::ORANGE);
+
+	shape.draw();
+
+	shape.unBind();
+
+	sp.stopUsing();
+}
+
+void runTest(GLFWwindow* win)
+{
+	double last_time = glfwGetTime();
+
+	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderCGJ.glsl");
+	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderCGJ.glsl");
+	ShaderProgram sp(vs, fs);
+
+	GLint modelUniform = sp.getUniformLocation("Matrix");
+	GLint colorUniform = sp.getUniformLocation("Color");
+
+	Shape triangle = Shape::triangle(width, 0.8, true);
+	triangle.init();
+
+	while (!glfwWindowShouldClose(win))
+	{
+		double time = glfwGetTime();
+		double elapsed_time = time - last_time;
+		last_time = time;
+
+		// Double Buffers
+		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		drawTest(colorUniform, modelUniform, sp, triangle, float(elapsed_time));
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 		checkForOpenGLErrors("ERROR: MAIN/RUN");
@@ -436,6 +487,7 @@ int main(int argc, char* argv[])
 		640, 640, "Engine", is_fullscreen, is_vsync);
 	//runAVT(win);
 	runCGJ(win);
+	//runTest(win);
 	exit(EXIT_SUCCESS);
 }
 

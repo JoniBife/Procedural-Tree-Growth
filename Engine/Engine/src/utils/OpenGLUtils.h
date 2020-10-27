@@ -16,10 +16,14 @@ const std::string errorString(GLenum error);
 */
 void checkForOpenGLErrors(std::string error);
 
-
 /*
 * Original solution by The Cherno:
 * https://www.youtube.com/watch?v=FBbPWSOQ0-w&t=847s&ab_channel=TheCherno
+* 
+* Checks if the specified called OpenGL function resulted in an error
+* if thats the case then place a breakpoint in that function. It also
+* prints the error, the line, the file and the function in which the
+* error occurred.
 */
 #if _DEBUG
 #define GL_CALL(x) clearError();\

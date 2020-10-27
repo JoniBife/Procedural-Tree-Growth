@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "ShaderProgram.h"
 #include "../utils/OpenGLUtils.h"
 
@@ -57,39 +58,45 @@ GLuint ShaderProgram::getProgramId() const {
 
 // All theses methods se the value of a specific uniform
 void ShaderProgram::setUniform(const GLint location, const GLint value) {
+    assert(location >= 0); // execution should stop if location is < 0
     GL_CALL(glUniform1i(location, value));
 }
-
 void ShaderProgram::setUniform(const GLint location, const GLfloat value) {
+    assert(location >= 0); // execution should stop if location is < 0
     GL_CALL(glUniform1f(location, value));
 }
-
 void ShaderProgram::setUniform(const GLint location, const Vec2& value) {
+    assert(location >= 0); // execution should stop if location is < 0
     float array[2];
     value.toOpenGLFormat(array);
     GL_CALL(glUniform2fv(location, 1, array));
 }
 void ShaderProgram::setUniform(const GLint location, const Vec3& value) {
+    assert(location >= 0); // execution should stop if location is < 0
     float array[3];
     value.toOpenGLFormat(array);
     GL_CALL(glUniform3fv(location, 1, array));
 }
 void ShaderProgram::setUniform(const GLint location, const Vec4& value) {
+    assert(location >= 0); // execution should stop if location is < 0
     float array[4];
     value.toOpenGLFormat(array);
     GL_CALL(glUniform4fv(location, 1, array));
 }
 void ShaderProgram::setUniform(const GLint location, const Mat2& value) {
+    assert(location >= 0); // execution should stop if location is < 0
     float array[4];
     value.toOpenGLFormat(array);
     GL_CALL(glUniformMatrix2fv(location, 1, GL_FALSE, array));
 }
 void ShaderProgram::setUniform(const GLint location, const Mat3& value) {
+    assert(location >= 0); // execution should stop if location is < 0
     float array[9];
     value.toOpenGLFormat(array);
     GL_CALL(glUniformMatrix3fv(location, 1, GL_FALSE, array));
 }
 void ShaderProgram::setUniform(const GLint location, const Mat4& value) {
+    assert(location >= 0); // execution should stop if location is < 0
     float array[16];
     value.toOpenGLFormat(array);
     GL_CALL(glUniformMatrix4fv(location, 1, GL_FALSE, array));
@@ -98,6 +105,7 @@ void ShaderProgram::setUniform(const GLint location, const Mat4& value) {
 // Used to obtain the location of uniforms, this way we avoid doing this in every setUniform
 GLint ShaderProgram::getUniformLocation(const GLchar* name) const {
     GL_CALL(GLint location =  glGetUniformLocation(id, name));
+    assert(location >= 0); // execution should stop if location is < 0
     return location;
 }
 

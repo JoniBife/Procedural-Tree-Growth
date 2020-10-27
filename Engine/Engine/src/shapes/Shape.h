@@ -2,7 +2,6 @@
 #define SHAPE_2D_H
 
 #include <vector>
-#include <functional>
 #include <GL/glew.h>
 #include "Drawable.h"
 #include "../math/Mat4.h"
@@ -48,6 +47,8 @@ public:
 
 	// Copy constructor
 	Shape(const Shape& shape);
+
+	Shape(const std::vector<Vec4>& vertices);
 
 	Shape(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors);
 

@@ -18,6 +18,8 @@ Shape::Shape(const Shape& shape) {
 	}
 }
 
+Shape::Shape(const std::vector<Vec4>& vertices) : vertices(vertices) {}
+
 Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
 
 Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors, const std::vector<GLubyte>& indices) :
@@ -180,8 +182,6 @@ Shape Shape::square(const float width, const bool doubleFaced) {
 			{-width / 2, width / 2, 0.0f, 1.0f}, // top left vertex
 			{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
 			{-width / 2, -width / 2, 0.0f, 1.0f} // bottom left vertex
-			
-
 		};
 	}
 	else{

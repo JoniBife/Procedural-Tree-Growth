@@ -323,8 +323,8 @@ void drawReverseLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform,
 	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f));
 	square.draw();
 }
-void drawTTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform) {
-	sp.setUniform(colorUniform, ColorRGBA::PURPLE);
+void drawTTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
+	sp.setUniform(colorUniform, color);
 
 	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
 	square.draw();
@@ -384,8 +384,9 @@ void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& s
 	square.bind();
 
 	drawLineTetromino(sp, square, colorUniform, modelUniform, transformationLine);
-	drawTTetromino(sp, square, colorUniform, modelUniform, transformationT1);
-	drawTTetromino(sp, square, colorUniform, modelUniform, transformationT2);
+	// drawTTetromino receives color as parameter so that we can destinguish both T tetrominoes
+	drawTTetromino(sp, square, colorUniform, modelUniform, transformationT1, ColorRGBA::PURPLE);
+	drawTTetromino(sp, square, colorUniform, modelUniform, transformationT2, ColorRGBA::RED);
 	drawLTetromino(sp, square, colorUniform, modelUniform, transformationL);
 
 	square.unBind();
@@ -433,8 +434,8 @@ int main(int argc, char* argv[])
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		640, 640, "Engine", is_fullscreen, is_vsync);
-	runAVT(win);
-	//runCGJ(win);
+	//runAVT(win);
+	runCGJ(win);
 	exit(EXIT_SUCCESS);
 }
 

@@ -135,6 +135,124 @@ GLFWwindow* setup(int major, int minor,
 	createBufferObjectsAvt();*/
 	return win;
 }
+////////////////////////////////////////////////////////////////////////// RUN AVT
+
+void drawAVT(GLint uniformLocation, ShaderProgram& sp, Shape& semiTriangleRed, Shape& semiTriangleBlue, Shape& semiTriangleGreen, Mat4& transformationBlue, Mat4& transformationGreen) {
+
+	sp.use();
+
+	// Red triangle
+	semiTriangleRed.bind();
+	sp.setUniform(uniformLocation, Mat4::IDENTITY);
+	semiTriangleRed.draw();
+
+	// Blue triangle
+	semiTriangleBlue.bind();
+	sp.setUniform(uniformLocation, transformationBlue);
+	semiTriangleBlue.draw();
+
+	// Green 
+	semiTriangleGreen.bind();
+	sp.setUniform(uniformLocation, transformationGreen);
+	semiTriangleGreen.draw();
+
+	semiTriangleGreen.unBind();
+	sp.stopUsing();
+
+}
+
+void runAVT(GLFWwindow* win)
+{
+	double last_time = glfwGetTime();
+
+	std::vector<Vec4> vertices = {
+		{ 0.01f, 0.58f, 0.0f, 1.0f },
+		{ 0.01f, 0.34f, 0.0f, 1.0f },
+		{ -0.605f, -0.48f, 0.0f, 1.0f },
+		{ -0.54f, -0.605f, 0.0f, 1.0f },
+		{ 0.56f, -0.37f, 0.0f, 1.0f },
+		{ 0.42f, -0.37f, 0.0f, 1.0f }
+	};
+	std::vector<Vec4> colorsRed = {
+		ColorRGBA::RED,
+		ColorRGBA::RED,
+		{ 0.3f, 0.0f, 0.0f, 1.0f },
+		{ 0.3f, 0.0f, 0.0f, 1.0f },
+		{ 0.3f, 0.0f, 0.0f, 1.0f },
+		{ 0.3f, 0.0f, 0.0f, 1.0f }
+	};
+	std::vector<Vec4> colorsBlue = {
+		ColorRGBA::BLUE,
+		ColorRGBA::BLUE,
+		{ 0.0f, 0.0f, 0.3f, 1.0f },
+		{ 0.0f, 0.0f, 0.3f, 1.0f },
+		{ 0.0f, 0.0f, 0.3f, 1.0f },
+		{ 0.0f, 0.0f, 0.3f, 1.0f }
+	};
+	std::vector<Vec4> colorsGreen = {
+		ColorRGBA::GREEN,
+		ColorRGBA::GREEN,
+		{ 0.0f, 0.3f, 0.0f, 1.0f },
+		{ 0.0f, 0.3f, 0.0f, 1.0f },
+		{ 0.0f, 0.3f, 0.0f, 1.0f },
+		{ 0.0f, 0.3f, 0.0f, 1.0f },
+	};
+	std::vector<GLubyte> indices = {
+		0,2,3, // left-most triangle
+		0,3,1,
+		0,1,5,
+		0,5,4, // right-most triangle
+	};
+
+	Shape semiTriangleRed(vertices, colorsRed, indices);
+
+	Shape semiTriangleBlue = semiTriangleRed;
+	semiTriangleBlue.colors = colorsBlue;
+
+	Shape semiTriangleGreen = semiTriangleRed;
+	semiTriangleGreen.colors = colorsGreen;
+
+	semiTriangleRed.init();
+	semiTriangleBlue.init();
+	semiTriangleGreen.init();
+
+	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShader.glsl");
+	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShader.glsl");
+	ShaderProgram sp(vs, fs);
+
+	Mat4 transformationBlue = Mat4::rotation(float((2 * M_PI) / 3), Vec3::Z);
+	Mat4 transformationGreen = Mat4::rotation(float(-(2 * M_PI) / 3), Vec3::Z);
+
+	Vec4 translationBlue = semiTriangleRed.vertices[3] - (transformationBlue * semiTriangleRed.vertices[0]);
+	Vec4 translationGreen = semiTriangleRed.vertices[4] - (transformationGreen * semiTriangleRed.vertices[1]);
+
+	float translationOffsetX = 0.006f;
+
+	transformationBlue = Mat4::translation(translationBlue.x, translationBlue.y, translationBlue.z) * transformationBlue;
+	transformationGreen = Mat4::translation(translationGreen.x - translationOffsetX, translationGreen.y, translationGreen.z) * transformationGreen;
+
+	const GLint uniformLocation = sp.getUniformLocation("Matrix");
+
+	while (!glfwWindowShouldClose(win))
+	{
+		double time = glfwGetTime();
+		double elapsed_time = time - last_time;
+		last_time = time;
+
+		// Double Buffers
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//display(win, elapsed_time, sp, triangle);
+		drawAVT(uniformLocation, sp, semiTriangleRed, semiTriangleBlue, semiTriangleGreen, transformationBlue, transformationGreen);
+		glfwSwapBuffers(win);
+		glfwPollEvents();
+#ifndef ERROR_CALLBACK
+		checkForOpenGLErrors("ERROR: MAIN/RUN");
+#endif
+	}
+	glfwDestroyWindow(win);
+	glfwTerminate();
+}
+
 ////////////////////////////////////////////////////////////////////////// CGJ
 const float offset = 0.02f;
 const float width = 0.3f;
@@ -315,7 +433,8 @@ int main(int argc, char* argv[])
 	int is_vsync = 1;
 	GLFWwindow* win = setup(gl_major, gl_minor,
 		640, 640, "Engine", is_fullscreen, is_vsync);
-	runCGJ(win);
+	runAVT(win);
+	//runCGJ(win);
 	exit(EXIT_SUCCESS);
 }
 

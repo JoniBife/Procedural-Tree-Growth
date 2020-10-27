@@ -50,6 +50,7 @@
     <ClInclude Include="src\shapes\ShapeGroup.h" />
     <ClInclude Include="src\utils\ColorRGBA.h" />
     <ClInclude Include="src\utils\OpenGLUtils.h" />
+    <ClInclude Include="src\view\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShader.glsl" />

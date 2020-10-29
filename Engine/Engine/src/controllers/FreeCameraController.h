@@ -20,14 +20,17 @@
 class FreeCameraController {
 
 private:
+
+	const std::function<void(Mat4&)> onMovement;
+	GLFWwindow* win;
+
+public:
 	float movementSpeed;
 	Vec3 position; 
 	Vec3 front; // The location where the camera is looking at (in front of the camera)
 	Vec3 up; 
 	float yawRad;
 	float pitchRad;
-	GLFWwindow* win;
-	const std::function<void(Mat4&)> onMovement;
 	double lastXpos;
 	double lastYpos;
 
@@ -38,6 +41,8 @@ public:
 	* Receives the user input and updates the view matrix accordingly
 	*/
 	void processInputAndMove(const float elapsedTime);
+
+	void snapToPosition(const Vec3 position, const Vec3 front);
 
 private:
 	

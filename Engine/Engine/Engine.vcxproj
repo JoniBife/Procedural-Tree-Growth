@@ -60,11 +60,9 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragmentShader.glsl" />
-    <None Include="shaders\fragmentShader3D.glsl" />
+    <None Include="shaders\fragmentShaderAVT.glsl" />
     <None Include="shaders\fragmentShaderCGJ.glsl" />
-    <None Include="shaders\vertexShader.glsl" />
-    <None Include="shaders\vertexShader3D.glsl" />
+    <None Include="shaders\vertexShaderAVT.glsl" />
     <None Include="shaders\vertexShaderCGJ.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -27,6 +27,18 @@ void FreeCameraController::processInputAndMove(float elapsedTime) {
 	}
 }
 
+void FreeCameraController::snapToPosition(const Vec3 position, const Vec3 front) {
+
+	glfwSetCursorPos(win, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	this->front = front;
+	this->position = position;
+	lastXpos = SCREEN_WIDTH / 2;
+	lastYpos = SCREEN_HEIGHT / 2;
+	yawRad = -90;
+	pitchRad = 0;
+	Mat4 view = lookAt(position, position + front, this->up);
+	onMovement(view);
+}
 
 /*
 * Checks for keyboard input, if there is input return true

@@ -16,6 +16,8 @@ const std::string errorString(GLenum error);
 */
 void checkForOpenGLErrors(std::string error);
 
+// TODO Create an ASSERT macro
+
 /*
 * Original solution by The Cherno:
 * https://www.youtube.com/watch?v=FBbPWSOQ0-w&t=847s&ab_channel=TheCherno

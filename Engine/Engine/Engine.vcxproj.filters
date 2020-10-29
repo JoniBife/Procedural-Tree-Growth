@@ -60,6 +60,12 @@
     <ClCompile Include="src\utils\Color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\view\Transformations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controllers\FreeCameraController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h">
@@ -113,11 +119,22 @@
     <ClInclude Include="src\utils\Color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\view\Transformations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\FreeCameraController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Configurations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\vertexShader.glsl" />
     <None Include="shaders\fragmentShader.glsl" />
     <None Include="shaders\vertexShaderCGJ.glsl" />
     <None Include="shaders\fragmentShaderCGJ.glsl" />
+    <None Include="shaders\fragmentShader3D.glsl" />
+    <None Include="shaders\vertexShader3D.glsl" />
   </ItemGroup>
 </Project>

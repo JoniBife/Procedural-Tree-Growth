@@ -107,8 +107,14 @@ Vec4 Vec2::toVec4() const {
 	return Vec4(this->x, this->y, 0, 0);
 }
 
+float Vec2::toOrientation() const {
+	return 0.0f;
+}
 
 
+Vec2 Vec2::fromOrientation(const float angleRad) {
+	return {0.0f, 0.0f};
+}
 
 
 float dot(const Vec2& a, const Vec2& b) {

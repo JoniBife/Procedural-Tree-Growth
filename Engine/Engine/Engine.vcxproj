@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\controllers\FreeCameraController.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\math\Mat2.cpp" />
     <ClCompile Include="src\math\Mat3.cpp" />
@@ -34,8 +35,11 @@
     <ClCompile Include="src\utils\Color.cpp" />
     <ClCompile Include="src\utils\ColorRGBA.cpp" />
     <ClCompile Include="src\utils\OpenGLUtils.cpp" />
+    <ClCompile Include="src\view\Transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Configurations.h" />
+    <ClInclude Include="src\controllers\FreeCameraController.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\math\Mat2.h" />
     <ClInclude Include="src\math\Mat3.h" />
@@ -53,11 +57,14 @@
     <ClInclude Include="src\utils\ColorRGBA.h" />
     <ClInclude Include="src\utils\OpenGLUtils.h" />
     <ClInclude Include="src\view\Camera.h" />
+    <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShader.glsl" />
+    <None Include="shaders\fragmentShader3D.glsl" />
     <None Include="shaders\fragmentShaderCGJ.glsl" />
     <None Include="shaders\vertexShader.glsl" />
+    <None Include="shaders\vertexShader3D.glsl" />
     <None Include="shaders\vertexShaderCGJ.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

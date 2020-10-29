@@ -13,6 +13,10 @@
 #include "shapes/Shape.h"
 #include "shapes/ShapeGroup.h"
 #include "utils/OpenGLUtils.h"
+#include "view/Transformations.h"
+#include "controllers/FreeCameraController.h"
+#include "Configurations.h"
+
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
@@ -135,6 +139,23 @@ GLFWwindow* setup(int major, int minor,
 	createBufferObjectsAvt();*/
 	return win;
 }
+
+////////////////////////////////////////////////////////////////////////// INPUT
+
+void processInput(GLFWwindow* window, ShaderProgram& sp, GLint projectionUniform)
+{
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+		sp.setUniform(projectionUniform, 
+			ortho(-2,2,-2,2,1,100)
+		);
+	}
+	else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+		sp.setUniform(projectionUniform, 
+			perspective(M_PI / 6, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 100)
+		);
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////// RUN AVT
 
 void drawAVT(GLint uniformLocation, ShaderProgram& sp, Shape& semiTriangleRed, Shape& semiTriangleBlue, Shape& semiTriangleGreen, Mat4& transformationBlue, Mat4& transformationGreen) {
@@ -379,8 +400,6 @@ Mat4 transformationL = rotation * Mat4::translation(0.5f * (width + offset), -1.
 
 void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& squareFront, Shape& squareBack, float elapsed_time) {
 
-	sp.use();
-
 	squareFront.bind();
 
 	drawLineTetromino(sp, squareFront, colorUniform, modelUniform, transformationLine, ColorRGBA::CYAN);
@@ -402,19 +421,35 @@ void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& s
 							 
 	squareBack.unBind();
 
-	sp.stopUsing();
+	
 }
 
 void runCGJ(GLFWwindow* win)
 {
 	double last_time = glfwGetTime();
 
-	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderCGJ.glsl");
-	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderCGJ.glsl");
+	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShader3D.glsl");
+	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShader3D.glsl");
 	ShaderProgram sp(vs, fs);
 
-	GLint modelUniform = sp.getUniformLocation("Transformation");
-	GLint colorUniform = sp.getUniformLocation("Color");
+	GLint modelUniform = sp.getUniformLocation("model");
+	GLint viewUniform = sp.getUniformLocation("view");
+	GLint projectionUniform = sp.getUniformLocation("projection");
+
+	Vec3 cameraPos(0.0f, 0.0f, 3.0f);
+	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
+	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
+
+	FreeCameraController cameraController(5.0f, cameraPos, cameraFront, cameraUp, 0.0f, 0.0f, win, [&](Mat4& view) {
+		sp.setUniform(viewUniform, view);
+	});
+
+	GLint colorUniform = sp.getUniformLocation("color");
+
+	sp.use();
+
+	sp.setUniform(viewUniform,lookAt(cameraPos, cameraPos + cameraFront, cameraUp));
+	sp.setUniform(projectionUniform, ortho(-2, 2, -2, 2, 1, 100));
 
 	// Square that will be used to represent the front
 	Shape squareFront = Shape::square(width);
@@ -440,6 +475,8 @@ void runCGJ(GLFWwindow* win)
 
 		// Double Buffers
 		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		processInput(win, sp, projectionUniform);
+		cameraController.processInputAndMove(float(elapsed_time));
 		drawCGJ(colorUniform, modelUniform, sp, squareFront, squareBack, float(elapsed_time));
 		glfwSwapBuffers(win);
 		glfwPollEvents();
@@ -447,6 +484,8 @@ void runCGJ(GLFWwindow* win)
 	}
 	glfwDestroyWindow(win);
 	glfwTerminate();
+
+	sp.stopUsing();
 }
 
 void drawTest(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& shape, float elapsed_time) {
@@ -500,11 +539,8 @@ void runTest(GLFWwindow* win)
 
 int main(int argc, char* argv[])
 {
-	int gl_major = 4, gl_minor = 0;
-	int is_fullscreen = 0;
-	int is_vsync = 1;
-	GLFWwindow* win = setup(gl_major, gl_minor,
-		640, 640, "Engine", is_fullscreen, is_vsync);
+	GLFWwindow* win = setup(OPEN_GL_MAJOR, OPEN_GL_MINOR,
+		SCREEN_WIDTH, SCREEN_HEIGHT, "Engine", FULLSCREEN, VSYNC);
 	//runAVT(win);
 	runCGJ(win);
 	//runTest(win);

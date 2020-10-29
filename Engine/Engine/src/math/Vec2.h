@@ -44,6 +44,9 @@ struct Vec2 {
 
 	Vec3 toVec3() const;
 	Vec4 toVec4() const;
+
+	float toOrientation() const;
+	static Vec2 fromOrientation(const float angleRad);
 };
 
 float dot(const Vec2& a, const Vec2& b);

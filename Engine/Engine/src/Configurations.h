@@ -6,11 +6,11 @@
 #define OPEN_GL_MAJOR 4
 #define OPEN_GL_MINOR 0
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 640
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
 #define VSYNC true
 
-#define FULLSCREEN false
+#define FULLSCREEN true
 
 #endif

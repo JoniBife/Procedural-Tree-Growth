@@ -440,7 +440,7 @@ void runCGJ(GLFWwindow* win)
 	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
-	FreeCameraController cameraController(5.0f, cameraPos, cameraFront, cameraUp, 0.0f, 0.0f, win, [&](Mat4& view) {
+	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, 0.0f, 0.0f, win, [&](Mat4& view) {
 		sp.setUniform(viewUniform, view);
 	});
 

@@ -80,7 +80,7 @@ bool FreeCameraController::processMouseInput() {
 
 	std::cout << "X: " << xpos << " Y: " << ypos << std::endl;
 
-	double mouseSensitivity = 0.1;
+	double mouseSensitivity = 0.05;
 
 	double xOffset = xpos - lastXpos;
 	double yOffset = lastYpos - ypos; // Y axis is inverted (increases downward)

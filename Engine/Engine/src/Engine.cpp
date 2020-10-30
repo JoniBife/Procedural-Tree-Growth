@@ -16,7 +16,7 @@
 #include "view/Transformations.h"
 #include "controllers/FreeCameraController.h"
 #include "Configurations.h"
-
+#include "view/Camera.h"
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
@@ -142,7 +142,7 @@ GLFWwindow* setup(int major, int minor,
 
 ////////////////////////////////////////////////////////////////////////// INPUT
 
-void processInput(GLFWwindow* window, ShaderProgram& sp, GLint projectionUniform, FreeCameraController &cameraController)
+void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera, FreeCameraController &cameraController)
 {
 	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
 	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
@@ -151,14 +151,12 @@ void processInput(GLFWwindow* window, ShaderProgram& sp, GLint projectionUniform
 	static bool orthoProjection = true;
 
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && !orthoProjection) {
-		sp.setUniform(projectionUniform, 
-			ortho(-2,2,-2,2,1,100)
-		);
+		camera.setProjection(ortho(-2, 2, -2, 2, 1, 100));
+		orthoProjection = true;
 	}
-	else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		sp.setUniform(projectionUniform, 
-			perspective(M_PI / 6, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 100)
-		);
+	else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && orthoProjection) {
+		camera.setProjection(perspective(M_PI / 6, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 100));
+		orthoProjection = false;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		cameraController.snapToPosition(cameraPos, cameraFront);
@@ -362,22 +360,29 @@ void runAVT(GLFWwindow* win)
 	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderAVT.glsl");
 	ShaderProgram sp(vs, fs);
 
-	GLint modelUniform = sp.getUniformLocation("model");
-	GLint viewUniform = sp.getUniformLocation("view");
-	GLint projectionUniform = sp.getUniformLocation("projection");
+	// Uniform buffer object binding point
+	const float uboBp = 0;
 
-	Vec3 cameraPos(0.0f, 0.0f, 3.0f);
+	// Associating the shared matrix index with the binding point 0
+	GLuint sharedMatricesIndex = sp.getUniformBlockIndex("SharedMatrices");
+	sp.bindUniformBlock(sharedMatricesIndex, uboBp);
+
+	// Obtaining the model uniform location
+	GLint modelUniform = sp.getUniformLocation("model");
+
+	// Initial camera positions
+	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
 	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
-	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, 0.0f, 0.0f, win, [&](Mat4& view) {
-		sp.setUniform(viewUniform, view);
-	});
+	// Initializing the camera controller
+	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, -90.0f, 0.0f, win);
+
+	// Initializing the camera and adding the controller
+	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), ortho(-2, 2, -2, 2, 1, 100), uboBp);
+	camera.addCameraController(cameraController);
 
 	sp.use();
-
-	sp.setUniform(viewUniform, lookAt(cameraPos, cameraPos + cameraFront, cameraUp));
-	sp.setUniform(projectionUniform, ortho(-2, 2, -2, 2, 1, 100));
 
 	Mat4 transformationBlue = Mat4::rotation(float((2 * M_PI) / 3), Vec3::Z);
 	Mat4 transformationGreen = Mat4::rotation(float(-(2 * M_PI) / 3), Vec3::Z);
@@ -398,9 +403,15 @@ void runAVT(GLFWwindow* win)
 
 		// Double Buffers
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//display(win, elapsed_time, sp, triangle);		
-		processInput(win, sp, projectionUniform, cameraController);
+		
+		// Processing input (P key, Space key and ESC key)
+		processInput(win, sp, camera, cameraController);
+
+		// Updating the camera position according to the keyboard input and mouse input
 		cameraController.processInputAndMove(float(elapsed_time));
+		// Finally updating the view matrix and projection matrices with their new values
+		camera.update();
+
 		drawAVT(modelUniform, sp, semiTriangleRed, semiTriangleBlue, semiTriangleGreen, transformationBlue, transformationGreen);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
@@ -561,36 +572,41 @@ void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& s
 	drawLTetromino(sp, squareBack, colorUniform, modelUniform, transformationL, orange2);
 							 
 	squareBack.unBind();
-
-	
 }
 
 void runCGJ(GLFWwindow* win)
 {
 	double last_time = glfwGetTime();
 
+	// Creating and compiling the shaders
 	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderCGJ.glsl");
 	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderCGJ.glsl");
 	ShaderProgram sp(vs, fs);
 
-	GLint modelUniform = sp.getUniformLocation("model");
-	GLint viewUniform = sp.getUniformLocation("view");
-	GLint projectionUniform = sp.getUniformLocation("projection");
+	// Uniform buffer object binding point
+	const float uboBp = 0;
 
+	// Associating the shared matrix index with the binding point 0
+	GLuint sharedMatricesIndex = sp.getUniformBlockIndex("SharedMatrices");
+	sp.bindUniformBlock(sharedMatricesIndex, uboBp);
+
+	// Obtaining the model uniform location
+	GLint modelUniform = sp.getUniformLocation("model");
+
+	// Initial camera positions
 	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
 	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
-	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, 0.0f, 0.0f, win, [&](Mat4& view) {
-		sp.setUniform(viewUniform, view);
-	});
+	// Initializing the camera controller
+	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, -90.0f, 0.0f, win);
 
+	// Initializing the camera and adding the controller
+	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), ortho(-2, 2, -2, 2, 1, 100), uboBp);
+	camera.addCameraController(cameraController);
+
+	// Obtaining the color uniform that will be different for each tetromino
 	GLint colorUniform = sp.getUniformLocation("color");
-
-	sp.use();
-
-	sp.setUniform(viewUniform,lookAt(cameraPos, cameraPos + cameraFront, cameraUp));
-	sp.setUniform(projectionUniform, ortho(-2, 2, -2, 2, 1, 100));
 
 	// Square that will be used to represent the front
 	Shape squareFront = Shape::square(width);
@@ -604,63 +620,12 @@ void runCGJ(GLFWwindow* win)
 		{ -width / 2, width / 2, 0.0f, 1.0f }, // top left vertex
 		{ width / 2, width / 2, 0.0f, 1.0f }, // top right vertex
 		{ -width / 2, -width / 2, 0.0f, 1.0f } // bottom left vertex
-		}
-	);
+		});
 	squareBack.init();
 
-	while (!glfwWindowShouldClose(win))
-	{
-		double time = glfwGetTime();
-		double elapsed_time = time - last_time;
-		last_time = time;
-
-		// Double Buffers
-		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-		processInput(win, sp, projectionUniform, cameraController);
-		cameraController.processInputAndMove(float(elapsed_time));
-		drawCGJ(colorUniform, modelUniform, sp, squareFront, squareBack, float(elapsed_time));
-		glfwSwapBuffers(win);
-		glfwPollEvents();
-		checkForOpenGLErrors("ERROR: MAIN/RUN");
-	}
-
-	glfwDestroyWindow(win);
-	glfwTerminate();
-	sp.stopUsing();
-
-	
-}
-
-void drawTest(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& shape, float elapsed_time) {
-
+	// We only need to start using the shader program once since we are always using the same
 	sp.use();
 
-	shape.bind();
-
-	sp.setUniform(modelUniform, Mat4::IDENTITY);
-	sp.setUniform(colorUniform, ColorRGBA::ORANGE);
-
-	shape.draw();
-
-	shape.unBind();
-
-	sp.stopUsing();
-}
-
-void runTest(GLFWwindow* win)
-{
-	double last_time = glfwGetTime();
-
-	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderCGJ.glsl");
-	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderCGJ.glsl");
-	ShaderProgram sp(vs, fs);
-
-	GLint modelUniform = sp.getUniformLocation("Matrix");
-	GLint colorUniform = sp.getUniformLocation("Color");
-
-	Shape triangle = Shape::triangle(width, 0.8);
-	triangle.init();
-
 	while (!glfwWindowShouldClose(win))
 	{
 		double time = glfwGetTime();
@@ -669,11 +634,26 @@ void runTest(GLFWwindow* win)
 
 		// Double Buffers
 		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-		drawTest(colorUniform, modelUniform, sp, triangle, float(elapsed_time));
+
+		// Processing input (P key, Space key and ESC key)
+		processInput(win, sp, camera, cameraController);
+		// Updating the camera position according to the keyboard input and mouse input
+		cameraController.processInputAndMove(float(elapsed_time));
+		
+		// Finally updating the view matrix and projection matrices with their new values
+		camera.update();
+
+		// Drawing the shapes
+		drawCGJ(colorUniform, modelUniform, sp, squareFront, squareBack, float(elapsed_time));
+
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 		checkForOpenGLErrors("ERROR: MAIN/RUN");
 	}
+
+	// No longer need the shader program
+	sp.stopUsing();
+
 	glfwDestroyWindow(win);
 	glfwTerminate();
 }
@@ -683,9 +663,9 @@ void runTest(GLFWwindow* win)
 int main(int argc, char* argv[])
 {
 	GLFWwindow* win = setup(OPEN_GL_MAJOR, OPEN_GL_MINOR,
-		SCREEN_WIDTH, SCREEN_HEIGHT, "Engine", FULLSCREEN, VSYNC);
-	//runAVT(win);
-	runCGJ(win);
+		SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE, FULLSCREEN, VSYNC);
+	runAVT(win);
+	//runCGJ(win);
 	//runTest(win);
 	exit(EXIT_SUCCESS);
 }

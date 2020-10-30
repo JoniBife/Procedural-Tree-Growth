@@ -102,6 +102,18 @@ void ShaderProgram::setUniform(const GLint location, const Mat4& value) {
     GL_CALL(glUniformMatrix4fv(location, 1, GL_FALSE, array));
 }
 
+// Binds a uniform block
+void ShaderProgram::bindUniformBlock(const GLuint index, const GLuint bindingPoint) {
+    GL_CALL(glUniformBlockBinding(id, index, bindingPoint));
+}
+
+// Returns the index of the uniform block with name
+GLuint ShaderProgram::getUniformBlockIndex(const GLchar* name) {
+    GL_CALL(GLuint index = glGetUniformBlockIndex(id, name));
+    assert(index != GL_INVALID_INDEX);
+    return index;
+}
+
 // Used to obtain the location of uniforms, this way we avoid doing this in every setUniform
 GLint ShaderProgram::getUniformLocation(const GLchar* name) const {
     GL_CALL(GLint location =  glGetUniformLocation(id, name));

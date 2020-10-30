@@ -3,6 +3,8 @@
 #ifndef CONFIGURATIONS_H
 #define CONFIGURATIONS_H
 
+#define WINDOW_TITLE "Engine"
+
 #define OPEN_GL_MAJOR 4
 #define OPEN_GL_MINOR 0
 

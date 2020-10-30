@@ -35,6 +35,7 @@
     <ClCompile Include="src\utils\Color.cpp" />
     <ClCompile Include="src\utils\ColorRGBA.cpp" />
     <ClCompile Include="src\utils\OpenGLUtils.cpp" />
+    <ClCompile Include="src\view\Camera.cpp" />
     <ClCompile Include="src\view\Transformations.cpp" />
   </ItemGroup>
   <ItemGroup>

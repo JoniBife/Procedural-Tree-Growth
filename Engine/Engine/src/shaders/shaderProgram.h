@@ -69,6 +69,12 @@ public:
 	void setUniform(const GLint location, const Mat3& value);
 	void setUniform(const GLint location, const Mat4& value);
 
+	// Binds a uniform block
+	void bindUniformBlock(const GLuint index, const GLuint bindingPoint);
+
+	// Returns the index of the uniform block with name
+	GLuint getUniformBlockIndex(const GLchar* name);
+
 	// Used to obtain the location of uniforms, this way we avoid doing this in every setUniform
 	GLint getUniformLocation(const GLchar* name) const;
 

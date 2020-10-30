@@ -3,8 +3,11 @@
 in vec4 in_Position;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+
+uniform SharedMatrices {
+	mat4 view;
+	mat4 projection;
+};
 
 void main(void)
 {

@@ -20,8 +20,7 @@
 class FreeCameraController {
 
 private:
-
-	const std::function<void(Mat4&)> onMovement;
+	std::function<void(Mat4&)> onMovement;
 	GLFWwindow* win;
 
 public:
@@ -29,13 +28,19 @@ public:
 	Vec3 position; 
 	Vec3 front; // The location where the camera is looking at (in front of the camera)
 	Vec3 up; 
-	float yawRad;
-	float pitchRad;
+	float yaw;
+	float pitch;
 	double lastXpos;
 	double lastYpos;
 
 public: 
-	FreeCameraController(const float movementSpeed, const Vec3& position, const Vec3& front, const Vec3& up, const float yawRad, const float pitchRad, GLFWwindow* win, const std::function<void(Mat4&)>& onMovement);
+	FreeCameraController(const float movementSpeed, const Vec3& position, const Vec3& front, const Vec3& up, const float yaw, const float pitch, GLFWwindow* win);
+
+	
+	/*
+	* Sets an OnMovement callback that will be called when the movement event occurs (when the user moves the camera)
+	*/
+	void setOnMovementListener(const std::function<void(Mat4&)>& onMovement);
 
 	/*
 	* Receives the user input and updates the view matrix accordingly

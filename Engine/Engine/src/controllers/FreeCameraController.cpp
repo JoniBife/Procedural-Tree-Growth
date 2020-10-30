@@ -4,8 +4,8 @@
 #include "../math/MathAux.h"
 
 
-FreeCameraController::FreeCameraController(const float movementSpeed, const Vec3& position, const Vec3& front, const Vec3& up, const float yawRad, const float pitchRad, GLFWwindow* win, const std::function<void(Mat4&)>& onMovement)
-	: movementSpeed(movementSpeed), position(position), front(front), up(up), yawRad(yawRad - 90), pitchRad(pitchRad), win(win), onMovement(onMovement) {
+FreeCameraController::FreeCameraController(const float movementSpeed, const Vec3& position, const Vec3& front, const Vec3& up, const float yaw, const float pitch, GLFWwindow* win)
+	: movementSpeed(movementSpeed), position(position), front(front), up(up), yaw(yaw), pitch(pitch), win(win) {
 
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	
@@ -14,6 +14,24 @@ FreeCameraController::FreeCameraController(const float movementSpeed, const Vec3
 
 	glfwSetCursorPos(win, lastXpos, lastYpos);
 }
+
+void FreeCameraController::setOnMovementListener(const std::function<void(Mat4&)>& onMovement) {
+	this->onMovement = onMovement;
+}
+
+/*FreeCameraController& FreeCameraController::operator=(const FreeCameraController& cameraController) {
+	onMovement = cameraController.onMovement;
+	win = cameraController.win;
+	movementSpeed = cameraController.movementSpeed;
+	position = cameraController.position;
+	front = cameraController.front;
+	up = cameraController.up;
+	yaw = cameraController.yaw;
+	pitch = cameraController.pitch;
+	lastXpos = cameraController.lastXpos;
+	lastYpos = cameraController.lastYpos;
+	return *this;
+}*/
 
 /*
 * Receives the user input and updates the view matrix accordingly
@@ -34,8 +52,8 @@ void FreeCameraController::snapToPosition(const Vec3 position, const Vec3 front)
 	this->position = position;
 	lastXpos = SCREEN_WIDTH / 2;
 	lastYpos = SCREEN_HEIGHT / 2;
-	yawRad = -90;
-	pitchRad = 0;
+	yaw = -90;
+	pitch = 0;
 	Mat4 view = lookAt(position, position + front, this->up);
 	onMovement(view);
 }
@@ -108,18 +126,18 @@ bool FreeCameraController::processMouseInput() {
 		return false;
 	}
 
-	yawRad += xOffset;
-	pitchRad += yOffset;
+	yaw += xOffset;
+	pitch += yOffset;
 
-	if (pitchRad > 89.0f)
-		pitchRad = 89.0f;
-	if (pitchRad < -89.0f)
-		pitchRad = -89.0f;
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
 
 	Vec3 direction;
-	direction.x = cosf(degreesToRadians(yawRad)) * cosf(degreesToRadians(pitchRad));
-	direction.y = sinf(degreesToRadians(pitchRad));
-	direction.z = sinf(degreesToRadians(yawRad)) * cosf(degreesToRadians(pitchRad));
+	direction.x = cosf(degreesToRadians(yaw)) * cosf(degreesToRadians(pitch));
+	direction.y = sinf(degreesToRadians(pitch));
+	direction.z = sinf(degreesToRadians(yaw)) * cosf(degreesToRadians(pitch));
 	front = direction.normalize();
 
 	std::cout << direction << std::endl;

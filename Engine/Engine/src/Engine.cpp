@@ -144,11 +144,13 @@ GLFWwindow* setup(int major, int minor,
 
 void processInput(GLFWwindow* window, ShaderProgram& sp, GLint projectionUniform, FreeCameraController &cameraController)
 {
-	Vec3 cameraPos(0.0f, 0.0f, 3.0f);
+	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
 	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+	static bool orthoProjection = true;
+
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && !orthoProjection) {
 		sp.setUniform(projectionUniform, 
 			ortho(-2,2,-2,2,1,100)
 		);
@@ -575,7 +577,7 @@ void runCGJ(GLFWwindow* win)
 	GLint viewUniform = sp.getUniformLocation("view");
 	GLint projectionUniform = sp.getUniformLocation("projection");
 
-	Vec3 cameraPos(0.0f, 0.0f, 3.0f);
+	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
 	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
@@ -656,7 +658,7 @@ void runTest(GLFWwindow* win)
 	GLint modelUniform = sp.getUniformLocation("Matrix");
 	GLint colorUniform = sp.getUniformLocation("Color");
 
-	Shape triangle = Shape::triangle(width, 0.8, true);
+	Shape triangle = Shape::triangle(width, 0.8);
 	triangle.init();
 
 	while (!glfwWindowShouldClose(win))
@@ -682,8 +684,8 @@ int main(int argc, char* argv[])
 {
 	GLFWwindow* win = setup(OPEN_GL_MAJOR, OPEN_GL_MINOR,
 		SCREEN_WIDTH, SCREEN_HEIGHT, "Engine", FULLSCREEN, VSYNC);
-	runAVT(win);
-	//runCGJ(win);
+	//runAVT(win);
+	runCGJ(win);
 	//runTest(win);
 	exit(EXIT_SUCCESS);
 }

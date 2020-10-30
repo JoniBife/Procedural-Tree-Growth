@@ -72,13 +72,13 @@ public:
 	void draw() override;
 
 	// Creates a black centered in clip space (0,0,0)
-	static Shape square(const float width = 0.75f, const bool doubleFaced = false);
+	static Shape square(const float width = 0.75f);
 
 	// Creates a black centered in clip space (0,0,0)
-	static Shape rectangle(const float width = 1.0f, const float height = 0.75f, const bool doubleFaced = false);
+	static Shape rectangle(const float width = 1.0f, const float height = 0.75f);
 
 	// Creates a black centered in clip space (0,0,0)
-	static Shape triangle(const float width = 1.0f, const float height = 1.0f, const bool doubleFaced = false);
+	static Shape triangle(const float width = 1.0f, const float height = 1.0f);
 
 	void transform(const Mat4& transformation);
 	void paint(const Vec4& color);

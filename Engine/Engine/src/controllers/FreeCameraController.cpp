@@ -45,15 +45,15 @@ void FreeCameraController::processInputAndMove(float elapsedTime) {
 	}
 }
 
-void FreeCameraController::snapToPosition(const Vec3 position, const Vec3 front) {
+void FreeCameraController::snapToPosition(const Vec3 position, const Vec3 front, float yaw, float pitch) {
 
 	glfwSetCursorPos(win, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 	this->front = front;
 	this->position = position;
 	lastXpos = SCREEN_WIDTH / 2;
 	lastYpos = SCREEN_HEIGHT / 2;
-	yaw = -90;
-	pitch = 0;
+	this->yaw = yaw;
+	this->pitch = pitch;
 	Mat4 view = lookAt(position, position + front, this->up);
 	onMovement(view);
 }

@@ -47,7 +47,7 @@ public:
 	*/
 	void processInputAndMove(const float elapsedTime);
 
-	void snapToPosition(const Vec3 position, const Vec3 front);
+	void snapToPosition(const Vec3 position, const Vec3 front, float yaw, float pitch);
 
 private:
 	

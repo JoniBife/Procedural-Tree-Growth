@@ -20,7 +20,11 @@
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
-Mat4 projection = ortho(-2, 2, -2, 2, 1, 100);
+Mat4 projection = ortho(-2, 2, -2, 2, 0, 100);
+
+Vec3 cameraPos(-0.5f, 0.0f, 2.0f);
+Vec3 cameraFront(1.0f, 0.0f, -1.0f);
+Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
 void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -28,11 +32,11 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, in
 
 	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
 		if (orthoProjection) {
-			projection = ortho(-2, 2, -2, 2, 1, 100);
+			projection = ortho(-2, 2, -2, 2, 0, 100);
 			orthoProjection = false;
 		}
 		else {
-			projection = perspective(M_PI / 6, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 100);
+			projection = perspective(M_PI / 2, SCREEN_WIDTH / SCREEN_HEIGHT, 0, 100);
 			orthoProjection = true;
 		}
 	}
@@ -162,12 +166,8 @@ GLFWwindow* setup(int major, int minor,
 ////////////////////////////////////////////////////////////////////////// INPUT
 void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera, FreeCameraController &cameraController)
 {
-	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
-	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
-	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
-
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		cameraController.snapToPosition(cameraPos, cameraFront);
+		cameraController.snapToPosition(cameraPos, cameraFront, -90.0f, 0.0f);
 		
 	}
 	else if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -378,16 +378,11 @@ void runAVT(GLFWwindow* win)
 	// Obtaining the model uniform location
 	GLint modelUniform = sp.getUniformLocation("model");
 
-	// Initial camera positions
-	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
-	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
-	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
-
 	// Initializing the camera controller
 	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, -90.0f, 0.0f, win);
 
 	// Initializing the camera and adding the controller
-	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), ortho(-2, 2, -2, 2, 1, 100), uboBp);
+	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), projection, uboBp);
 	camera.addCameraController(cameraController);
 
 	sp.use();
@@ -603,11 +598,6 @@ void runCGJ(GLFWwindow* win)
 
 	// Obtaining the model uniform location
 	GLint modelUniform = sp.getUniformLocation("model");
-
-	// Initial camera positions
-	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
-	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
-	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
 	// Initializing the camera controller
 	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, -90.0f, 0.0f, win);

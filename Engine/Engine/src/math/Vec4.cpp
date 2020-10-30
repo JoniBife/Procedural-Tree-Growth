@@ -1,4 +1,5 @@
 #include <Math.h>
+#include <assert.h>
 #include "Vec4.h"
 #include "MathAux.h"
 
@@ -114,7 +115,12 @@ float Vec4::sqrMagnitude() const {
 }
 
 Vec4 Vec4::normalize() const {
-	return (*this) / (this->magnitude());
+	float magnitude = this->magnitude();
+
+	// Cannot divide by 0
+	assert(magnitude > 0);
+
+	return (*this) / magnitude;
 }
 
 void Vec4::toOpenGLFormat(float array[4]) const {

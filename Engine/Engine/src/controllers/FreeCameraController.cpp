@@ -102,14 +102,6 @@ bool FreeCameraController::processMouseInput() {
 	double xpos, ypos;
 	glfwGetCursorPos(win, &xpos, &ypos);
 
-	/*if (firstMove) {
-		firstMove = false;
-		lastXpos = xpos;
-		lastYpos = ypos;
-	}*/
-
-	std::cout << "X: " << xpos << " Y: " << ypos << std::endl;
-
 	double mouseSensitivity = 0.05;
 
 	double xOffset = xpos - lastXpos;
@@ -119,8 +111,6 @@ bool FreeCameraController::processMouseInput() {
 
 	lastXpos = xpos;
 	lastYpos = ypos;
-
-	std::cout << "Xoffset: " << xOffset << " Yoffset: " << yOffset << std::endl;
 
 	if (xOffset == 0.0 && yOffset == 0.0) {
 		return false;
@@ -140,7 +130,6 @@ bool FreeCameraController::processMouseInput() {
 	direction.z = sinf(degreesToRadians(yaw)) * cosf(degreesToRadians(pitch));
 	front = direction.normalize();
 
-	std::cout << direction << std::endl;
 
 	return true;
 }

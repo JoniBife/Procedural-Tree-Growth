@@ -1,4 +1,5 @@
 #include <Math.h>
+#include <assert.h>
 #include "Vec3.h"
 #include "MathAux.h"
 
@@ -112,13 +113,18 @@ void Vec3::toOpenGLFormat(float array[3]) const {
 
 
 Vec3 Vec3::normalize() const {
-	return (*this) / (this->magnitude());
+
+	float magnitude = this->magnitude();
+
+	// Cannot divide by 0
+	assert(magnitude > 0);
+
+	return (*this) / magnitude;
 }
 
 Vec4 Vec3::toVec4() const {
 	return Vec4(this->x, this->y, this->z, 0);
 }
-
 
 
 float dot(const Vec3& a, const Vec3& b) {

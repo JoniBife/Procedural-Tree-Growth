@@ -20,6 +20,24 @@
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
+Mat4 projection = ortho(-2, 2, -2, 2, 1, 100);
+
+void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	static bool orthoProjection = false;
+
+	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+		if (orthoProjection) {
+			projection = ortho(-2, 2, -2, 2, 1, 100);
+			orthoProjection = false;
+		}
+		else {
+			projection = perspective(M_PI / 6, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 100);
+			orthoProjection = true;
+		}
+	}
+}
+
 void window_close_callback(GLFWwindow* win)
 {
 	// TODO
@@ -57,6 +75,7 @@ GLFWwindow* setupWindow(int winx, int winy, const char* title,
 
 void setupCallbacks(GLFWwindow* win)
 {
+	glfwSetKeyCallback(win, glfw_key_callback);
 	glfwSetWindowCloseCallback(win, window_close_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
 }
@@ -141,24 +160,13 @@ GLFWwindow* setup(int major, int minor,
 }
 
 ////////////////////////////////////////////////////////////////////////// INPUT
-
 void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera, FreeCameraController &cameraController)
 {
 	Vec3 cameraPos(0.0f, 0.0f, 5.0f);
 	Vec3 cameraFront(0.0f, 0.0f, -1.0f);
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
-	static bool orthoProjection = true;
-
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && !orthoProjection) {
-		camera.setProjection(ortho(-2, 2, -2, 2, 1, 100));
-		orthoProjection = true;
-	}
-	else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && orthoProjection) {
-		camera.setProjection(perspective(M_PI / 6, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 100));
-		orthoProjection = false;
-	}
-	else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		cameraController.snapToPosition(cameraPos, cameraFront);
 		
 	}
@@ -410,6 +418,9 @@ void runAVT(GLFWwindow* win)
 		// Updating the camera position according to the keyboard input and mouse input
 		cameraController.processInputAndMove(float(elapsed_time));
 		// Finally updating the view matrix and projection matrices with their new values
+
+		// the projection might have been changed
+		camera.setProjection(projection);
 		camera.update();
 
 		drawAVT(modelUniform, sp, semiTriangleRed, semiTriangleBlue, semiTriangleGreen, transformationBlue, transformationGreen);
@@ -666,7 +677,6 @@ int main(int argc, char* argv[])
 		SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE, FULLSCREEN, VSYNC);
 	runAVT(win);
 	//runCGJ(win);
-	//runTest(win);
 	exit(EXIT_SUCCESS);
 }
 

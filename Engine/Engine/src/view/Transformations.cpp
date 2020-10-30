@@ -1,5 +1,6 @@
 #include "Transformations.h"
 #include <math.h>
+#include <assert.h>
 
 Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up) {
 
@@ -16,6 +17,10 @@ Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up) {
 }
 
 Mat4 ortho(float left, float right, float bottom, float top, float near, float far) {
+
+	// Divisions by 0 are not possible
+	assert(left != right && bottom != top && top != near );
+
 	return { 2 / (right - left) , 0.0f, 0.0f, (left + right) / (left - right),
 			0.0f, 2/(top-bottom), 0.0f, (bottom + top)/(bottom - top), 
 			0.0f, 0.0f, 2/(near-far), (near+far)/(near-far), 
@@ -24,6 +29,11 @@ Mat4 ortho(float left, float right, float bottom, float top, float near, float f
 }
 
 Mat4 perspective(float fovyRad, float aspectRatio, float near, float far) {
+
+	// Divisions by 0 are not possible
+	assert(aspectRatio > 0);
+	assert(near != far);
+
 	float theta = fovyRad / 2;
 	float d = 1 / tanf(theta);
 

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <assert.h>
 #include "Vec2.h"
 #include "MathAux.h"
 
@@ -94,9 +95,13 @@ void Vec2::toOpenGLFormat(float array[2]) const {
 	array[1] = this->y;
 }
 
-//TODO We should consider if this returns a new vector, or if it normalizes the current vector
 Vec2 Vec2::normalize() const {
-	return (*this)/(this->magnitude());
+	float magnitude = this->magnitude();
+
+	// Cannot divide by 0
+	assert(magnitude > 0);
+
+	return (*this) / magnitude;
 }
 
 Vec3 Vec2::toVec3() const {

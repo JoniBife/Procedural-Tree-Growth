@@ -130,6 +130,5 @@ bool FreeCameraController::processMouseInput() {
 	direction.z = sinf(degreesToRadians(yaw)) * cosf(degreesToRadians(pitch));
 	front = direction.normalize();
 
-
 	return true;
 }

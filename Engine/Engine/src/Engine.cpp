@@ -18,13 +18,25 @@
 #include "Configurations.h"
 #include "view/Camera.h"
 
+//////////////////////////////////////////////////////////////////// INITIAL CAMERA SETUP
+
+Mat4 orthographicProj = ortho(-2, 2, -2, 2, 0, 100);
+Mat4 perspectiveProj = perspective(M_PI / 2, SCREEN_WIDTH / SCREEN_HEIGHT, 0, 100);
+
+Mat4 currProjection = orthographicProj;
+
+float cameraMovementSpeed = 2.5f;
+
+// Since we are looking at the -z axis in our initial orientation, yaw has to be set -90 degress otherwise we would look at +x axis
+float initialYaw = -90.0f;
+float initialPitch = 0.0f;
+
+Vec3 cameraPos(0.0f, 0.0f, 2.0f); // eye
+Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
+Vec3 cameraFront = cameraTarget - cameraPos;
+Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
+
 ///////////////////////////////////////////////////////////////////// CALLBACKS
-
-Mat4 projection = ortho(-2, 2, -2, 2, 0, 100);
-
-Vec3 cameraPos(-0.5f, 0.0f, 2.0f);
-Vec3 cameraFront(1.0f, 0.0f, -1.0f);
-Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
 void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -32,11 +44,11 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, in
 
 	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
 		if (orthoProjection) {
-			projection = ortho(-2, 2, -2, 2, 0, 100);
+			currProjection = orthographicProj;
 			orthoProjection = false;
 		}
 		else {
-			projection = perspective(M_PI / 2, SCREEN_WIDTH / SCREEN_HEIGHT, 0, 100);
+			currProjection = perspectiveProj;
 			orthoProjection = true;
 		}
 	}
@@ -238,6 +250,11 @@ void runAVT(GLFWwindow* win)
 		{ 0.56f, -0.37f, 0.0f, 1.0f }, //4
 		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
 	};
+	
+	// Setting the inital z to be further away so that we change from otho to persp there is a larger difference
+	for (auto& vec : vertices) {
+		vec.z = -3.0f;
+	}
 
 	const Vec4 RED2 = { 127.5f / 255.0f, 25.5f / 255.0f,  25.5f / 255.0f, 1.0f };
 	const Vec4 RED2_DARK = { 25.5f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 1.0f };
@@ -379,10 +396,10 @@ void runAVT(GLFWwindow* win)
 	GLint modelUniform = sp.getUniformLocation("model");
 
 	// Initializing the camera controller
-	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, -90.0f, 0.0f, win);
+	FreeCameraController cameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, win);
 
 	// Initializing the camera and adding the controller
-	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), projection, uboBp);
+	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), currProjection, uboBp);
 	camera.addCameraController(cameraController);
 
 	sp.use();
@@ -415,7 +432,7 @@ void runAVT(GLFWwindow* win)
 		// Finally updating the view matrix and projection matrices with their new values
 
 		// the projection might have been changed
-		camera.setProjection(projection);
+		camera.setProjection(currProjection);
 		camera.update();
 
 		drawAVT(modelUniform, sp, semiTriangleRed, semiTriangleBlue, semiTriangleGreen, transformationBlue, transformationGreen);
@@ -551,10 +568,10 @@ void drawReverseSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform,
 float orientation = float(M_PI / 4.0);
 Mat4 rotation = Mat4::rotation(orientation, { 0, 0, 1 }); //to rotate the group of tetrominos
 
-Mat4 transformationLine = rotation * Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f) * Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
-Mat4 transformationT1 = rotation * Mat4::translation(0.5f * (width + offset), 0.0f, 0.0f);
-Mat4 transformationT2 = rotation * Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
-Mat4 transformationL = rotation * Mat4::translation(0.5f * (width + offset), -1.0f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
+Mat4 transformationLine = rotation * Mat4::translation(0.0f, 1.5f * (width + offset), -3.0f) * Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
+Mat4 transformationT1 = rotation * Mat4::translation(0.5f * (width + offset), 0.0f, -3.0f);
+Mat4 transformationT2 = rotation * Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), -3.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
+Mat4 transformationL = rotation * Mat4::translation(0.5f * (width + offset), -1.0f * (width + offset), -3.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
 
 void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& squareFront, Shape& squareBack, float elapsed_time) {
 
@@ -600,7 +617,7 @@ void runCGJ(GLFWwindow* win)
 	GLint modelUniform = sp.getUniformLocation("model");
 
 	// Initializing the camera controller
-	FreeCameraController cameraController(2.5f, cameraPos, cameraFront, cameraUp, -90.0f, 0.0f, win);
+	FreeCameraController cameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, win);
 
 	// Initializing the camera and adding the controller
 	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), ortho(-2, 2, -2, 2, 1, 100), uboBp);
@@ -641,7 +658,8 @@ void runCGJ(GLFWwindow* win)
 		// Updating the camera position according to the keyboard input and mouse input
 		cameraController.processInputAndMove(float(elapsed_time));
 		
-		// Finally updating the view matrix and projection matrices with their new values
+		// the projection might have been changed
+		camera.setProjection(currProjection);
 		camera.update();
 
 		// Drawing the shapes

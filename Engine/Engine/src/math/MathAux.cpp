@@ -11,7 +11,7 @@ bool cmpf(float A, float B)
 }
 
 float round6(float number) {
-    return roundf(number * pow(10, 6)) / pow(10, 6);
+    return roundf(number * powf(10, 6)) / powf(10, 6);
 }
 
 float randomFloat() {
@@ -25,5 +25,9 @@ float randomFloat(float min, float max) {
 }
 
 float degreesToRadians(float angle) {
-    return (angle * float(2 * M_PI)) / 360;
+    return (angle * float(M_PI)) / 180.0f;
+}
+
+float radiansToDegrees(float angleRad) {
+    return (angleRad * 180.0f) / float(M_PI);
 }

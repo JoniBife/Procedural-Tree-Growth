@@ -4,6 +4,8 @@
 #include <iostream>
 #include <math.h>
 
+#define SQR(x) x * x
+
 /*
 *
 * Checks if the floats A and B are equal
@@ -23,5 +25,7 @@ float randomFloat();
 float randomFloat(float min, float max);
 
 float degreesToRadians(float angle);
+
+float radiansToDegrees(float angleRad);
 
 #endif

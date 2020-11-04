@@ -251,7 +251,7 @@ void runAVT(GLFWwindow* win)
 		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
 	};
 
-	// Setting the inital z to be further away so that we change from otho to persp there is a larger difference
+	// Setting the inital z to be further away so that when we change from otho to persp there is a larger difference
 	for (auto& vec : vertices) {
 		vec.z = -3.0f;
 	}
@@ -449,12 +449,12 @@ void runAVT(GLFWwindow* win)
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 
-int main(int argc, char* argv[])
+/*int main(int argc, char* argv[])
 {
 	GLFWwindow* win = setup(OPEN_GL_MAJOR, OPEN_GL_MINOR,
 		SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE, FULLSCREEN, VSYNC);
 	runAVT(win);
 	exit(EXIT_SUCCESS);
-}
+}*/
 
 /////////////////////////////////////////////////////////////////////////// END

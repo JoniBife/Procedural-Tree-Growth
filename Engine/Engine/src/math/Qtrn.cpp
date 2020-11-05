@@ -166,7 +166,7 @@ Mat4 Qtrn::toRotationMatrix() {
 	Qtrn qn = this->normalize();
 
 	float xt = x * t;
-	float xx = SQR(x);
+	float xx = x * x;
 	float xy = x * y;
 	float xz = x * z;
 	float yt = y * t;

@@ -17,6 +17,9 @@
 #include "controllers/FreeCameraController.h"
 #include "Configurations.h"
 #include "view/Camera.h"
+#include "math/Qtrn.h"
+
+
 
 //////////////////////////////////////////////////////////////////// INITIAL CAMERA SETUP
 
@@ -185,6 +188,49 @@ void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera, FreeCam
 	else if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
+
+	static Vec2 lastPos;
+	static bool isPressed = false;
+	static Qtrn rot(1,0,0,0);
+	static Vec3 rot2(0, 0, 0);
+
+	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+	double xpos, ypos;
+	glfwGetCursorPos(window, &xpos, &ypos);
+	if (state == GLFW_PRESS)
+	{
+		if (isPressed) {
+
+			Vec2 currPos((float)xpos, (float)ypos);
+
+			// Direction of mouse movement
+			Vec2 dir = (currPos - lastPos);
+
+			if (dir != Vec2(0, 0)) {
+
+				float sensitivity = 0.01f;
+				dir = dir * sensitivity;
+#define QUAT
+#ifdef QUAT
+				rot = (Qtrn(dir.x, Vec3::Y) * Qtrn(dir.y,Vec3::X)).normalize() * rot;
+				camera.setView(Mat4::translation(0.0f, 0.0f, -10.0f) * rot.toRotationMatrix());
+#else
+				rot2.x += dir.x;
+				rot2.y += dir.y;
+
+				camera.setView(Mat4::translation(0.0f, 0.0f, -10.0f) * Mat4::rotation(rot2.y, Vec3::X) * (Mat4::rotation(rot2.x, Vec3::Y)));
+#endif
+
+				
+			}
+		} else {
+			isPressed = true;
+		}
+		lastPos = Vec2((float)xpos, (float)ypos);
+	}
+	else if (state == GLFW_RELEASE) {
+		isPressed = false;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////// RUN AVT
@@ -209,6 +255,14 @@ void drawAVT(GLint uniformLocation, ShaderProgram& sp, Shape& semiTriangleRed, S
 
 	semiTriangleGreen.unBind();
 
+}
+
+void drawSquare(GLint modelUniform, ShaderProgram& sp, Shape& square) {
+	// Red triangle
+	square.bind();
+	sp.setUniform(modelUniform, Mat4::IDENTITY);
+	square.draw();
+	square.unBind();
 }
 
 void runAVT(GLFWwindow* win)
@@ -252,9 +306,9 @@ void runAVT(GLFWwindow* win)
 	};
 
 	// Setting the inital z to be further away so that when we change from otho to persp there is a larger difference
-	for (auto& vec : vertices) {
+	/*for (auto& vec : vertices) {
 		vec.z = -3.0f;
-	}
+	}*/
 
 	const Vec4 RED2 = { 127.5f / 255.0f, 25.5f / 255.0f,  25.5f / 255.0f, 1.0f };
 	const Vec4 RED2_DARK = { 25.5f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 1.0f };
@@ -381,6 +435,99 @@ void runAVT(GLFWwindow* win)
 	semiTriangleBlue.init();
 	semiTriangleGreen.init();
 
+	/*const std::vector<Vec4> Vertices = // no indices?
+	{
+	{ 0.0f, 0.0f, 1.0f, 1.0f },// 0 - FRONT
+	{ 1.0f, 0.0f, 1.0f, 1.0f },// 1
+	{ 1.0f, 1.0f, 1.0f, 1.0f },// 2
+	{ 1.0f, 1.0f, 1.0f, 1.0f },// 2	
+	{ 0.0f, 1.0f, 1.0f, 1.0f },// 3
+	{ 0.0f, 0.0f, 1.0f, 1.0f },// 0
+
+	{ 1.0f, 0.0f, 1.0f, 1.0f },// 1 - RIGHT
+	{ 1.0f, 0.0f, 0.0f, 1.0f },// 5
+	{ 1.0f, 1.0f, 0.0f, 1.0f },// 6
+	{ 1.0f, 1.0f, 0.0f, 1.0f },// 6	
+	{ 1.0f, 1.0f, 1.0f, 1.0f },// 2
+	{ 1.0f, 0.0f, 1.0f, 1.0f },// 1
+
+	{ 1.0f, 1.0f, 1.0f, 1.0f },// 2 - TOP
+	{ 1.0f, 1.0f, 0.0f, 1.0f },// 6
+	{ 0.0f, 1.0f, 0.0f, 1.0f },// 7
+	{ 0.0f, 1.0f, 0.0f, 1.0f },// 7	
+	{ 0.0f, 1.0f, 1.0f, 1.0f },// 3
+	{ 1.0f, 1.0f, 1.0f, 1.0f },// 2
+
+	{ 1.0f, 0.0f, 0.0f, 1.0f },// 5 - BACK
+	{ 0.0f, 0.0f, 0.0f, 1.0f },// 4
+	{ 0.0f, 1.0f, 0.0f, 1.0f },// 7
+	{ 0.0f, 1.0f, 0.0f, 1.0f },// 7	
+	{ 1.0f, 1.0f, 0.0f, 1.0f },// 6
+	{ 1.0f, 0.0f, 0.0f, 1.0f },// 5
+
+	{ 0.0f, 0.0f, 0.0f, 1.0f },// 4 - LEFT
+	{ 0.0f, 0.0f, 1.0f, 1.0f },// 0
+	{ 0.0f, 1.0f, 1.0f, 1.0f },// 3
+	{ 0.0f, 1.0f, 1.0f, 1.0f },// 3	
+	{ 0.0f, 1.0f, 0.0f, 1.0f },// 7
+	{ 0.0f, 0.0f, 0.0f, 1.0f },// 4
+
+	{ 0.0f, 0.0f, 1.0f, 1.0f },// 0 - BOTTOM
+	{ 0.0f, 0.0f, 0.0f, 1.0f },// 4
+	{ 1.0f, 0.0f, 0.0f, 1.0f },// 5
+	{ 1.0f, 0.0f, 0.0f, 1.0f },// 5	
+	{ 1.0f, 0.0f, 1.0f, 1.0f },// 1
+	{ 0.0f, 0.0f, 1.0f, 1.0f }// 0
+};
+
+	const std::vector<Vec4> Colors = {
+{ 0.9f, 0.0f, 0.0f, 1.0f },
+{ 0.9f, 0.0f, 0.0f, 1.0f },
+{ 0.9f, 0.0f, 0.0f, 1.0f },
+{ 0.9f, 0.0f, 0.0f, 1.0f },
+{ 0.9f, 0.0f, 0.0f, 1.0f },
+{ 0.9f, 0.0f, 0.0f, 1.0f },
+
+{ 0.0f, 0.9f, 0.0f, 1.0f },
+{ 0.0f, 0.9f, 0.0f, 1.0f },
+{ 0.0f, 0.9f, 0.0f, 1.0f },
+{ 0.0f, 0.9f, 0.0f, 1.0f },
+{ 0.0f, 0.9f, 0.0f, 1.0f },
+{ 0.0f, 0.9f, 0.0f, 1.0f },
+
+{ 0.0f, 0.0f, 0.9f, 1.0f },
+{ 0.0f, 0.0f, 0.9f, 1.0f },
+{ 0.0f, 0.0f, 0.9f, 1.0f },
+{ 0.0f, 0.0f, 0.9f, 1.0f },
+{ 0.0f, 0.0f, 0.9f, 1.0f },
+{ 0.0f, 0.0f, 0.9f, 1.0f },
+
+{ 0.0f, 0.9f, 0.9f, 1.0f },
+{ 0.0f, 0.9f, 0.9f, 1.0f },
+{ 0.0f, 0.9f, 0.9f, 1.0f },
+{ 0.0f, 0.9f, 0.9f, 1.0f },
+{ 0.0f, 0.9f, 0.9f, 1.0f },
+{ 0.0f, 0.9f, 0.9f, 1.0f },
+
+{ 0.9f, 0.0f, 0.9f, 1.0f },
+{ 0.9f, 0.0f, 0.9f, 1.0f },
+{ 0.9f, 0.0f, 0.9f, 1.0f },
+{ 0.9f, 0.0f, 0.9f, 1.0f },
+{ 0.9f, 0.0f, 0.9f, 1.0f },
+{ 0.9f, 0.0f, 0.9f, 1.0f },
+
+{ 0.9f, 0.9f, 0.0f, 1.0f },
+{ 0.9f, 0.9f, 0.0f, 1.0f },
+{ 0.9f, 0.9f, 0.0f, 1.0f },
+{ 0.9f, 0.9f, 0.0f, 1.0f },
+{ 0.9f, 0.9f, 0.0f, 1.0f },
+{ 0.9f, 0.9f, 0.0f, 1.0f }
+	};
+
+	Shape square(Vertices, Colors);
+	square.transform(Mat4::translation(-0.5f, -0.5f, -0.5f));
+	square.init();*/
+
 	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderAVT.glsl");
 	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderAVT.glsl");
 	ShaderProgram sp(vs, fs);
@@ -398,9 +545,10 @@ void runAVT(GLFWwindow* win)
 	// Initializing the camera controller
 	FreeCameraController cameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, win);
 
+	//lookAt(cameraPos, cameraPos + cameraFront, cameraUp)
 	// Initializing the camera and adding the controller
-	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), currProjection, uboBp);
-	camera.addCameraController(cameraController);
+	Camera camera(Mat4::translation(0.0f,0.0f,-10.0f), currProjection, uboBp);
+	//camera.addCameraController(cameraController);
 
 	sp.use();
 
@@ -428,7 +576,7 @@ void runAVT(GLFWwindow* win)
 		processInput(win, sp, camera, cameraController);
 
 		// Updating the camera position according to the keyboard input and mouse input
-		cameraController.processInputAndMove(float(elapsed_time));
+		//cameraController.processInputAndMove(float(elapsed_time));
 
 		// the projection might have been changed
 		camera.setProjection(currProjection);
@@ -436,6 +584,7 @@ void runAVT(GLFWwindow* win)
 		camera.update();
 
 		drawAVT(modelUniform, sp, semiTriangleRed, semiTriangleBlue, semiTriangleGreen, transformationBlue, transformationGreen);
+		//drawSquare(modelUniform, sp,square);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 		checkForOpenGLErrors("ERROR: MAIN/RUN");
@@ -449,12 +598,12 @@ void runAVT(GLFWwindow* win)
 
 ////////////////////////////////////////////////////////////////////////// MAIN
 
-/*int main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 	GLFWwindow* win = setup(OPEN_GL_MAJOR, OPEN_GL_MINOR,
 		SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE, FULLSCREEN, VSYNC);
 	runAVT(win);
 	exit(EXIT_SUCCESS);
-}*/
+}
 
 /////////////////////////////////////////////////////////////////////////// END

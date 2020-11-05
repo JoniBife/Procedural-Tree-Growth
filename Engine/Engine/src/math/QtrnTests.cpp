@@ -175,13 +175,12 @@ void qtest6()
 	assert(qslerp == qe);
 }
 
-int main(int argc, char* argv[])
+/*int main(int argc, char* argv[])
 {
 	//qtest1();
 	//qtest2();
 	//qtest3();
 	//qtest4();
 	//qtest5();
-	qtest6();
-
-}
+	//qtest6();
+}*/

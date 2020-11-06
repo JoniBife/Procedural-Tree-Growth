@@ -28,7 +28,7 @@ private:
 
 
 public:
-	Camera(const Mat4& view, const Mat4& projection, const float uboBp);
+	Camera(const Mat4& view, const Mat4& projection, const GLuint uboBp);
 
 	// TODO Maybe reconsider this name
 	void update();

@@ -116,8 +116,8 @@ bool FreeCameraController::processMouseInput() {
 		return false;
 	}
 
-	yaw += xOffset;
-	pitch += yOffset;
+	yaw += float(xOffset);
+	pitch += float(yOffset);
 
 	if (pitch > 89.0f)
 		pitch = 89.0f;

@@ -69,9 +69,6 @@
     <ClCompile Include="src\math\Qtrn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\math\QtrnTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\controllers\OrbitCameraController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

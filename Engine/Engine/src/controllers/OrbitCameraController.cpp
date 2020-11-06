@@ -16,9 +16,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	yOffset = yoffset;
 }
 
-Vec3 initialRotation;
-Qtrn initialQtrn;
-
 OrbitCameraController::OrbitCameraController(const Vec3& eulerAngles, const Qtrn& qtrn, GLFWwindow* win, const float sensitivity)
 : eulerAngles(eulerAngles), qtrn(qtrn), win(win), sensitivity(sensitivity), zoom(-2.0f) {
 
@@ -39,9 +36,11 @@ void OrbitCameraController::processInputAndMove(const float elapsedTime) {
 
 	Mat4 viewMatrix;
 	if (quatMode) {
+		if (eulerAngles != initialRotation) eulerAngles = initialRotation;
 		viewMatrix = Mat4::translation(0.0f, 0.0f, zoom) * qtrn.toRotationMatrix();
 	}
 	else {
+		if (qtrn != initialQtrn) qtrn = initialQtrn;
 		viewMatrix = Mat4::translation(0.0f, 0.0f, zoom) * Mat4::rotation(eulerAngles.y, Vec3::X) * Mat4::rotation(eulerAngles.x, Vec3::Y);
 		
 	}
@@ -69,12 +68,10 @@ void OrbitCameraController::processMouseInput() {
 			if (dir != Vec2(0, 0)) {
 				dir = dir * sensitivity;
 
-				if (quatMode) {
-					if (eulerAngles != initialRotation) eulerAngles = initialRotation;
+				if (quatMode) {	
 					qtrn = (Qtrn(dir.x, Vec3::Y) * Qtrn(dir.y, Vec3::X)).normalize() * qtrn;
 				}
 				else {
-					if (qtrn != initialQtrn) qtrn = initialQtrn;
 					eulerAngles.x += dir.x;
 					eulerAngles.y += dir.y;
 				}
@@ -93,7 +90,7 @@ void OrbitCameraController::processMouseInput() {
 void OrbitCameraController::processScrollWheelInput() {
 	// This is not limiting the zoom, it is possible to continue zooming out indefinetly
 	float scrollWheelSensitivity = 0.1f;
-	zoom += yOffset * scrollWheelSensitivity;
+	zoom += float(yOffset) * scrollWheelSensitivity;
 
 	if (zoom >= -0.5f)
 		zoom = -0.5f;

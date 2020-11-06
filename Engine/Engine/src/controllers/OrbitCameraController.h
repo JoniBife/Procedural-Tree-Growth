@@ -16,6 +16,8 @@ public:
 	float sensitivity;
 	std::function<void(Mat4&)> onMovement;
 	float zoom;
+	Vec3 initialRotation;
+	Qtrn initialQtrn;
 
 	OrbitCameraController(const Vec3& eulerAngles,const Qtrn& qtrn, GLFWwindow* win, const float sensitivity = 0.01f);
 

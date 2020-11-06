@@ -11,7 +11,7 @@ Qtrn::Qtrn(const float t,const float x,const float y,const float z) : t(t), x(x)
 Qtrn::Qtrn(const float thetaRad,const Vec3& axis) {
 	Vec3 axisNormalized = axis.normalize();
 
-	float halfTheta = thetaRad * 0.5;
+	float halfTheta = thetaRad * 0.5f;
 
 	t = cosf(halfTheta);
 
@@ -59,7 +59,6 @@ float Qtrn::norm() const {
 	return sqrtf(quadrance());
 }
 
-// TODO Confirm if we can return bool in this case instead of using assert
 Qtrn Qtrn::normalize() const {
 
 	float n = norm();
@@ -76,7 +75,6 @@ Qtrn Qtrn::conjugate() const {
 	return {t, -x, -y, -z};
 }
 
-// TODO Confirm if we can return bool in this case instead of using assert
 Qtrn Qtrn::inverse() const {
 
 	float quad = quadrance();

@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "../utils/OpenGLUtils.h"
 
-Camera::Camera(const Mat4& view, const Mat4& projection, const float uboBp) : view(view), projection(projection) {
+Camera::Camera(const Mat4& view, const Mat4& projection, const GLuint uboBp) : view(view), projection(projection) {
 	GL_CALL(glGenBuffers(1, &vbo));
 	GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, vbo));
 	{

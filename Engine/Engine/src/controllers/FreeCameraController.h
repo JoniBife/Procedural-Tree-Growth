@@ -5,6 +5,7 @@
 #include "../math/Vec3.h"
 #include "../shaders/ShaderProgram.h"
 #include "GLFW/glfw3.h"
+#include "CameraController.h"
 
 /*
 * All the vertex coordinates as seen from the camera's perspective as the origin of the scene,
@@ -17,7 +18,7 @@
 * FreeCameraController cameraController(position
 * 
 */
-class FreeCameraController {
+class FreeCameraController : public CameraController {
 
 private:
 	std::function<void(Mat4&)> onMovement;
@@ -40,12 +41,12 @@ public:
 	/*
 	* Sets an OnMovement callback that will be called when the movement event occurs (when the user moves the camera)
 	*/
-	void setOnMovementListener(const std::function<void(Mat4&)>& onMovement);
+	void setOnMovementListener(const std::function<void(Mat4&)>& onMovement) override;
 
 	/*
 	* Receives the user input and updates the view matrix accordingly
 	*/
-	void processInputAndMove(const float elapsedTime);
+	void processInputAndMove(const float elapsedTime) override;
 
 	void snapToPosition(const Vec3 position, const Vec3 front, float yaw, float pitch);
 

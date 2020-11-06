@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
+#include "GL/glew.h"
 #include "../math/Mat4.h"
-#include "../shapes/Drawable.h"
-#include "../controllers/FreeCameraController.h"
+#include "../controllers/CameraController.h"
 
 /*
 * Usage example:
@@ -40,7 +40,7 @@ public:
 	void setProjection(const Mat4& projection);
 
 	// Adds the FreeCameraController
-	void addCameraController(FreeCameraController& cameraController);
+	void addCameraController(CameraController& cameraController);
 };
 
 #endif

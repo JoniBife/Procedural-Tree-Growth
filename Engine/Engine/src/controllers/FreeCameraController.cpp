@@ -36,7 +36,7 @@ void FreeCameraController::setOnMovementListener(const std::function<void(Mat4&)
 /*
 * Receives the user input and updates the view matrix accordingly
 */
-void FreeCameraController::processInputAndMove(float elapsedTime) {
+void FreeCameraController::processInputAndMove(const float elapsedTime) {
 	bool moved = processMouseInput();
 	moved = processKeyboardInput(elapsedTime) || moved;
 	if (moved) {
@@ -62,7 +62,7 @@ void FreeCameraController::snapToPosition(const Vec3 position, const Vec3 front,
 * Checks for keyboard input, if there is input return true
 * else returns false
 */
-bool FreeCameraController::processKeyboardInput(float elapsedTime) {
+bool FreeCameraController::processKeyboardInput(const float elapsedTime) {
 
 	bool moved = false;
 

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
+    <ClCompile Include="src\controllers\OrbitCameraController.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\math\Mat2.cpp" />
     <ClCompile Include="src\math\Mat3.cpp" />
@@ -41,7 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Configurations.h" />
+    <ClInclude Include="src\controllers\CameraController.h" />
     <ClInclude Include="src\controllers\FreeCameraController.h" />
+    <ClInclude Include="src\controllers\OrbitCameraController.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\math\Mat2.h" />
     <ClInclude Include="src\math\Mat3.h" />

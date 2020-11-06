@@ -28,4 +28,6 @@ float degreesToRadians(float angle);
 
 float radiansToDegrees(float angleRad);
 
+float lerp(float a, float b, float f);
+
 #endif

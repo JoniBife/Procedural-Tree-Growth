@@ -41,7 +41,7 @@ public:
 	static Qtrn lerp(const Qtrn& q0, const Qtrn& q1, float k);
 	static Qtrn slerp(const Qtrn& q0, const Qtrn& q1, float k);
 
-	Mat4 toRotationMatrix();
+	Mat4 toRotationMatrix() const;
 	
 	friend std::ostream& operator<<(std::ostream& os, const Qtrn& qtrn);
 	void printAngleAxis();

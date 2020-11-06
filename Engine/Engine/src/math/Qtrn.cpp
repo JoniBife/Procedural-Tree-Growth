@@ -159,7 +159,7 @@ Qtrn Qtrn::slerp(const Qtrn& q0, const Qtrn& q1, float k) {
 	return (q0 * k0 + q1 * k1).normalize();
 }
 
-Mat4 Qtrn::toRotationMatrix() {
+Mat4 Qtrn::toRotationMatrix() const {
 	
 	Qtrn qn = this->normalize();
 

@@ -1,11 +1,13 @@
 #define _USE_MATH_DEFINES
 
-#include <Math.h>
+
+#include <math.h>
 #include <iostream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "math/MathAux.h"
 #include "math/Vec4.h"
 #include "math/Mat4.h"
 #include "utils/ColorRGBA.h"
@@ -41,19 +43,20 @@ Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 
+bool quat = false;
+bool animate = false;
+float currTime = 0.0f;
+
 void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	static bool orthoProjection = false;
 
-	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
-		if (orthoProjection) {
-			currProjection = orthographicProj;
-			orthoProjection = false;
-		}
-		else {
-			currProjection = perspectiveProj;
-			orthoProjection = true;
-		}
+	if (key == GLFW_KEY_N && action == GLFW_PRESS) {
+		currTime = 0.0f;
+		animate = !animate;
+	} else if (key == GLFW_KEY_G && action == GLFW_PRESS) {
+		if(!animate)
+			quat = !quat;
 	}
 }
 
@@ -179,7 +182,7 @@ GLFWwindow* setup(int major, int minor,
 }
 
 ////////////////////////////////////////////////////////////////////////// INPUT
-void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera, CameraController &cameraController)
+void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera)
 {
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		//cameraController.snapToPosition(cameraPos, cameraFront, -90.0f, 0.0f);
@@ -190,163 +193,238 @@ void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera, CameraC
 	}
 }
 
-////////////////////////////////////////////////////////////////////////// RUN CGJ
+////////////////////////////////////////////////////////////////////////// RUN AVT
 
-////////////////////////////////////////////////////////////////////////// CGJ
-const float offset = 0.02f;
-const float width = 0.3f;
+void drawAVT(GLint uniformLocation, ShaderProgram& sp, Shape& semiTriangleRed, Shape& semiTriangleBlue, Shape& semiTriangleGreen, Mat4& transformationBlue, Mat4& transformationGreen, Mat4& rotationMatrix) {
 
-void drawLineTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
 
-	sp.setUniform(colorUniform, color);
+	// Red triangle
+	semiTriangleRed.bind();
+	sp.setUniform(uniformLocation, rotationMatrix);
+	semiTriangleRed.draw();
 
-	// TEACHER: (IMPORTANT INFORMATION) ///////////////////////////////////////////////////////////////
-	// Ideally, all translation matrix used in the tetromino functions should be placed outside the functions
-	// so that they are only calculated once. We placed them inside for simplicity. 
-	// This also applies to all operations with width and offset (ex: width + offset).
-	///////////////////////////////////////////////////////////////////////////////////////////////////
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f));
-	square.draw();
+	// Blue triangle
+	semiTriangleBlue.bind();
+	sp.setUniform(uniformLocation, rotationMatrix * transformationBlue);
+	semiTriangleBlue.draw();
 
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
-	square.draw();
+	// Green 
+	semiTriangleGreen.bind();
+	sp.setUniform(uniformLocation, rotationMatrix * transformationGreen);
+	semiTriangleGreen.draw();
 
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
-	square.draw();
+	semiTriangleGreen.unBind();
 
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -1.5f * (width + offset), 0.0f));
-	square.draw();
-}
-void drawSquareTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
-	sp.setUniform(colorUniform, color);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-}
-void drawLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
-	sp.setUniform(colorUniform, color);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), width + offset, 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), 0.0f, 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), -(width + offset), 0.0f));
-	square.draw();
-}
-void drawReverseLTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
-	sp.setUniform(colorUniform, color);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), width + offset, 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), 0.0f, 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.5f * (width + offset), -(width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f));
-	square.draw();
-}
-void drawTTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
-	sp.setUniform(colorUniform, color);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
-	square.draw();
-}
-void drawSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
-	sp.setUniform(colorUniform, color);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), 0.0f));
-	square.draw();
-}
-void drawReverseSTetromino(ShaderProgram& sp, Shape& square, GLint colorUniform, GLint modelUniform, Mat4 transform, Vec4& color) {
-	sp.setUniform(colorUniform, color);
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(1.0f * (width + offset), -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
-	square.draw();
-
-	sp.setUniform(modelUniform, transform * Mat4::translation(-1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
-	square.draw();
 }
 
-float orientation = float(M_PI / 4.0);
-Mat4 rotation = Mat4::rotation(orientation, { 0, 0, 1 }); //to rotate the group of tetrominos
+const Qtrn finalQtrn = Qtrn(float(M_PI) / 2.0f, {0.0f, 0.0f, 1.0f}) * Qtrn(float(M_PI), { 1.0f, 0.0f, 0.0f });
+const Vec3 finalEuler = { float(M_PI), 0.0f, -float(M_PI)/2.0f };
+const Qtrn startingQtrn(1,0,0,0);
+const Vec3 startingEuler(0,0,0);
+const float duration = 10.0f;
 
-Mat4 transformationLine = rotation * Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f) * Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
-Mat4 transformationT1 = rotation * Mat4::translation(0.5f * (width + offset), 0.0f, 0.0f);
-Mat4 transformationT2 = rotation * Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
-Mat4 transformationL = rotation * Mat4::translation(0.5f * (width + offset), -1.0f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
 
-void drawCGJ(GLint colorUniform, GLint modelUniform, ShaderProgram& sp, Shape& squareFront, Shape& squareBack, float elapsed_time) {
+Mat4 calculateRotationMatrix(float elapsed_time) {
 
-	squareFront.bind();
+	if (animate) {
+		currTime += elapsed_time;
 
-	drawLineTetromino(sp, squareFront, colorUniform, modelUniform, transformationLine, ColorRGBA::CYAN);
-	drawTTetromino(sp, squareFront, colorUniform, modelUniform, transformationT1, ColorRGBA::PURPLE);
-	drawTTetromino(sp, squareFront, colorUniform, modelUniform, transformationT2, ColorRGBA::RED);
-	drawLTetromino(sp, squareFront, colorUniform, modelUniform, transformationL, ColorRGBA::ORANGE);
+		if (currTime > duration)
+			currTime = duration;
 
-	squareBack.bind();
+		float normalized = currTime / duration;
 
-	Vec4 cyan2(40.8f / 255.0f, 204.0f / 255.0f, 204.0f / 255.0f, 1.0f);
-	Vec4 purple2(121.12f / 255.0f, 40.8f / 255.0f, 204.0f / 255.0f, 1.0f);
-	Vec4 red2(204.0f / 255.0f, 40.8f / 255.0f, 40.8f / 255.0f, 1.0f);
-	Vec4 orange2(204.0f / 255.0f, 121.12f / 255.0f, 40.8f / 255.0f, 1.0f);
+		if (quat) {
+			Qtrn currQtrn = Qtrn::slerp(startingQtrn, finalQtrn, normalized);
 
-	drawLineTetromino(sp, squareBack, colorUniform, modelUniform, transformationLine, cyan2);
-	drawTTetromino(sp, squareBack, colorUniform, modelUniform, transformationT1, purple2);
-	drawTTetromino(sp, squareBack, colorUniform, modelUniform, transformationT2, red2);
-	drawLTetromino(sp, squareBack, colorUniform, modelUniform, transformationL, orange2);
+			if (currQtrn == finalQtrn)
+				return finalQtrn.toRotationMatrix();
 
-	squareBack.unBind();
+			return currQtrn.toRotationMatrix();
+		}
+		else {
+			
+			float currPitch = lerp(startingEuler.x, finalEuler.x, normalized);
+			float currYaw = lerp(startingEuler.y, finalEuler.y, normalized);
+			float currRoll = lerp(startingEuler.z, finalEuler.z, normalized);
+
+			if (Vec3(currPitch,currYaw,currRoll) == finalEuler)
+				return Mat4::rotation(finalEuler.x, Vec3::X) * Mat4::rotation(finalEuler.y, Vec3::Y) * Mat4::rotation(finalEuler.z, Vec3::Z);
+			return Mat4::rotation(currPitch, Vec3::X) * Mat4::rotation(currYaw, Vec3::Y) * Mat4::rotation(currRoll, Vec3::Z);
+
+		}
+	}
+
+	return Mat4::IDENTITY;
 }
 
-void runCGJ(GLFWwindow* win)
+void runAVT(GLFWwindow* win)
 {
 	double last_time = glfwGetTime();
 
-	// Creating and compiling the shaders
-	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderCGJ.glsl");
-	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderCGJ.glsl");
+	std::vector<Vec4> vertices = {
+		//FRONT
+		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
+		{ -0.605f, -0.48f, 0.0f, 1.0f }, //2
+		{ -0.54f, -0.605f, 0.0f, 1.0f }, //3
+
+		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
+		{ -0.54f, -0.605f, 0.0f, 1.0f }, //3
+		{ 0.01f, 0.34f, 0.0f, 1.0f }, //1
+
+		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
+		{ 0.01f, 0.34f, 0.0f, 1.0f }, //1
+		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
+
+		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
+		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
+		{ 0.56f, -0.37f, 0.0f, 1.0f }, //4
+
+		//BACK
+		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
+		{ -0.54f, -0.605f, 0.0f, 1.0f }, //3
+		{ -0.605f, -0.48f, 0.0f, 1.0f }, //2
+
+		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
+		{ 0.01f, 0.34f, 0.0f, 1.0f }, //1
+		{ -0.54f, -0.605f, 0.0f, 1.0f }, //3
+
+		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
+		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
+		{ 0.01f, 0.34f, 0.0f, 1.0f }, //1
+
+		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
+		{ 0.56f, -0.37f, 0.0f, 1.0f }, //4
+		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
+	};
+
+	const Vec4 RED2 = { 127.5f / 255.0f, 25.5f / 255.0f,  25.5f / 255.0f, 1.0f };
+	const Vec4 RED2_DARK = { 25.5f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 1.0f };
+
+	std::vector<Vec4> colorsRed = {
+		ColorRGBA::RED, //0
+		{ 0.3f, 0.0f, 0.0f, 1.0f }, //2
+		{ 0.3f, 0.0f, 0.0f, 1.0f }, //3
+
+		ColorRGBA::RED, //0
+		{ 0.3f, 0.0f, 0.0f, 1.0f }, //3
+		ColorRGBA::RED, //1
+
+		ColorRGBA::RED, //0
+		ColorRGBA::RED, //1
+		{ 0.3f, 0.0f, 0.0f, 1.0f },  //5
+
+		ColorRGBA::RED, //0
+		{ 0.3f, 0.0f, 0.0f, 1.0f },  //5
+		{ 0.3f, 0.0f, 0.0f, 1.0f }, //4
+
+		RED2, //0
+		RED2_DARK, //3
+		RED2_DARK, //2
+
+		RED2, //0
+		RED2, //1
+		RED2_DARK, //3
+
+		RED2, //0
+		RED2_DARK,  //5
+		RED2, //1
+
+		RED2, //0
+		RED2_DARK, //4
+		RED2_DARK  //5
+
+	};
+
+	const Vec4 BLUE2 = { 25.5f / 255.0f, 25.5f / 255.0f, 127.5f / 255.0f, 1.0f };
+	const Vec4 BLUE2_DARK = { 0.0f / 255.0f, 0.0f / 255.0f, 25.5f / 255.0f, 1.0f };
+
+	std::vector<Vec4> colorsBlue = {
+
+		ColorRGBA::BLUE, //0
+		{ 0.0f, 0.0f, 0.3f, 1.0f }, //2
+		{ 0.0f, 0.0f, 0.3f, 1.0f }, //3
+
+		ColorRGBA::BLUE, //0
+		{ 0.0f, 0.0f, 0.3f, 1.0f }, //3
+		ColorRGBA::BLUE, //1
+
+		ColorRGBA::BLUE, //0
+		ColorRGBA::BLUE, //1
+		{ 0.0f, 0.0f, 0.3f, 1.0f },  //5
+
+		ColorRGBA::BLUE, //0
+		{ 0.0f, 0.0f, 0.3f, 1.0f },  //5
+		{ 0.0f, 0.0f, 0.3f, 1.0f }, //4
+
+		BLUE2, //0
+		BLUE2_DARK, //3
+		BLUE2_DARK, //2
+
+		BLUE2, //0
+		BLUE2, //1
+		BLUE2_DARK, //3
+
+		BLUE2, //0
+		BLUE2_DARK,  //5
+		BLUE2, //1
+
+		BLUE2, //0
+		BLUE2_DARK, //4
+		BLUE2_DARK  //5
+	};
+
+	const Vec4 GREEN2 = { 25.5f / 255.0f, 127.5f / 255.0f, 25.5f / 255.0f, 1.0f };
+	const Vec4 GREEN2_DARK = { 0.0f / 255.0f, 25.5f / 255.0f, 0.0f / 255.0f, 1.0f };
+
+	std::vector<Vec4> colorsGreen = {
+		ColorRGBA::GREEN, //0
+		{ 0.0f, 0.3f, 0.0f, 1.0f }, //2
+		{ 0.0f, 0.3f, 0.0f, 1.0f }, //3
+
+		ColorRGBA::GREEN, //0
+		{ 0.0f, 0.3f, 0.0f, 1.0f }, //3
+		ColorRGBA::GREEN, //1
+
+		ColorRGBA::GREEN, //0
+		ColorRGBA::GREEN, //1
+		{ 0.0f, 0.3f, 0.0f, 1.0f },  //5
+
+		ColorRGBA::GREEN, //0
+		{ 0.0f, 0.3f, 0.0f, 1.0f },  //5
+		{ 0.0f, 0.3f, 0.0f, 1.0f }, //4
+
+		GREEN2, //0
+		GREEN2_DARK, //3
+		GREEN2_DARK, //2
+
+		GREEN2, //0
+		GREEN2, //1
+		GREEN2_DARK, //3
+
+		GREEN2, //0
+		GREEN2_DARK,  //5
+		GREEN2, //1
+
+		GREEN2, //0
+		GREEN2_DARK, //4
+		GREEN2_DARK  //5
+	};
+
+	Shape semiTriangleRed(vertices, colorsRed);
+
+	Shape semiTriangleBlue = semiTriangleRed;
+	semiTriangleBlue.colors = colorsBlue;
+
+	Shape semiTriangleGreen = semiTriangleRed;
+	semiTriangleGreen.colors = colorsGreen;
+
+	semiTriangleRed.init();
+	semiTriangleBlue.init();
+	semiTriangleGreen.init();
+
+	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderAVT.glsl");
+	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderAVT.glsl");
 	ShaderProgram sp(vs, fs);
 
 	// Uniform buffer object binding point
@@ -359,34 +437,24 @@ void runCGJ(GLFWwindow* win)
 	// Obtaining the model uniform location
 	GLint modelUniform = sp.getUniformLocation("model");
 
-	// Initializing the camera controller
-	//FreeCameraController cameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, win);
-	OrbitCameraController cameraController(Vec3(0.0f, 0.0f, 0.0f), Qtrn(1.0f, 0.0f, 0.0f, 0.0f), win);
+	FreeCameraController cameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, win);
 
 	// Initializing the camera and adding the controller
-	Camera camera(Mat4::translation(0.0f, 0.0f, -2.0f), currProjection, uboBp);
+	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), currProjection, uboBp);
 	camera.addCameraController(cameraController);
 
-	// Obtaining the color uniform that will be different for each tetromino
-	GLint colorUniform = sp.getUniformLocation("color");
-
-	// Square that will be used to represent the front
-	Shape squareFront = Shape::square(width);
-	squareFront.init();
-
-	// Square that will be used to represent the back
-	Shape squareBack({
-		{ -width / 2, -width / 2, 0.0f, 1.0f }, // bottom left vertex
-		{ width / 2, width / 2, 0.0f, 1.0f }, // top right vertex
-		{ width / 2, -width / 2, 0.0f, 1.0f }, // bottom right vertex);
-		{ -width / 2, width / 2, 0.0f, 1.0f }, // top left vertex
-		{ width / 2, width / 2, 0.0f, 1.0f }, // top right vertex
-		{ -width / 2, -width / 2, 0.0f, 1.0f } // bottom left vertex
-		});
-	squareBack.init();
-
-	// We only need to start using the shader program once since we are always using the same
 	sp.use();
+
+	Mat4 transformationBlue = Mat4::rotation(float((2 * M_PI) / 3), Vec3::Z);
+	Mat4 transformationGreen = Mat4::rotation(float(-(2 * M_PI) / 3), Vec3::Z);
+
+	Vec4 translationBlue = semiTriangleRed.vertices[2] - (transformationBlue * semiTriangleRed.vertices[0]);
+	Vec4 translationGreen = semiTriangleRed.vertices[11] - (transformationGreen * semiTriangleRed.vertices[5]);
+
+	float translationOffsetX = 0.006f;
+
+	transformationBlue = Mat4::translation(translationBlue.x, translationBlue.y, translationBlue.z) * transformationBlue;
+	transformationGreen = Mat4::translation(translationGreen.x - translationOffsetX, translationGreen.y, translationGreen.z) * transformationGreen;
 
 	while (!glfwWindowShouldClose(win))
 	{
@@ -395,30 +463,31 @@ void runCGJ(GLFWwindow* win)
 		last_time = time;
 
 		// Double Buffers
-		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Processing input (P key, Space key and ESC key)
-		processInput(win, sp, camera, cameraController);
+		processInput(win, sp, camera);
+
 		// Updating the camera position according to the keyboard input and mouse input
 		cameraController.processInputAndMove(float(elapsed_time));
 
 		// the projection might have been changed
 		camera.setProjection(currProjection);
+		// Finally updating the view matrix and projection matrices with their new values
 		camera.update();
 
-		// Drawing the shapes
-		drawCGJ(colorUniform, modelUniform, sp, squareFront, squareBack, float(elapsed_time));
+		Mat4 rotationMatrix = calculateRotationMatrix(float(elapsed_time));
 
+		drawAVT(modelUniform, sp, semiTriangleRed, semiTriangleBlue, semiTriangleGreen, transformationBlue, transformationGreen, rotationMatrix);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 		checkForOpenGLErrors("ERROR: MAIN/RUN");
 	}
 
-	// No longer need the shader program
 	sp.stopUsing();
-
 	glfwDestroyWindow(win);
 	glfwTerminate();
+
 }
 
 ////////////////////////////////////////////////////////////////////////// MAIN
@@ -427,8 +496,7 @@ int main(int argc, char* argv[])
 {
 	GLFWwindow* win = setup(OPEN_GL_MAJOR, OPEN_GL_MINOR,
 		SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE, FULLSCREEN, VSYNC);
-	//runAVT(win);
-	runCGJ(win);
+	runAVT(win);
 	exit(EXIT_SUCCESS);
 }
 

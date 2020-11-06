@@ -31,3 +31,8 @@ float degreesToRadians(float angle) {
 float radiansToDegrees(float angleRad) {
     return (angleRad * 180.0f) / float(M_PI);
 }
+
+float lerp(float a, float b, float f)
+{
+    return a + f * (b - a);
+}

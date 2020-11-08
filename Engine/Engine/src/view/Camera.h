@@ -40,7 +40,7 @@ public:
 	void setProjection(const Mat4& projection);
 
 	// Adds the FreeCameraController
-	void addCameraController(CameraController& cameraController);
+	void addCameraController(ICameraController& cameraController);
 };
 
 #endif

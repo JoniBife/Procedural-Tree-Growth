@@ -12,8 +12,8 @@
 #include "math/Mat4.h"
 #include "utils/ColorRGBA.h"
 #include "shaders/ShaderProgram.h"
-#include "shapes/Shape.h"
-#include "shapes/ShapeGroup.h"
+#include "meshes/Mesh.h"
+#include "meshes/MeshGroup.h"
 #include "utils/OpenGLUtils.h"
 #include "view/Transformations.h"
 #include "controllers/FreeCameraController.h"
@@ -195,7 +195,7 @@ void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera)
 
 ////////////////////////////////////////////////////////////////////////// RUN AVT
 
-void drawAVT(GLint uniformLocation, ShaderProgram& sp, Shape& semiTriangleRed, Shape& semiTriangleBlue, Shape& semiTriangleGreen, Mat4& transformationBlue, Mat4& transformationGreen, Mat4& rotationMatrix) {
+void drawAVT(GLint uniformLocation, ShaderProgram& sp, Mesh& semiTriangleRed, Mesh& semiTriangleBlue, Mesh& semiTriangleGreen, Mat4& transformationBlue, Mat4& transformationGreen, Mat4& rotationMatrix) {
 
 
 	// Red triangle
@@ -411,12 +411,12 @@ void runAVT(GLFWwindow* win)
 		GREEN2_DARK  //5
 	};
 
-	Shape semiTriangleRed(vertices, colorsRed);
+	Mesh semiTriangleRed(vertices, colorsRed);
 
-	Shape semiTriangleBlue = semiTriangleRed;
+	Mesh semiTriangleBlue = semiTriangleRed;
 	semiTriangleBlue.colors = colorsBlue;
 
-	Shape semiTriangleGreen = semiTriangleRed;
+	Mesh semiTriangleGreen = semiTriangleRed;
 	semiTriangleGreen.colors = colorsGreen;
 
 	semiTriangleRed.init();

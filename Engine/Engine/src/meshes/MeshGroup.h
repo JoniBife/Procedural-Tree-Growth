@@ -1,18 +1,18 @@
-#ifndef SHAPE_GROUP_H
-#define SHAPE_GROUP_H
+#ifndef MESH_GROUP_H
+#define MESH_GROUP_H
 
 #include <vector>
 #include "Drawable.h"
-#include "Shape.h"
+#include "Mesh.h"
 #include "../math/Mat4.h"
 
 /*
 * Usage example:
 *
-* Shape a = ...;
-* Shape b = ...;
+* Mesh a = ...;
+* Mesh b = ...;
 *
-* ShapeGroup sg({a,b});
+* MeshGroup sg({a,b});
 *
 * sg.bind()
 * 
@@ -21,20 +21,20 @@
 * sg.draw();
 * sg.unbind();
 */
-class ShapeGroup : Drawable {
+class MeshGroup : IDrawable {
 
 private:
 	bool hasBeenInitialized = false;
 
 public:
-	std::vector<Shape> shapes;
+	std::vector<Mesh> shapes;
 
-	ShapeGroup(const ShapeGroup& shapeGroup);
-	ShapeGroup(const std::vector<ShapeGroup>& shapeGroups);
-	ShapeGroup(const std::vector<Shape>& shapes);
-	ShapeGroup(const std::vector<Shape>& shapes, const std::vector<ShapeGroup>& shapeGroups);
+	MeshGroup(const MeshGroup& shapeGroup);
+	MeshGroup(const std::vector<MeshGroup>& shapeGroups);
+	MeshGroup(const std::vector<Mesh>& shapes);
+	MeshGroup(const std::vector<Mesh>& shapes, const std::vector<MeshGroup>& shapeGroups);
 
-	ShapeGroup& operator=(const ShapeGroup& shapeGroup);
+	MeshGroup& operator=(const MeshGroup& shapeGroup);
 
 	// Initialized all shapes
 	void init() override;

@@ -1,5 +1,5 @@
-#ifndef DRAWABLE_H
-#define DRAWABLE_H
+#ifndef IDRAWABLE_H
+#define IDRAWABLE_H
 
 /*
 * A drawable interface that should implemented by all entities
@@ -7,18 +7,18 @@
 * 
 * Usage example:
 * 
-* std::vector<Drawable> drawables = ...;
+* std::vector<IDrawable> drawables = ...;
 * 
-* for (Drawable dr : drawables) {
+* for (IDrawable dr : drawables) {
 *	dr.bind();
 *	dr.draw();
 * }
 * 
 */
-class Drawable {
+class IDrawable {
 
 public:
-	virtual ~Drawable() = default;
+	virtual ~IDrawable() = default;
 	virtual void init() = 0;
 	virtual void bind() = 0;
 	virtual void unBind() = 0;

@@ -1,4 +1,4 @@
-#include "Shape.h"
+#include "Mesh.h"
 #include "../utils/ColorRGBA.h"
 #include "../utils/OpenGLUtils.h"
 #include <iostream>
@@ -6,9 +6,9 @@
 #define VERTICES 0
 #define COLORS 1
 
-Shape::Shape() {}
+Mesh::Mesh() {}
 
-Shape::Shape(const Shape& shape) {
+Mesh::Mesh(const Mesh& shape) {
 	vertices = shape.vertices;
 	colors = shape.colors;
 
@@ -18,15 +18,15 @@ Shape::Shape(const Shape& shape) {
 	}
 }
 
-Shape::Shape(const std::vector<Vec4>& vertices) : vertices(vertices) {}
+Mesh::Mesh(const std::vector<Vec4>& vertices) : vertices(vertices) {}
 
-Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
+Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors) : vertices(vertices), colors(colors) {}
 
-Shape::Shape(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors, const std::vector<GLubyte>& indices) :
+Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors, const std::vector<GLubyte>& indices) :
 	vertices(vertices), colors(colors), indices(indices), hasIndices(true) {}
 
 // Deletes all the vbos, vaos and disables the vertex array atributes
-Shape::~Shape() {
+Mesh::~Mesh() {
 
 	if (!hasBeenInitialized) {
 		return;
@@ -48,7 +48,7 @@ Shape::~Shape() {
 	GL_CALL(glBindVertexArray(0));
 }
 
-Shape& Shape::operator=(const Shape& shape) {
+Mesh& Mesh::operator=(const Mesh& shape) {
 	vertices = shape.vertices;
 	colors = shape.colors;
 	if (shape.hasIndices) {
@@ -59,7 +59,7 @@ Shape& Shape::operator=(const Shape& shape) {
 }
 
 // Initializes the vao and vbos, required so that we can change the vertices after creating the shape
-void Shape::init() {
+void Mesh::init() {
 	if (hasBeenInitialized) {
 		std::cout << "Shape has already been initialized" << std::endl;
 		return;
@@ -128,7 +128,7 @@ void Shape::init() {
 }
 
 // Binds the vertex array object with glBindArray
-void Shape::bind() {
+void Mesh::bind() {
 	if (!hasBeenInitialized) {
 		std::cout << "Cannot bind shape if it has not been initialized" << std::endl;
 		return;
@@ -137,12 +137,12 @@ void Shape::bind() {
 	hasBeenBound = true;
 }
 // Unbinds the vertex array object with glBindArray(0)
-void Shape::unBind() {
+void Mesh::unBind() {
 	GL_CALL(glBindVertexArray(0));
 }
 
 // Draws the shape using glDrawArrays
-void Shape::draw() {
+void Mesh::draw() {
 	if (!hasBeenInitialized || !hasBeenBound) {
 		std::cout << "Cannot draw shape if it has not been initialized and bound" << std::endl;
 		return;
@@ -158,8 +158,8 @@ void Shape::draw() {
 }
 
 // Creates a black square centered in clip space (0,0,0)
-Shape Shape::square(const float width) {
-	Shape square;
+Mesh Mesh::square(const float width) {
+	Mesh square;
 
 		square.vertices = {
 			// first triangle
@@ -176,8 +176,8 @@ Shape Shape::square(const float width) {
 }
 
 // Creates a black rectangle centered in clip space (0,0,0)
-Shape Shape::rectangle(const float width, const float height) {
-	Shape rectangle;
+Mesh Mesh::rectangle(const float width, const float height) {
+	Mesh rectangle;
 
 		rectangle.vertices = {
 			// first triangle
@@ -195,8 +195,8 @@ Shape Shape::rectangle(const float width, const float height) {
 }
 
 // Creates a black triangle centered in clip space (0,0,0)
-Shape Shape::triangle(const float width, const float height) {
-	Shape triangle;
+Mesh Mesh::triangle(const float width, const float height) {
+	Mesh triangle;
 
 		triangle.vertices = {
 			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
@@ -207,13 +207,13 @@ Shape Shape::triangle(const float width, const float height) {
 	return triangle;
 }
 
-void Shape::transform(const Mat4& transformation) {
+void Mesh::transform(const Mat4& transformation) {
 	for (Vec4& vert : vertices) {
 		vert = transformation * vert;
 	}
 }
 
-void Shape::paint(const Vec4& color) {
+void Mesh::paint(const Vec4& color) {
 	if (colors.empty()) {
 		int colorSize = int(vertices.size());
 

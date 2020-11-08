@@ -18,7 +18,7 @@
 * FreeCameraController cameraController(position
 * 
 */
-class FreeCameraController : public CameraController {
+class FreeCameraController : public ICameraController {
 
 private:
 	std::function<void(Mat4&)> onMovement;

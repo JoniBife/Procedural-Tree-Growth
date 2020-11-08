@@ -6,7 +6,7 @@
 #include "../math/Qtrn.h"
 #include "../math/Vec3.h"
 
-class OrbitCameraController : public CameraController {
+class OrbitCameraController : public ICameraController {
 
 public:
 

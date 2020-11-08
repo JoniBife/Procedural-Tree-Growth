@@ -5,7 +5,7 @@
 #include <functional>
 #include "../math/Mat4.h"
 
-class CameraController {
+class ICameraController {
 
 public:
 	virtual void setOnMovementListener(const std::function<void(Mat4&)>& onMovement) = 0;

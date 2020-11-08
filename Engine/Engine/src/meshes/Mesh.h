@@ -1,5 +1,5 @@
-#ifndef SHAPE_2D_H
-#define SHAPE_2D_H
+#ifndef MESH_H
+#define MESH_H
 
 #include <vector>
 #include <GL/glew.h>
@@ -25,17 +25,21 @@
 * delete square;
 * 
 */
-class Shape : public Drawable {
+class Mesh : public IDrawable {
 
 public:
 	std::vector<Vec4> vertices;
+	std::vector<Vec3> normals;
 	std::vector<Vec4> colors;
+	std::vector<Vec2> textCoords;
 	std::vector<GLubyte> indices;
 
 private:
 	GLuint vaoId = GLuint(0);
 	GLuint vboVerticesId = GLuint(0);
+	GLuint vboNormalsId = GLuint(0);
 	GLuint vboColorsId = GLuint(0);
+	GLuint vboTextCoordsId = GLuint(0);
 	GLuint eboIndicesId = GLuint(0);
 	bool hasBeenInitialized = false;
 	bool hasBeenBound = false;
@@ -43,22 +47,22 @@ private:
 
 public:
 
-	Shape();
+	Mesh();
 
 	// Copy constructor
-	Shape(const Shape& shape);
+	Mesh(const Mesh& shape);
 
-	Shape(const std::vector<Vec4>& vertices);
+	Mesh(const std::vector<Vec4>& vertices);
 
-	Shape(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors);
+	Mesh(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors);
 
-	Shape(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors,const std::vector<GLubyte>& indices);
+	Mesh(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors,const std::vector<GLubyte>& indices);
 
 	// Deletes all the vbos, vaos and disables the vertex array atributes
-	~Shape() override;
+	~Mesh() override;
 
 	// Assignment
-	Shape& operator=(const Shape& shape);
+	Mesh& operator=(const Mesh& shape);
 
 	// Initializes the vao and vbo, required so that we can change the vertices after creating the shape
 	void init() override;
@@ -72,16 +76,19 @@ public:
 	void draw() override;
 
 	// Creates a black centered in clip space (0,0,0)
-	static Shape square(const float width = 0.75f);
+	static Mesh square(const float width = 0.75f);
 
 	// Creates a black centered in clip space (0,0,0)
-	static Shape rectangle(const float width = 1.0f, const float height = 0.75f);
+	static Mesh rectangle(const float width = 1.0f, const float height = 0.75f);
 
 	// Creates a black centered in clip space (0,0,0)
-	static Shape triangle(const float width = 1.0f, const float height = 1.0f);
+	static Mesh triangle(const float width = 1.0f, const float height = 1.0f);
 
 	void transform(const Mat4& transformation);
 	void paint(const Vec4& color);
+
+
+
 };
 
 #endif

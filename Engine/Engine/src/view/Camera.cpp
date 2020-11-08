@@ -36,7 +36,7 @@ void Camera::setProjection(const Mat4& projection) {
 }
 
 // Adds the FreeCameraController
-void Camera::addCameraController(CameraController& cameraController) {
+void Camera::addCameraController(ICameraController& cameraController) {
 	cameraController.setOnMovementListener([&](Mat4& view) {
 		// Each time the camera moves, we update the view matrix with the new view matrix
 		setView(view);

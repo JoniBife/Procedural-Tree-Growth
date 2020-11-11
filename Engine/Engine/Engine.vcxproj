@@ -30,6 +30,8 @@
     <ClCompile Include="src\math\Vec2.cpp" />
     <ClCompile Include="src\math\Vec3.cpp" />
     <ClCompile Include="src\math\Vec4.cpp" />
+    <ClCompile Include="src\meshes\MeshLoader.cpp" />
+    <ClCompile Include="src\scene\SceneGraph.cpp" />
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\shaders\ShaderProgram.cpp" />
     <ClCompile Include="src\meshes\Mesh.cpp" />
@@ -53,12 +55,13 @@
     <ClInclude Include="src\math\Vec2.h" />
     <ClInclude Include="src\math\Vec3.h" />
     <ClInclude Include="src\math\Vec4.h" />
+    <ClInclude Include="src\meshes\MeshLoader.h" />
+    <ClInclude Include="src\scene\SceneGraph.h" />
     <ClInclude Include="src\shaders\Shader.h" />
     <ClInclude Include="src\shaders\ShaderProgram.h" />
-    <ClInclude Include="src\meshes\Drawable.h" />
+    <ClInclude Include="src\meshes\IDrawable.h" />
     <ClInclude Include="src\meshes\Mesh.h" />
     <ClInclude Include="src\meshes\MeshGroup.h" />
-    <ClInclude Include="src\meshes\MeshLoader.h" />
     <ClInclude Include="src\utils\ColorRGBA.h" />
     <ClInclude Include="src\utils\OpenGLUtils.h" />
     <ClInclude Include="src\view\Camera.h" />

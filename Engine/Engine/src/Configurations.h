@@ -8,7 +8,7 @@
 #define OPEN_GL_MAJOR 4
 #define OPEN_GL_MINOR 0
 
-#define SCREEN_WIDTH 1080	
+#define SCREEN_WIDTH  720	
 #define SCREEN_HEIGHT 720
 
 #define VSYNC true

@@ -2,7 +2,7 @@
 #define MESH_GROUP_H
 
 #include <vector>
-#include "Drawable.h"
+#include "IDrawable.h"
 #include "Mesh.h"
 #include "../math/Mat4.h"
 

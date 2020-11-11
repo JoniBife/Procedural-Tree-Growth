@@ -10,16 +10,22 @@
 class MeshLoader {
 
 public:
-	static Mesh loadFromFile(const std::string& filePath);
-
-	static Mesh createMeshFromStream(meshStream);
-
+	static std::unique_ptr<Mesh> loadFromFile(const std::string& filePath);
 private:
 
-	static std::vector<Vec4> parseVertex(std::stringstream& sin);
+	static std::unique_ptr<Mesh> createMeshFromFileStream(std::ifstream& meshFile);
 
-	static std::vector<Vec3> parseNormal(std::stringstream& sin);
+	static Vec4 parseVertex(std::stringstream& sin);
 
-	static std::vector<Vec2> parseTextCoord(std::stringstream& sin);
+	static Vec3 parseNormal(std::stringstream& sin);
+
+	static Vec2 parseTextCoord(std::stringstream& sin);
+
+	static void parseFace(std::stringstream& sin,
+		std::vector<unsigned int>& verticesIdx,
+		std::vector<unsigned int>& textCoordsIdx,
+		std::vector<unsigned int>& normalsIdx,
+		std::vector<Vec3>& normalsData,
+		std::vector<Vec2>& textCoordsData);
 };
 #endif

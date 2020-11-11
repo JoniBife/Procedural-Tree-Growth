@@ -3,9 +3,11 @@
 
 #include <vector>
 #include <GL/glew.h>
-#include "Drawable.h"
+#include "IDrawable.h"
 #include "../math/Mat4.h"
 #include "../math/Vec4.h"
+#include "../math/Vec3.h"
+#include "../math/Vec2.h"
 
 /*
 * Usage example:
@@ -13,7 +15,7 @@
 * std::vector<Vec4> vertices = ...;
 * std::vector<Vec4> colors = ...;
 * 
-* Shape square(vertices,colors);
+* Mesh square(vertices,colors);
 * 
 * square.bind();
 * 
@@ -43,14 +45,13 @@ private:
 	GLuint eboIndicesId = GLuint(0);
 	bool hasBeenInitialized = false;
 	bool hasBeenBound = false;
-	bool hasIndices = false;
 
 public:
 
 	Mesh();
 
 	// Copy constructor
-	Mesh(const Mesh& shape);
+	Mesh(const Mesh& mesh);
 
 	Mesh(const std::vector<Vec4>& vertices);
 
@@ -58,13 +59,19 @@ public:
 
 	Mesh(const std::vector<Vec4>& vertices,const std::vector<Vec4>& colors,const std::vector<GLubyte>& indices);
 
+	Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec3>& normals, const std::vector<Vec2>& textCoords);
+
+	Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec3>& normals);
+
+	Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec2>& textCoords);
+
 	// Deletes all the vbos, vaos and disables the vertex array atributes
 	~Mesh() override;
 
 	// Assignment
-	Mesh& operator=(const Mesh& shape);
+	Mesh& operator=(const Mesh& mesh);
 
-	// Initializes the vao and vbo, required so that we can change the vertices after creating the shape
+	// Initializes the vao and vbo, required so that we can change the vertices after creating the mesh
 	void init() override;
 
 	// Binds the vertex array object with glBindArray
@@ -72,7 +79,7 @@ public:
 	// Unbinds the vertex array object with glBindArray(0)
 	void unBind() override;
 
-	// Draws the shape using glDrawArrays
+	// Draws the mesh using glDrawArrays
 	void draw() override;
 
 	// Creates a black centered in clip space (0,0,0)
@@ -84,11 +91,10 @@ public:
 	// Creates a black centered in clip space (0,0,0)
 	static Mesh triangle(const float width = 1.0f, const float height = 1.0f);
 
+	static std::unique_ptr<Mesh> loadFromFile(const std::string& filePath);
+
 	void transform(const Mat4& transformation);
 	void paint(const Vec4& color);
-
-
-
 };
 
 #endif

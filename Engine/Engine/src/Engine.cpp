@@ -21,22 +21,23 @@
 #include "Configurations.h"
 #include "view/Camera.h"
 #include "math/Qtrn.h"
+#include "scene/SceneGraph.h"
 
 
 //////////////////////////////////////////////////////////////////// INITIAL CAMERA SETUP
 
-Mat4 orthographicProj = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 0.0f, 10.0f);
-Mat4 perspectiveProj = perspective(float(M_PI) / 2.0f, SCREEN_WIDTH / SCREEN_HEIGHT, 0.0f, 10.0f);
+Mat4 orthographicProj = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 0.0f, 100.0f);
+Mat4 perspectiveProj = perspective(float(M_PI) / 2.0f, SCREEN_WIDTH / SCREEN_HEIGHT, 0.0f, 100.0f);
 
 Mat4 currProjection = perspectiveProj;
 
-float cameraMovementSpeed = 2.5f;
+float cameraMovementSpeed = 20.0f;
 
 // Since we are looking at the -z axis in our initial orientation, yaw has to be set -90 degress otherwise we would look at +x axis
 float initialYaw = -90.0f;
 float initialPitch = 0.0f;
 
-Vec3 cameraPos(0.0f, 0.0f, 2.0f); // eye
+Vec3 cameraPos(0.0f, 0.0f, 50.0f); // eye
 Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
 Vec3 cameraFront = cameraTarget - cameraPos;
 Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
@@ -193,268 +194,59 @@ void processInput(GLFWwindow* window, ShaderProgram& sp, Camera& camera)
 	}
 }
 
-////////////////////////////////////////////////////////////////////////// RUN AVT
+////////////////////////////////////////////////////////////////////////// RUN 
 
-void drawAVT(GLint uniformLocation, ShaderProgram& sp, Mesh& semiTriangleRed, Mesh& semiTriangleBlue, Mesh& semiTriangleGreen, Mat4& transformationBlue, Mat4& transformationGreen, Mat4& rotationMatrix) {
-
-
-	// Red triangle
-	semiTriangleRed.bind();
-	sp.setUniform(uniformLocation, rotationMatrix);
-	semiTriangleRed.draw();
-
-	// Blue triangle
-	semiTriangleBlue.bind();
-	sp.setUniform(uniformLocation, rotationMatrix * transformationBlue);
-	semiTriangleBlue.draw();
-
-	// Green 
-	semiTriangleGreen.bind();
-	sp.setUniform(uniformLocation, rotationMatrix * transformationGreen);
-	semiTriangleGreen.draw();
-
-	semiTriangleGreen.unBind();
-
+void draw(GLint uniformLocation, ShaderProgram& sp, std::unique_ptr<Mesh>& cube) {
+	
+	cube->bind();
+	sp.setUniform(uniformLocation, Mat4::IDENTITY);
+	cube->draw();
+	cube->unBind();
 }
 
-const Qtrn finalQtrn = Qtrn(float(M_PI) / 2.0f, {0.0f, 0.0f, 1.0f}) * Qtrn(float(M_PI), { 1.0f, 0.0f, 0.0f });
-const Vec3 finalEuler = { float(M_PI), 0.0f, -float(M_PI)/2.0f };
-const Qtrn startingQtrn(1,0,0,0);
-const Vec3 startingEuler(0,0,0);
-const float duration = 10.0f;
+const float offset = 0.02f;
+const float width = 0.3f;
 
-
-Mat4 calculateRotationMatrix(float elapsed_time) {
-
-	if (animate) {
-		currTime += elapsed_time;
-
-		if (currTime > duration)
-			currTime = duration;
-
-		float normalized = currTime / duration;
-
-		if (quat) {
-			Qtrn currQtrn = Qtrn::slerp(startingQtrn, finalQtrn, normalized);
-
-			if (currQtrn == finalQtrn)
-				return finalQtrn.toRotationMatrix();
-
-			return currQtrn.toRotationMatrix();
-		}
-		else {
-			
-			float currPitch = lerp(startingEuler.x, finalEuler.x, normalized);
-			float currYaw = lerp(startingEuler.y, finalEuler.y, normalized);
-			float currRoll = lerp(startingEuler.z, finalEuler.z, normalized);
-
-			if (Vec3(currPitch,currYaw,currRoll) == finalEuler)
-				return Mat4::rotation(finalEuler.x, Vec3::X) * Mat4::rotation(finalEuler.y, Vec3::Y) * Mat4::rotation(finalEuler.z, Vec3::Z);
-			return Mat4::rotation(currPitch, Vec3::X) * Mat4::rotation(currYaw, Vec3::Y) * Mat4::rotation(currRoll, Vec3::Z);
-
-		}
-	}
-
-	return Mat4::IDENTITY;
-}
-
-void runAVT(GLFWwindow* win)
+void run(GLFWwindow* win)
 {
 	double last_time = glfwGetTime();
 
-	std::vector<Vec4> vertices = {
-		//FRONT
-		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
-		{ -0.605f, -0.48f, 0.0f, 1.0f }, //2
-		{ -0.54f, -0.605f, 0.0f, 1.0f }, //3
-
-		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
-		{ -0.54f, -0.605f, 0.0f, 1.0f }, //3
-		{ 0.01f, 0.34f, 0.0f, 1.0f }, //1
-
-		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
-		{ 0.01f, 0.34f, 0.0f, 1.0f }, //1
-		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
-
-		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
-		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
-		{ 0.56f, -0.37f, 0.0f, 1.0f }, //4
-
-		//BACK
-		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
-		{ -0.54f, -0.605f, 0.0f, 1.0f }, //3
-		{ -0.605f, -0.48f, 0.0f, 1.0f }, //2
-
-		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
-		{ 0.01f, 0.34f, 0.0f, 1.0f }, //1
-		{ -0.54f, -0.605f, 0.0f, 1.0f }, //3
-
-		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
-		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
-		{ 0.01f, 0.34f, 0.0f, 1.0f }, //1
-
-		{ 0.01f, 0.58f, 0.0f, 1.0f }, //0
-		{ 0.56f, -0.37f, 0.0f, 1.0f }, //4
-		{ 0.42f, -0.37f, 0.0f, 1.0f }, //5
-	};
-
-	const Vec4 RED2 = { 127.5f / 255.0f, 25.5f / 255.0f,  25.5f / 255.0f, 1.0f };
-	const Vec4 RED2_DARK = { 25.5f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 1.0f };
-
-	std::vector<Vec4> colorsRed = {
-		ColorRGBA::RED, //0
-		{ 0.3f, 0.0f, 0.0f, 1.0f }, //2
-		{ 0.3f, 0.0f, 0.0f, 1.0f }, //3
-
-		ColorRGBA::RED, //0
-		{ 0.3f, 0.0f, 0.0f, 1.0f }, //3
-		ColorRGBA::RED, //1
-
-		ColorRGBA::RED, //0
-		ColorRGBA::RED, //1
-		{ 0.3f, 0.0f, 0.0f, 1.0f },  //5
-
-		ColorRGBA::RED, //0
-		{ 0.3f, 0.0f, 0.0f, 1.0f },  //5
-		{ 0.3f, 0.0f, 0.0f, 1.0f }, //4
-
-		RED2, //0
-		RED2_DARK, //3
-		RED2_DARK, //2
-
-		RED2, //0
-		RED2, //1
-		RED2_DARK, //3
-
-		RED2, //0
-		RED2_DARK,  //5
-		RED2, //1
-
-		RED2, //0
-		RED2_DARK, //4
-		RED2_DARK  //5
-
-	};
-
-	const Vec4 BLUE2 = { 25.5f / 255.0f, 25.5f / 255.0f, 127.5f / 255.0f, 1.0f };
-	const Vec4 BLUE2_DARK = { 0.0f / 255.0f, 0.0f / 255.0f, 25.5f / 255.0f, 1.0f };
-
-	std::vector<Vec4> colorsBlue = {
-
-		ColorRGBA::BLUE, //0
-		{ 0.0f, 0.0f, 0.3f, 1.0f }, //2
-		{ 0.0f, 0.0f, 0.3f, 1.0f }, //3
-
-		ColorRGBA::BLUE, //0
-		{ 0.0f, 0.0f, 0.3f, 1.0f }, //3
-		ColorRGBA::BLUE, //1
-
-		ColorRGBA::BLUE, //0
-		ColorRGBA::BLUE, //1
-		{ 0.0f, 0.0f, 0.3f, 1.0f },  //5
-
-		ColorRGBA::BLUE, //0
-		{ 0.0f, 0.0f, 0.3f, 1.0f },  //5
-		{ 0.0f, 0.0f, 0.3f, 1.0f }, //4
-
-		BLUE2, //0
-		BLUE2_DARK, //3
-		BLUE2_DARK, //2
-
-		BLUE2, //0
-		BLUE2, //1
-		BLUE2_DARK, //3
-
-		BLUE2, //0
-		BLUE2_DARK,  //5
-		BLUE2, //1
-
-		BLUE2, //0
-		BLUE2_DARK, //4
-		BLUE2_DARK  //5
-	};
-
-	const Vec4 GREEN2 = { 25.5f / 255.0f, 127.5f / 255.0f, 25.5f / 255.0f, 1.0f };
-	const Vec4 GREEN2_DARK = { 0.0f / 255.0f, 25.5f / 255.0f, 0.0f / 255.0f, 1.0f };
-
-	std::vector<Vec4> colorsGreen = {
-		ColorRGBA::GREEN, //0
-		{ 0.0f, 0.3f, 0.0f, 1.0f }, //2
-		{ 0.0f, 0.3f, 0.0f, 1.0f }, //3
-
-		ColorRGBA::GREEN, //0
-		{ 0.0f, 0.3f, 0.0f, 1.0f }, //3
-		ColorRGBA::GREEN, //1
-
-		ColorRGBA::GREEN, //0
-		ColorRGBA::GREEN, //1
-		{ 0.0f, 0.3f, 0.0f, 1.0f },  //5
-
-		ColorRGBA::GREEN, //0
-		{ 0.0f, 0.3f, 0.0f, 1.0f },  //5
-		{ 0.0f, 0.3f, 0.0f, 1.0f }, //4
-
-		GREEN2, //0
-		GREEN2_DARK, //3
-		GREEN2_DARK, //2
-
-		GREEN2, //0
-		GREEN2, //1
-		GREEN2_DARK, //3
-
-		GREEN2, //0
-		GREEN2_DARK,  //5
-		GREEN2, //1
-
-		GREEN2, //0
-		GREEN2_DARK, //4
-		GREEN2_DARK  //5
-	};
-
-	Mesh semiTriangleRed(vertices, colorsRed);
-
-	Mesh semiTriangleBlue = semiTriangleRed;
-	semiTriangleBlue.colors = colorsBlue;
-
-	Mesh semiTriangleGreen = semiTriangleRed;
-	semiTriangleGreen.colors = colorsGreen;
-
-	semiTriangleRed.init();
-	semiTriangleBlue.init();
-	semiTriangleGreen.init();
+	std::unique_ptr<Mesh> cube = Mesh::loadFromFile("../Engine/objs/cube.obj");
+	
+	cube->paint(ColorRGBA::BLUE);
+	cube->init();
 
 	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderAVT.glsl");
 	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderAVT.glsl");
-	ShaderProgram sp(vs, fs);
+	ShaderProgram* sp = new ShaderProgram(vs, fs);
 
 	// Uniform buffer object binding point
 	const GLuint uboBp = 0;
 
 	// Associating the shared matrix index with the binding point 0
-	GLuint sharedMatricesIndex = sp.getUniformBlockIndex("SharedMatrices");
-	sp.bindUniformBlock(sharedMatricesIndex, uboBp);
+	GLuint sharedMatricesIndex = sp->getUniformBlockIndex("SharedMatrices");
+	sp->bindUniformBlock(sharedMatricesIndex, uboBp);
 
 	// Obtaining the model uniform location
-	GLint modelUniform = sp.getUniformLocation("model");
+	//GLint modelUniform = sp.getUniformLocation("model");
 
 	FreeCameraController cameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, win);
 
 	// Initializing the camera and adding the controller
-	Camera camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), currProjection, uboBp);
-	camera.addCameraController(cameraController);
+	Camera* camera = new Camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), currProjection, uboBp);
+	camera->addCameraController(cameraController);
 
-	sp.use();
+	SceneGraph* sceneGraph = new SceneGraph(camera);
+	sceneGraph->getRoot()->setShaderProgram(sp);
+	sceneGraph->getRoot()->setModel(Mat4::rotation(M_PI_2, Vec3::X));
 
-	Mat4 transformationBlue = Mat4::rotation(float((2 * M_PI) / 3), Vec3::Z);
-	Mat4 transformationGreen = Mat4::rotation(float(-(2 * M_PI) / 3), Vec3::Z);
+	// Base
+	SceneNode* base = sceneGraph->getRoot()->createChild(cube.get(), Mat4::scaling(10.0f, 0.25f, 10.0f));
+	
+	// Pillar
+	SceneNode* pillar = sceneGraph->getRoot()->createChild(cube.get(), Mat4::translation(0.0f, 3.25f, 0.0f) * Mat4::rotation(M_PI_4, Vec3::Y) * Mat4::scaling(0.5f, 3.0f, 0.5f));
 
-	Vec4 translationBlue = semiTriangleRed.vertices[2] - (transformationBlue * semiTriangleRed.vertices[0]);
-	Vec4 translationGreen = semiTriangleRed.vertices[11] - (transformationGreen * semiTriangleRed.vertices[5]);
-
-	float translationOffsetX = 0.006f;
-
-	transformationBlue = Mat4::translation(translationBlue.x, translationBlue.y, translationBlue.z) * transformationBlue;
-	transformationGreen = Mat4::translation(translationGreen.x - translationOffsetX, translationGreen.y, translationGreen.z) * transformationGreen;
+	sceneGraph->init();
 
 	while (!glfwWindowShouldClose(win))
 	{
@@ -466,28 +258,29 @@ void runAVT(GLFWwindow* win)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Processing input (P key, Space key and ESC key)
-		processInput(win, sp, camera);
+		//processInput(win, sp, );
 
 		// Updating the camera position according to the keyboard input and mouse input
 		cameraController.processInputAndMove(float(elapsed_time));
 
 		// the projection might have been changed
-		camera.setProjection(currProjection);
+		sceneGraph->getCamera()->setProjection(currProjection);
 		// Finally updating the view matrix and projection matrices with their new values
-		camera.update();
+		sceneGraph->draw();
 
-		Mat4 rotationMatrix = calculateRotationMatrix(float(elapsed_time));
-
-		drawAVT(modelUniform, sp, semiTriangleRed, semiTriangleBlue, semiTriangleGreen, transformationBlue, transformationGreen, rotationMatrix);
+		//draw(modelUniform, sp, cube);
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 		checkForOpenGLErrors("ERROR: MAIN/RUN");
 	}
 
-	sp.stopUsing();
+	delete sceneGraph;
+	delete camera;
+	delete sp;
+
+	//sp.stopUsing();
 	glfwDestroyWindow(win);
 	glfwTerminate();
-
 }
 
 ////////////////////////////////////////////////////////////////////////// MAIN
@@ -496,7 +289,7 @@ int main(int argc, char* argv[])
 {
 	GLFWwindow* win = setup(OPEN_GL_MAJOR, OPEN_GL_MINOR,
 		SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE, FULLSCREEN, VSYNC);
-	runAVT(win);
+	run(win);
 	exit(EXIT_SUCCESS);
 }
 

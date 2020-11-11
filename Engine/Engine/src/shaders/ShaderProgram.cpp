@@ -3,7 +3,9 @@
 #include "../utils/OpenGLUtils.h"
 
 #define VERTICES 0
-#define COLORS 1
+#define NORMALS 1
+#define COLORS 2
+#define TEXTCOORDS 3
 
 // In the future we should add other constructors to support other types of shaders
 ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : vertexShader(vertexShader), fragmentShader(fragmentShader) 
@@ -16,8 +18,10 @@ ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : ver
     
     // This step is unnecessary if you use the location specifier in your shader
     // e.g. layout (location = 0) in vec3 in_Position;
-    GL_CALL(glBindAttribLocation(id, VERTICES, "in_Position"));
-    GL_CALL(glBindAttribLocation(id, COLORS, "in_Color"));
+    GL_CALL(glBindAttribLocation(id, VERTICES, "InPosition"));
+    GL_CALL(glBindAttribLocation(id, NORMALS, "InNormal"));
+    GL_CALL(glBindAttribLocation(id, COLORS, "InColor"));
+    GL_CALL(glBindAttribLocation(id, TEXTCOORDS, "InTextCoord"));
 
 	GL_CALL(glLinkProgram(id));
 

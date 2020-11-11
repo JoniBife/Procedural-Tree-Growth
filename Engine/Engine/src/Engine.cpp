@@ -37,7 +37,7 @@ float cameraMovementSpeed = 20.0f;
 float initialYaw = -90.0f;
 float initialPitch = 0.0f;
 
-Vec3 cameraPos(0.0f, 0.0f, 50.0f); // eye
+Vec3 cameraPos(0.0f, 0.0f, 10.0f); // eye
 Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
 Vec3 cameraFront = cameraTarget - cameraPos;
 Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
@@ -207,14 +207,55 @@ void draw(GLint uniformLocation, ShaderProgram& sp, std::unique_ptr<Mesh>& cube)
 const float offset = 0.02f;
 const float width = 0.3f;
 
+SceneNode* createLineTetromino(SceneNode* sceneGraph, ShaderProgram* sp, Mesh* cube) {
+
+	SceneNode* base = sceneGraph->createChild();
+
+	base->createChild(cube, Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f));
+	base->createChild(cube, Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
+	base->createChild(cube, Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
+	base->createChild(cube, Mat4::translation(0.0f, -1.5f * (width + offset), 0.0f));
+
+	return base;
+}
+
+SceneNode* createLTetromino(SceneNode* sceneGraph, ShaderProgram* sp, Mesh* cube) {
+
+	SceneNode* base = sceneGraph->createChild();
+
+	base->createChild(cube, Mat4::translation(-0.5f * (width + offset), width + offset, 0.0f));
+	base->createChild(cube, Mat4::translation(-0.5f * (width + offset), 0.0f, 0.0f));
+	base->createChild(cube, Mat4::translation(-0.5f * (width + offset), -(width + offset), 0.0f));
+	base->createChild(cube, Mat4::translation(0.5f * (width + offset), -(width + offset), 0.0f));
+
+	return base;
+}
+
+SceneNode* createTTetromino(SceneNode* sceneGraph, ShaderProgram* sp, Mesh* cube) {
+
+	SceneNode* base = sceneGraph->createChild();
+
+	base->createChild(cube, Mat4::translation(-1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
+	base->createChild(cube, Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
+	base->createChild(cube, Mat4::translation(1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
+	base->createChild(cube, Mat4::translation(0.0f, -0.5f * (width + offset), 0.0f));
+
+	return base;
+}
+
+
+Mat4 transformationLine = Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f) * Mat4::rotation(float(-M_PI_2), { 0, 0, 1 });
+Mat4 transformationT1 = Mat4::translation(0.5f * (width + offset), 0.0f, 0.0f);
+Mat4 transformationT2 = Mat4::translation(-1.0f * (width + offset), -0.5f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
+Mat4 transformationL = Mat4::translation(0.5f * (width + offset), -1.0f * (width + offset), 0.0f) * Mat4::rotation(float(M_PI_2), { 0, 0, 1 });
+
 void run(GLFWwindow* win)
 {
 	double last_time = glfwGetTime();
 
 	std::unique_ptr<Mesh> cube = Mesh::loadFromFile("../Engine/objs/cube.obj");
-	
-	cube->paint(ColorRGBA::BLUE);
-	cube->init();
+	cube->transform(Mat4::scaling(0.15f)); // Blender Cube has a width and height of 2
+	//cube->paint(ColorRGBA::BLUE);
 
 	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderAVT.glsl");
 	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderAVT.glsl");
@@ -238,13 +279,15 @@ void run(GLFWwindow* win)
 
 	SceneGraph* sceneGraph = new SceneGraph(camera);
 	sceneGraph->getRoot()->setShaderProgram(sp);
-	sceneGraph->getRoot()->setModel(Mat4::rotation(M_PI_2, Vec3::X));
+	//sceneGraph->getRoot()->setModel(Mat4::rotation(M_PI_2, Vec3::X));
 
 	// Base
-	SceneNode* base = sceneGraph->getRoot()->createChild(cube.get(), Mat4::scaling(10.0f, 0.25f, 10.0f));
-	
-	// Pillar
-	SceneNode* pillar = sceneGraph->getRoot()->createChild(cube.get(), Mat4::translation(0.0f, 3.25f, 0.0f) * Mat4::rotation(M_PI_4, Vec3::Y) * Mat4::scaling(0.5f, 3.0f, 0.5f));
+	//SceneNode* base = sceneGraph->getRoot()->createChild(cube.get(), Mat4::scaling(10.0f, 0.25f, 10.0f));
+	//sceneGraph->getRoot()->createChild(cube.get(), Mat4::IDENTITY);
+	//SceneNode* lineTetromino = createLineTetromino(sceneGraph->getRoot(), sp, cube.get());
+	//SceneNode* LTetromino = createLTetromino(sceneGraph->getRoot(), sp, cube.get());
+	//SceneNode* TTetromino1 = createTTetromino(sceneGraph, sp, cube.get());
+	SceneNode* TTetromino2 = createTTetromino(sceneGraph->getRoot(), sp, cube.get());
 
 	sceneGraph->init();
 

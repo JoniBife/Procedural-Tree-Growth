@@ -31,7 +31,7 @@ public:
 
 private:
 	Mesh* mesh = nullptr;
-	Mat4 model;
+	Mat4 model = Mat4::IDENTITY;
 	GLint modelUniformLocation = GLint(-1);
 	ShaderProgram* shaderProgram = nullptr;
 	SceneNode* parent = nullptr;

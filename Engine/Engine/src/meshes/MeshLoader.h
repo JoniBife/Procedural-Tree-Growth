@@ -10,10 +10,10 @@
 class MeshLoader {
 
 public:
-	static std::unique_ptr<Mesh> loadFromFile(const std::string& filePath);
+	static Mesh* loadFromFile(const std::string& filePath);
 private:
 
-	static std::unique_ptr<Mesh> createMeshFromFileStream(std::ifstream& meshFile);
+	static Mesh* createMeshFromFileStream(std::ifstream& meshFile);
 
 	static Vec4 parseVertex(std::stringstream& sin);
 

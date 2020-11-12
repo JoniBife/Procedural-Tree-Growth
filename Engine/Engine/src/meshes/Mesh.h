@@ -91,7 +91,7 @@ public:
 	// Creates a black centered in clip space (0,0,0)
 	static Mesh triangle(const float width = 1.0f, const float height = 1.0f);
 
-	static std::unique_ptr<Mesh> loadFromFile(const std::string& filePath);
+	static Mesh* loadFromFile(const std::string& filePath);
 
 	void transform(const Mat4& transformation);
 	void paint(const Vec4& color);

@@ -4,6 +4,7 @@
 #include <iostream>
 #include "../math/Vec2.h"
 #include "MeshLoader.h"
+#include <assert.h>
 
 #define VERTICES 0
 #define NORMALS 1
@@ -76,7 +77,6 @@ Mesh& Mesh::operator=(const Mesh& mesh) {
 // Initializes the vao and vbos, required so that we can change the vertices after creating the mesh
 void Mesh::init() {
 	if (hasBeenInitialized) {
-		std::cout << "Mesh has already been initialized" << std::endl;
 		return;
 	}
 
@@ -180,10 +180,7 @@ void Mesh::init() {
 
 // Binds the vertex array object with glBindArray
 void Mesh::bind() {
-	if (!hasBeenInitialized) {
-		std::cout << "Cannot bind mesh if it has not been initialized" << std::endl;
-		return;
-	}
+	assert(hasBeenInitialized);
 	GL_CALL(glBindVertexArray(vaoId));
 	hasBeenBound = true;
 }
@@ -194,10 +191,7 @@ void Mesh::unBind() {
 
 // Draws the mesh using glDrawArrays
 void Mesh::draw() {
-	if (!hasBeenInitialized || !hasBeenBound) {
-		std::cout << "Cannot draw mesh if it has not been initialized and bound" << std::endl;
-		return;
-	}
+	assert(hasBeenInitialized && hasBeenBound);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -260,7 +254,7 @@ Mesh Mesh::triangle(const float width, const float height) {
 	return triangle;
 }
 
-std::unique_ptr<Mesh> Mesh::loadFromFile(const std::string& filePath) {
+Mesh* Mesh::loadFromFile(const std::string& filePath) {
 	return MeshLoader::loadFromFile(filePath);
 }
 

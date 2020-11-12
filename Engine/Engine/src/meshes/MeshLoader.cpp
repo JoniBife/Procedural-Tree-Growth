@@ -2,7 +2,7 @@
 #include <sstream>
 #include "MeshLoader.h"
 
-std::unique_ptr<Mesh> MeshLoader::loadFromFile(const std::string& filePath) {
+Mesh* MeshLoader::loadFromFile(const std::string& filePath) {
     std::ifstream meshFile;
     // ensure ifstream objects can throw exceptions:
     // TODO meshFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -11,7 +11,7 @@ std::unique_ptr<Mesh> MeshLoader::loadFromFile(const std::string& filePath) {
         // open files
         meshFile.open(filePath);
         // read file's buffer contents into streams
-        std::unique_ptr<Mesh> mesh = createMeshFromFileStream(meshFile);
+        Mesh* mesh = createMeshFromFileStream(meshFile);
         // close file handlers
         meshFile.close();
 
@@ -30,7 +30,7 @@ std::unique_ptr<Mesh> MeshLoader::loadFromFile(const std::string& filePath) {
     }
 }
 
-std::unique_ptr<Mesh> MeshLoader::createMeshFromFileStream(std::ifstream& meshFile) {
+Mesh* MeshLoader::createMeshFromFileStream(std::ifstream& meshFile) {
 
     std::vector<Vec4> verticesData, vertices;
     std::vector<Vec3> normalsData, normals;
@@ -51,7 +51,7 @@ std::unique_ptr<Mesh> MeshLoader::createMeshFromFileStream(std::ifstream& meshFi
         else if (firstChar.compare("f") == 0) parseFace(sline, verticesIdx, textCoordsIdx, normalsIdx, normalsData, textCoordsData);
     }
 
-    std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
+    Mesh* mesh = new Mesh();
 
     bool hasTextCoords = textCoordsData.size() > 0;
     bool hasNormals = normalsData.size() > 0;

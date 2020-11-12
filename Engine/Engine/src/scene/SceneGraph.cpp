@@ -9,27 +9,25 @@ SceneNode::SceneNode(Mesh* mesh, const Mat4& model, SceneNode* parent, ShaderPro
 SceneNode* SceneNode::createChild() {
 	SceneNode* child = new SceneNode();
 	child->parent = this;
-	child->shaderProgram = this->shaderProgram;
+	child->shaderProgram = shaderProgram;
 	children.push_back(child);
 	return child;
 }
 
 SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model) {
-	SceneNode* child = new SceneNode(mesh, this->model * model, this, this->shaderProgram);
+	SceneNode* child = new SceneNode(mesh, model, this, shaderProgram);
 	children.push_back(child);
 	return child;
 }
 
 SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model, ShaderProgram* shaderProgram) {
 	// TODO What to do with the shaderProgram
-	SceneNode* child = new SceneNode(mesh, this->model * model, this, shaderProgram);
+	SceneNode* child = new SceneNode(mesh, model, this, shaderProgram);
 	children.push_back(child);
 	return child;
 }
 
 void SceneNode::setModel(const Mat4& model) {
-	if (this->parent != nullptr)
-		this->model = model * this->parent->model;
 	this->model = model;
 }
 
@@ -58,11 +56,24 @@ void SceneNode::init() {
 	}
 }
 
+// FOR SOME REASON DOES NOT WORK
+Mat4 SceneNode::retriveModelRecursively() {
+	if (parent != nullptr);
+		return parent->retriveModelRecursively() * model;
+	return model;
+}
+
+Mat4 retriveModelRecursively2(SceneNode* sceneNode) {
+	if (sceneNode->parent != nullptr)
+		return retriveModelRecursively2(sceneNode->parent) * sceneNode->getModel();
+	return sceneNode->getModel();
+}
+
 void SceneNode::draw() {
 	if (mesh != nullptr) {
 		shaderProgram->use();
 		mesh->bind();
-		shaderProgram->setUniform(modelUniformLocation, model);
+		shaderProgram->setUniform(modelUniformLocation, retriveModelRecursively2(this));
 		mesh->draw();
 		mesh->unBind();
 		shaderProgram->stopUsing();

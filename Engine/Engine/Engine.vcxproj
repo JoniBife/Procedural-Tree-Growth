@@ -19,9 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\apps\AppAVT.cpp" />
+    <ClCompile Include="src\apps\AppCGJ.cpp" />
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
     <ClCompile Include="src\controllers\OrbitCameraController.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\math\Mat2.cpp" />
     <ClCompile Include="src\math\Mat3.cpp" />
     <ClCompile Include="src\math\Mat4.cpp" />
@@ -39,9 +40,13 @@
     <ClCompile Include="src\utils\ColorRGBA.cpp" />
     <ClCompile Include="src\utils\OpenGLUtils.cpp" />
     <ClCompile Include="src\view\Camera.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\view\Transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\apps\AppAVT.h" />
+    <ClInclude Include="src\apps\AppCGJ.h" />
     <ClInclude Include="src\Configurations.h" />
     <ClInclude Include="src\controllers\CameraController.h" />
     <ClInclude Include="src\controllers\FreeCameraController.h" />

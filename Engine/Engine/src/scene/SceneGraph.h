@@ -10,6 +10,7 @@
 class SceneNode {
 
 public:
+	SceneNode* parent = nullptr;
 	SceneNode();
 
 	SceneNode(Mesh* mesh, const Mat4& model, SceneNode* parent, ShaderProgram* shaderProgram);
@@ -34,8 +35,9 @@ private:
 	Mat4 model = Mat4::IDENTITY;
 	GLint modelUniformLocation = GLint(-1);
 	ShaderProgram* shaderProgram = nullptr;
-	SceneNode* parent = nullptr;
 	std::vector<SceneNode*> children;
+
+	Mat4 retriveModelRecursively();
 
 };
 

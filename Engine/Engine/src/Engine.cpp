@@ -72,14 +72,12 @@ void Engine::setupGLEW() {
 	glewExperimental = GL_TRUE;
 	// Allow extension entry points to be loaded even if the extension isn't 
 	// present in the driver's extensions string.
-	GLenum result = glewInit();
+	GL_CALL(GLenum result = glewInit());
 	if (result != GLEW_OK)
 	{
 		std::cerr << "ERROR glewInit: " << glewGetString(result) << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	GLenum err_code = glGetError();
-	// You might get GL_INVALID_ENUM when loading GLEW.
 }
 
 ////////////////////////////////////////////// OPENGL

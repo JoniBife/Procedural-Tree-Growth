@@ -5,11 +5,25 @@
 Mesh* MeshLoader::loadFromFile(const std::string& filePath) {
     std::ifstream meshFile;
     // ensure ifstream objects can throw exceptions:
-    // TODO meshFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    meshFile.exceptions(std::ifstream::badbit);
     try
     {
         // open files
         meshFile.open(filePath);
+
+        //ifstream may set failbit when opening the file, however we do not want to consider it when calling getLine
+        //failbit is set 
+        if (meshFile.fail()) {
+            std::cout << "Filestream ERROR [ Wavefront OBJ file not successfully read | Failbit occurred when opening the file ]" << std::endl;
+            // streams must always be closed
+            if (meshFile.is_open()) {
+                meshFile.close();
+            }
+
+            // Mesh failed to load so we stop the engine
+            exit(EXIT_FAILURE);
+        }
+
         // read file's buffer contents into streams
         Mesh* mesh = createMeshFromFileStream(meshFile);
         // close file handlers
@@ -39,9 +53,8 @@ Mesh* MeshLoader::createMeshFromFileStream(std::ifstream& meshFile) {
     std::vector<unsigned int> verticesIdx, textCoordsIdx, normalsIdx;
 
     std::string line;
-    while (!meshFile.eof())
+    while (std::getline(meshFile, line))
     {
-        std::getline(meshFile, line);
         std::stringstream sline(line);
         std::string firstChar;
         sline >> firstChar;

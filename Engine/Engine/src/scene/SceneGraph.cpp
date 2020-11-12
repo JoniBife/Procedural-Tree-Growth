@@ -33,7 +33,7 @@ void SceneNode::setModel(const Mat4& model) {
 
 void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
 	this->shaderProgram = shaderProgram;
-	// TODO WRONG
+	// TODO WRONG, The old shader program has to be deleted
 }
 
 Mat4 SceneNode::getModel() {
@@ -56,24 +56,17 @@ void SceneNode::init() {
 	}
 }
 
-// FOR SOME REASON DOES NOT WORK
 Mat4 SceneNode::retriveModelRecursively() {
-	if (parent != nullptr);
-		return parent->retriveModelRecursively() * model;
-	return model;
-}
-
-Mat4 retriveModelRecursively2(SceneNode* sceneNode) {
-	if (sceneNode->parent != nullptr)
-		return retriveModelRecursively2(sceneNode->parent) * sceneNode->getModel();
-	return sceneNode->getModel();
+	if (parent == nullptr)
+		return model;
+	return parent->retriveModelRecursively() * model;
 }
 
 void SceneNode::draw() {
 	if (mesh != nullptr) {
 		shaderProgram->use();
 		mesh->bind();
-		shaderProgram->setUniform(modelUniformLocation, retriveModelRecursively2(this));
+		shaderProgram->setUniform(modelUniformLocation, retriveModelRecursively());
 		mesh->draw();
 		mesh->unBind();
 		shaderProgram->stopUsing();

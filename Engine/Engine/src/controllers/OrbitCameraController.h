@@ -2,7 +2,7 @@
 #define ORBIT_CAMERA_CONTROLLER_3D_H
 
 #include <GLFW/glfw3.h>
-#include "CameraController.h"
+#include "ICameraController.h"
 #include "../math/Qtrn.h"
 #include "../math/Vec3.h"
 

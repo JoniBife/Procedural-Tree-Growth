@@ -143,9 +143,6 @@
     <ClInclude Include="src\controllers\OrbitCameraController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controllers\CameraController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\meshes\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -165,6 +162,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\apps\AppCGJ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\ICameraController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

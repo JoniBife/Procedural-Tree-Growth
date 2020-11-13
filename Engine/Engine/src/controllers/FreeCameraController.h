@@ -5,7 +5,7 @@
 #include "../math/Vec3.h"
 #include "../shaders/ShaderProgram.h"
 #include "GLFW/glfw3.h"
-#include "CameraController.h"
+#include "ICameraController.h"
 
 /*
 * All the vertex coordinates as seen from the camera's perspective as the origin of the scene,

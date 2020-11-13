@@ -65,13 +65,17 @@ Mesh* MeshLoader::createMeshFromFileStream(std::ifstream& meshFile) {
     }
 
     Mesh* mesh = new Mesh();
+    //mesh->vertices = verticesData;
 
     bool hasTextCoords = textCoordsData.size() > 0;
     bool hasNormals = normalsData.size() > 0;
 
     for (unsigned int i = 0; i < verticesIdx.size(); i++) {
+        // TODO Use indices
         unsigned int vi = verticesIdx[i];
         mesh->vertices.push_back(verticesData[vi - 1]);
+        //mesh->indices.push_back(verticesIdx[i] - 1);
+
         if (hasTextCoords)
         {
             unsigned int ti = textCoordsIdx[i];

@@ -48,7 +48,7 @@
     <ClInclude Include="src\apps\AppAVT.h" />
     <ClInclude Include="src\apps\AppCGJ.h" />
     <ClInclude Include="src\Configurations.h" />
-    <ClInclude Include="src\controllers\CameraController.h" />
+    <ClInclude Include="src\controllers\ICameraController.h" />
     <ClInclude Include="src\controllers\FreeCameraController.h" />
     <ClInclude Include="src\controllers\OrbitCameraController.h" />
     <ClInclude Include="src\Engine.h" />

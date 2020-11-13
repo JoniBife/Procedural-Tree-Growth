@@ -36,13 +36,17 @@ void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
 	// TODO WRONG, The old shader program has to be deleted
 }
 
-Mat4 SceneNode::getModel() {
+/*void SceneNode::onDraw(const std::function<void(ShaderProgram&)>& onDraw) {
+	this->onDraw = onDraw;
+}*/
+
+Mat4 SceneNode::getModel() const{
 	return model;
 }
-Mesh* SceneNode::getMesh() {
+Mesh* SceneNode::getMesh() const{
 	return mesh;
 }
-ShaderProgram* SceneNode::getShaderProgram() {
+ShaderProgram* SceneNode::getShaderProgram() const{
 	return shaderProgram;
 }
 
@@ -66,6 +70,7 @@ void SceneNode::draw() {
 	if (mesh != nullptr) {
 		shaderProgram->use();
 		mesh->bind();
+		//onDraw(shaderProgram);
 		shaderProgram->setUniform(modelUniformLocation, retriveModelRecursively());
 		mesh->draw();
 		mesh->unBind();
@@ -97,10 +102,10 @@ SceneNode* SceneGraph::createChild() {
 	return root->createChild();
 }
 
-SceneNode* SceneGraph::getRoot() {
+SceneNode* SceneGraph::getRoot() const{
 	return root;
 }
 
-Camera* SceneGraph::getCamera() {
+Camera* SceneGraph::getCamera() const{
 	return camera;
 }

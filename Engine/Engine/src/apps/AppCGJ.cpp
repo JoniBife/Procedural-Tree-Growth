@@ -4,13 +4,16 @@
 #include "../meshes/Mesh.h"
 #include "../shaders/ShaderProgram.h"
 #include "../controllers/FreeCameraController.h"
+#include "../controllers/OrbitCameraController.h"
 #include "../view/Camera.h"
 #include "../view/Transformations.h"
 #include "../scene/SceneGraph.h"
+#include "../math/Qtrn.h"
 
 Mesh* cube;
+Mesh* cube2;
 ShaderProgram* sp;
-FreeCameraController* cameraController;
+ICameraController* cameraController;
 Camera* camera;
 SceneGraph* sceneGraph;
 SceneNode* lineTetromino;
@@ -74,21 +77,22 @@ void AppCGJ::start() {
 	GLuint sharedMatricesIndex = sp->getUniformBlockIndex("SharedMatrices");
 	sp->bindUniformBlock(sharedMatricesIndex, uboBp);
 
-	float cameraMovementSpeed = 20.0f;
+	float cameraMovementSpeed = 10.0f;
 	// Since we are looking at the -z axis in our initial orientation, yaw has to be set -90 degress otherwise we would look at +x axis
 	float initialYaw = -90.0f;
 	float initialPitch = 0.0f;
 
-	Vec3 cameraPos(0.0f, 0.0f, 10.0f); // eye
+	Vec3 cameraPos(0.0f, 0.0f, 5.0f); // eye
 	Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
 	Vec3 cameraFront = cameraTarget - cameraPos;
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
 
-	Mat4 orthographicProj = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 0.0f, 100.0f);
-	Mat4 perspectiveProj = perspective(float(M_PI) / 2.0f, getWindowWidth() / getWindowHeight(), 0.0f, 100.0f);
+	Mat4 orthographicProj = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 0.001f, 100.0f);
+	Mat4 perspectiveProj = perspective(float(M_PI) / 2.0f, getWindowWidth() / getWindowHeight(), 0.001f, 100.0f);
 
 	Mat4 currProjection = perspectiveProj;
 
+	//cameraController = new OrbitCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow());
 	cameraController = new FreeCameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, getWindow());
 
 	// Initializing the camera and adding the controller
@@ -97,7 +101,9 @@ void AppCGJ::start() {
 
 	sceneGraph = new SceneGraph(camera);
 	sceneGraph->getRoot()->setShaderProgram(sp);
-	//sceneGraph->getRoot()->setModel(Mat4::rotation(M_PI_2, Vec3::X));
+	sceneGraph->getRoot()->setModel(Mat4::rotation(M_PI_2, Vec3::Y));
+	//sceneGraph->getRoot()->createChild(cube, Mat4::IDENTITY);
+
 	// Base
 	//SceneNode* base = sceneGraph->getRoot()->createChild(cube.get(), Mat4::scaling(10.0f, 0.25f, 10.0f));
 	lineTetromino = createLineTetromino(sceneGraph, cube);
@@ -109,11 +115,17 @@ void AppCGJ::start() {
 	LTetromino->setModel(transformationL);
 	TTetromino1->setModel(transformationT1);
 	TTetromino2->setModel(transformationT2);
-
 	sceneGraph->init();
 }
 
+void move() {
+
+}
+
 void AppCGJ::update() { 
+
+	
+
 	cameraController->processInputAndMove(static_cast<float>(getElapsedTime()));
 	sceneGraph->draw();
 
@@ -129,4 +141,5 @@ void AppCGJ::end() {
 	delete cameraController;
 	delete sp;
 	delete cube;
+	delete cube2;
 }

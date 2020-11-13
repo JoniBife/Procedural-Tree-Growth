@@ -20,9 +20,11 @@ uniform SharedMatrices {
 void main(void)
 {
 	ExPosition = InPosition;
-	ExNormal = InNormal;
+	//ExNormal = InNormal;
 	ExColor = InColor;
 	ExTextCoord = InTextCoord;
 
+	vec4 transNormal = model * vec4(InNormal,1.0f);
+	ExNormal = transNormal.xyz;
 	gl_Position =  projection * view * model * InPosition;
 }

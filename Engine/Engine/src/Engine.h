@@ -13,11 +13,11 @@ private:
 	int windowHeight;
 	double elapsedTime;
 
-	/* Sets up everything related to glew */
-	void setupGLEW();
-
 	/* Sets up everything related to glfw */
 	void setupGLFW();
+
+	/* Sets up everything related to glew */
+	void setupGLEW();
 
 	/* Sets up everything related to glfw */
 	void setupOpenGL();

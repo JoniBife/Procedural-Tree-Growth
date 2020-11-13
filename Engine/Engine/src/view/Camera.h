@@ -2,7 +2,7 @@
 #define CAMERA_H
 #include "GL/glew.h"
 #include "../math/Mat4.h"
-#include "../controllers/CameraController.h"
+#include "../controllers/ICameraController.h"
 
 /*
 * Usage example:

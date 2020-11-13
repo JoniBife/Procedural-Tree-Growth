@@ -9,6 +9,7 @@
 #include "../view/Transformations.h"
 #include "../scene/SceneGraph.h"
 #include "../math/Qtrn.h"
+#include "../utils/ColorRGBA.h"
 
 Mesh* cube;
 Mesh* cube2;
@@ -115,6 +116,21 @@ void AppCGJ::start() {
 	LTetromino->setModel(transformationL);
 	TTetromino1->setModel(transformationT1);
 	TTetromino2->setModel(transformationT2);
+
+	GLuint colorUniformLocation = sp->getUniformLocation("color");
+
+	lineTetromino->setOnDrawFunction([&](ShaderProgram* sp) {
+		sp->setUniform(colorUniformLocation, ColorRGBA::CYAN);
+	});
+	LTetromino->setOnDrawFunction([&](ShaderProgram* sp) {
+		sp->setUniform(colorUniformLocation, ColorRGBA::ORANGE);
+	});
+	TTetromino1->setOnDrawFunction([&](ShaderProgram* sp) {
+		sp->setUniform(colorUniformLocation, ColorRGBA::PURPLE);
+	});
+	TTetromino2->setOnDrawFunction([&](ShaderProgram* sp) {
+		sp->setUniform(colorUniformLocation, ColorRGBA::RED);
+	});
 
 	sceneGraph->init();
 }

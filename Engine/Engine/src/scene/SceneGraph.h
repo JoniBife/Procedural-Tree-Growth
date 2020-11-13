@@ -15,7 +15,7 @@ private:
 	GLint modelUniformLocation = GLint(-1);
 	ShaderProgram* shaderProgram = nullptr;
 	std::vector<SceneNode*> children;
-	std::function<void(ShaderProgram*)> onDraw;
+	std::function<void(ShaderProgram*)> onDraw = [](ShaderProgram* sp) {};
 
 	Mat4 retriveModelRecursively();
 

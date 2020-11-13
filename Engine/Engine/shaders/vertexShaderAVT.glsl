@@ -1,14 +1,14 @@
-#version 400 core
+#version 330 core
 
-in vec4 InPosition;
-in vec3 InNormal;
-in vec4 InColor;
-in vec2 InTextCoord;
+in vec4 inPosition;
+in vec3 inNormal;
+in vec4 inColor;
+in vec2 inTextCoord;
 
-out vec4 ExPosition;
-out vec3 ExNormal;
-out vec4 ExColor;
-out vec2 ExTextCoord;
+out vec4 exPosition;
+out vec3 exNormal;
+out vec4 exColor;
+out vec2 exTextCoord;
 
 uniform mat4 model;
 
@@ -19,12 +19,12 @@ uniform SharedMatrices {
 
 void main(void)
 {
-	ExPosition = InPosition;
-	//ExNormal = InNormal;
-	ExColor = InColor;
-	ExTextCoord = InTextCoord;
+	exPosition = inPosition;
+	//exNormal = inNormal;
+	exColor = inColor;
+	exTextCoord = inTextCoord;
 
-	vec4 transNormal = model * vec4(InNormal,1.0f);
-	ExNormal = transNormal.xyz;
-	gl_Position =  projection * view * model * InPosition;
+	vec4 transNormal = model * vec4(inNormal,1.0f);
+	exNormal = transNormal.xyz;
+	gl_Position =  projection * view * model * inPosition;
 }

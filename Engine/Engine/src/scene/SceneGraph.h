@@ -1,7 +1,6 @@
 #ifndef SCENE_GRAPH_H
 #define SCENE_GRAPH_H
 
-#include <functional>
 #include <iostream>
 #include "../shaders/ShaderProgram.h"
 #include "../view/Camera.h"
@@ -9,6 +8,16 @@
 #include "../math/Mat4.h"
 
 class SceneNode {
+
+private:
+	Mesh* mesh = nullptr;
+	Mat4 model = Mat4::IDENTITY;
+	GLint modelUniformLocation = GLint(-1);
+	ShaderProgram* shaderProgram = nullptr;
+	std::vector<SceneNode*> children;
+	std::function<void(ShaderProgram*)> onDraw;
+
+	Mat4 retriveModelRecursively();
 
 public:
 	SceneNode* parent = nullptr;
@@ -23,7 +32,7 @@ public:
 
 	void setModel(const Mat4& model);
 	void setShaderProgram(ShaderProgram* shaderProgram);
-	//void onDraw(const std::function<void(ShaderProgram&)>& onDraw);
+	void setOnDrawFunction(const std::function<void(ShaderProgram*)>& onDraw);
 
 	Mat4 getModel() const;
 	Mesh* getMesh() const;
@@ -32,17 +41,6 @@ public:
 	void init();
 
 	void draw();
-
-private:
-	Mesh* mesh = nullptr;
-	Mat4 model = Mat4::IDENTITY;
-	GLint modelUniformLocation = GLint(-1);
-	ShaderProgram* shaderProgram = nullptr;
-	std::vector<SceneNode*> children;
-	//std::function<void(ShaderProgram&)>& onDraw;
-
-	Mat4 retriveModelRecursively();
-
 };
 
 class SceneGraph {

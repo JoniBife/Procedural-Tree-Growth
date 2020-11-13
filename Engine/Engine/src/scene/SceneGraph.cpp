@@ -36,9 +36,9 @@ void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
 	// TODO WRONG, The old shader program has to be deleted
 }
 
-/*void SceneNode::onDraw(const std::function<void(ShaderProgram&)>& onDraw) {
+void SceneNode::setOnDrawFunction(const std::function<void(ShaderProgram*)>& onDraw) {
 	this->onDraw = onDraw;
-}*/
+}
 
 Mat4 SceneNode::getModel() const{
 	return model;
@@ -70,7 +70,7 @@ void SceneNode::draw() {
 	if (mesh != nullptr) {
 		shaderProgram->use();
 		mesh->bind();
-		//onDraw(shaderProgram);
+		onDraw(shaderProgram);
 		shaderProgram->setUniform(modelUniformLocation, retriveModelRecursively());
 		mesh->draw();
 		mesh->unBind();

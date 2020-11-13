@@ -115,17 +115,11 @@ void AppCGJ::start() {
 	LTetromino->setModel(transformationL);
 	TTetromino1->setModel(transformationT1);
 	TTetromino2->setModel(transformationT2);
+
 	sceneGraph->init();
 }
 
-void move() {
-
-}
-
 void AppCGJ::update() { 
-
-	
-
 	cameraController->processInputAndMove(static_cast<float>(getElapsedTime()));
 	sceneGraph->draw();
 

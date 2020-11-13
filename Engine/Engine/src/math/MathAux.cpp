@@ -36,3 +36,8 @@ float lerp(float a, float b, float f)
 {
     return a + f * (b - a);
 }
+
+Vec3 lerp(Vec3 a, Vec3 b, float f)
+{
+    return a + f * (b - a);
+}

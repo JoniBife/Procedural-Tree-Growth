@@ -23,7 +23,9 @@ struct Mat4 {
 	static Mat4 IDENTITY;
 	static Mat4 scaling(const float xyz);
 	static Mat4 scaling(const float x, const float y, const float z);
+	static Mat4 scaling(const Vec3& v);
 	static Mat4 translation(const float x, const float y, const float z);
+	static Mat4 translation(const Vec3& v);
 	static Mat4 rotation(const float angleRad, const Vec3& axis);
 
 	Mat4& operator=(const Mat4& other);

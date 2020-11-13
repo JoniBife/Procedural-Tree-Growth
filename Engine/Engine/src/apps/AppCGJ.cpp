@@ -135,7 +135,72 @@ void AppCGJ::start() {
 	sceneGraph->init();
 }
 
+unsigned int currState = 0;
+float totalDuration = 2.0f;
+float currentTime = 0.0f;
+
+//state 0
+Vec3 LTranslation1(0, 0, width + offset);
+Vec3 LTranslation2(0, 4 * (width + offset), 0);
+Vec3 LTranslation3(0, 0, -(width + offset));
+
+
+
+
+Mat4 nextModel;
+
+
 void AppCGJ::update() { 
+	
+	currentTime += static_cast<float>(getElapsedTime());
+
+	if (currentTime > totalDuration) {
+		currentTime = totalDuration;
+	}
+
+	float normalizedTime = currentTime / totalDuration;
+
+	if (currState == 0) {
+		Vec3 translation = LTranslation1 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationL;
+		LTetromino->setModel(transformation);
+
+		if(translation == LTranslation1)
+		{
+			currState++;
+			currentTime = 0;
+			transformationL = transformation;
+		}
+	}
+	else if (currState == 1) {
+		Vec3 translation = LTranslation2 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationL;
+		LTetromino->setModel(transformation);
+
+		if (translation == LTranslation2)
+		{
+			currState++;
+			currentTime = 0;
+			transformationL = transformation;
+		}
+	}
+	else if (currState == 2) {
+		Vec3 translation = LTranslation3 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationL;
+		LTetromino->setModel(transformation);
+
+		if (translation == LTranslation3)
+		{
+			currState++;
+			currentTime = 0;
+			transformationL = transformation;
+		}
+	}
+	else if (currState == 3) {
+
+	}
+
+	
 	cameraController->processInputAndMove(static_cast<float>(getElapsedTime()));
 	sceneGraph->draw();
 
@@ -143,6 +208,8 @@ void AppCGJ::update() {
 	if (glfwGetKey(getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(getWindow(), true);
 	}
+
+
 }
 
 void AppCGJ::end() { 

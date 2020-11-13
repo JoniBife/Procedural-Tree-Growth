@@ -55,12 +55,28 @@ Mat4 Mat4::scaling(const float x, const float y, const float z)
 			0, 0, 0, 1};
 }
 
+Mat4 Mat4::scaling(const Vec3& v)
+{
+	return { v.x, 0, 0, 0,
+			0, v.y, 0, 0,
+			0, 0, v.z, 0,
+			0, 0, 0, 1 };
+}
+
 Mat4 Mat4::translation(const float x, const float y, const float z)
 {
 	return {1, 0, 0, x,
 			0, 1, 0, y,
 			0, 0, 1, z,
 			0, 0, 0, 1};
+}
+
+Mat4 Mat4::translation(const Vec3& v)
+{
+	return { 1, 0, 0, v.x,
+			0, 1, 0, v.y,
+			0, 0, 1, v.z,
+			0, 0, 0, 1 };
 }
 
 Mat4 Mat4::rotation(const float angleRad, const Vec3& axis)

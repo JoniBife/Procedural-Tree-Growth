@@ -15,7 +15,11 @@ SceneNode* SceneNode::createChild() {
 }
 
 SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model) {
+	// This code might be a little bit confusing because the user
+	// might not realize that the child is inheriting the shaderProgram and beforeDraw
 	SceneNode* child = new SceneNode(mesh, model, this, shaderProgram);
+	if (this->beforeDraw)
+		child->beforeDraw = this->beforeDraw;
 	children.push_back(child);
 	return child;
 }
@@ -36,10 +40,8 @@ void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
 	// TODO WRONG, The old shader program has to be deleted
 }
 
-
-
-void SceneNode::setOnDrawFunction(const std::function<void(ShaderProgram*)>& onDraw){
-	this->onDraw = onDraw;
+void SceneNode::setBeforeDrawFunction(const std::function<void(ShaderProgram*)>& beforeDraw){
+	this->beforeDraw = beforeDraw;
 }
 
 Mat4 SceneNode::getModel() const{
@@ -70,11 +72,17 @@ Mat4 SceneNode::retriveModelRecursively() {
 
 void SceneNode::draw() {
 	if (mesh != nullptr) {
+
 		shaderProgram->use();
 		mesh->bind();
-		onDraw(shaderProgram);
+
+		if(beforeDraw)
+			beforeDraw(shaderProgram);
+
 		shaderProgram->setUniform(modelUniformLocation, retriveModelRecursively());
+
 		mesh->draw();
+
 		mesh->unBind();
 		shaderProgram->stopUsing();
 	}

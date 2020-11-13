@@ -26,7 +26,12 @@ const float offset = 0.02f;
 const float width = 0.3f;
 SceneNode* createLineTetromino(SceneGraph* sceneGraph, Mesh* cube) {
 
+	GLuint colorUniformLocation = sp->getUniformLocation("color");
+
 	SceneNode* base = sceneGraph->createChild();
+	base->setBeforeDrawFunction([=](ShaderProgram* sp) {
+		sp->setUniform(colorUniformLocation, ColorRGBA::CYAN);
+	});
 
 	base->createChild(cube, Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f));
 	base->createChild(cube, Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
@@ -37,7 +42,12 @@ SceneNode* createLineTetromino(SceneGraph* sceneGraph, Mesh* cube) {
 }
 SceneNode* createLTetromino(SceneGraph* sceneGraph, Mesh* cube) {
 
+	GLuint colorUniformLocation = sp->getUniformLocation("color");
+
 	SceneNode* base = sceneGraph->createChild();
+	base->setBeforeDrawFunction([=](ShaderProgram* sp) {
+		sp->setUniform(colorUniformLocation, ColorRGBA::ORANGE);
+	});
 
 	base->createChild(cube, Mat4::translation(-0.5f * (width + offset), width + offset, 0.0f));
 	base->createChild(cube, Mat4::translation(-0.5f * (width + offset), 0.0f, 0.0f));
@@ -46,9 +56,14 @@ SceneNode* createLTetromino(SceneGraph* sceneGraph, Mesh* cube) {
 
 	return base;
 }
-SceneNode* createTTetromino(SceneGraph* sceneGraph, Mesh* cube) {
+SceneNode* createTTetromino(SceneGraph* sceneGraph, Mesh* cube, const Vec4& color) {
+
+	GLuint colorUniformLocation = sp->getUniformLocation("color");
 
 	SceneNode* base = sceneGraph->createChild();
+	base->setBeforeDrawFunction([=](ShaderProgram* sp) {
+		sp->setUniform(colorUniformLocation, color);
+	});
 
 	base->createChild(cube, Mat4::translation(-1.0f * (width + offset), 0.5f * (width + offset), 0.0f));
 	base->createChild(cube, Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
@@ -109,28 +124,13 @@ void AppCGJ::start() {
 	//SceneNode* base = sceneGraph->getRoot()->createChild(cube.get(), Mat4::scaling(10.0f, 0.25f, 10.0f));
 	lineTetromino = createLineTetromino(sceneGraph, cube);
 	LTetromino = createLTetromino(sceneGraph, cube);
-	TTetromino1 = createTTetromino(sceneGraph, cube);
-	TTetromino2 = createTTetromino(sceneGraph, cube);
+	TTetromino1 = createTTetromino(sceneGraph, cube, ColorRGBA::PURPLE);
+	TTetromino2 = createTTetromino(sceneGraph, cube, ColorRGBA::RED);
 
 	lineTetromino->setModel(transformationLine);
 	LTetromino->setModel(transformationL);
 	TTetromino1->setModel(transformationT1);
 	TTetromino2->setModel(transformationT2);
-
-	GLuint colorUniformLocation = sp->getUniformLocation("color");
-
-	lineTetromino->setOnDrawFunction([&](ShaderProgram* sp) {
-		sp->setUniform(colorUniformLocation, ColorRGBA::CYAN);
-	});
-	LTetromino->setOnDrawFunction([&](ShaderProgram* sp) {
-		sp->setUniform(colorUniformLocation, ColorRGBA::ORANGE);
-	});
-	TTetromino1->setOnDrawFunction([&](ShaderProgram* sp) {
-		sp->setUniform(colorUniformLocation, ColorRGBA::PURPLE);
-	});
-	TTetromino2->setOnDrawFunction([&](ShaderProgram* sp) {
-		sp->setUniform(colorUniformLocation, ColorRGBA::RED);
-	});
 
 	sceneGraph->init();
 }

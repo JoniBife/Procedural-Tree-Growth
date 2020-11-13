@@ -108,8 +108,8 @@ void AppCGJ::start() {
 
 	Mat4 currProjection = perspectiveProj;
 
-	//cameraController = new OrbitCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow());
-	cameraController = new FreeCameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, getWindow());
+	cameraController = new OrbitCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow());
+	//cameraController = new FreeCameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, getWindow());
 
 	// Initializing the camera and adding the controller
 	camera = new Camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), currProjection, uboBp);
@@ -135,19 +135,175 @@ void AppCGJ::start() {
 	sceneGraph->init();
 }
 
-unsigned int currState = 0;
-float totalDuration = 2.0f;
+
+float totalDuration = 1.0f;
 float currentTime = 0.0f;
 
-//state 0
-Vec3 LTranslation1(0, 0, width + offset);
-Vec3 LTranslation2(0, 4 * (width + offset), 0);
-Vec3 LTranslation3(0, 0, -(width + offset));
+//Step 1 - L Transformation
+Vec3 LTranslation0(0, 0, width + offset);
+Vec3 LTranslation1(0, 4 * (width + offset), 0);
+Vec3 LTranslation2(0, 0, -(width + offset));
+Vec3 LTranslation3((width + offset), 0, 0);
+Vec3 LTranslation4(-(width + offset), -(width + offset), 0);
 
+void LAnimation0(float normalizedTime) {
 
+	static int currState = 0;
 
+	if (currState == 0) {
+		Vec3 translation = LTranslation0 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationL;
+		LTetromino->setModel(transformation);
 
-Mat4 nextModel;
+		if (translation == LTranslation0)
+		{
+			currState++;
+			currentTime = 0;
+			transformationL = transformation;
+		}
+	}
+	else if (currState == 1) {
+		Vec3 translation = LTranslation1 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationL;
+		LTetromino->setModel(transformation);
+
+		if (translation == LTranslation1)
+		{
+			currState++;
+			currentTime = 0;
+			transformationL = transformation;
+		}
+	}
+	else if (currState == 2) {
+		Vec3 translation = LTranslation2 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationL;
+		LTetromino->setModel(transformation);
+
+		if (translation == LTranslation2)
+		{
+			currState++;
+			currentTime = 0;
+			transformationL = transformation;
+		}
+	}
+	else if (currState == 3) {
+		Vec3 translation = LTranslation3 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationL;
+		LTetromino->setModel(transformation);
+
+		if (translation == LTranslation3)
+		{
+			currState++;
+			currentTime = 0;
+			transformationL = transformation;
+		}
+	}
+	else if (currState == 4) {
+		Vec3 translation = LTranslation4 * normalizedTime;
+		Mat4 transformationLAux = Mat4::translation(translation) * transformationL;
+		Mat4 transformationLineAux = Mat4::translation(translation) * transformationLine;
+		LTetromino->setModel(transformationLAux);
+		lineTetromino->setModel(transformationLineAux);
+
+		if (normalizedTime == 1)
+		{
+			currState++;
+			currentTime = 0;
+			transformationL = transformationLAux;
+			transformationLine = transformationLineAux;
+		}
+	}
+
+}
+
+//Step 2 - T Transformations
+Vec3 T1Translation0(0, 0, -(width + offset));
+Vec3 T1Translation1(-0.5f*(width + offset), 0, -1.5f * (width + offset));
+Vec3 T1Translation2(0.5f * (width + offset), 0.5f * (width + offset), 0);
+Qtrn T1Initial(1, 0, 0, 0);
+Qtrn T1Final(M_PI_2, { 0,1,0 });
+Qtrn T1Final2(-M_PI_2, { 1,0,0 });
+
+Vec3 T2Translation0(0, 0, width + offset);
+Vec3 T2Translation1(0, -0.5f* (width + offset), 1.5f * (width + offset));
+Qtrn T2Initial(1, 0, 0, 0);
+Qtrn T2Final(-M_PI_2, { 1,0,0 });
+
+void T1Animation0(float normalizedTime)
+{
+	static int currState = 0;
+
+	if (currState == 0) {
+		Vec3 translation = T1Translation0 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationT1;
+		TTetromino1->setModel(transformation);
+
+		if (normalizedTime == 1.0f)
+		{
+			currState++;
+			currentTime = 0;
+			transformationT1 = transformation;
+		}
+	}
+	else if (currState == 1) {
+		Vec3 translation = T1Translation1 * normalizedTime;
+		Mat4 rotation = Qtrn::slerp(T1Initial, T1Final, normalizedTime).toRotationMatrix();
+		Mat4 transformation = Mat4::translation(translation) * rotation * transformationT1;
+		TTetromino1->setModel(transformation);
+
+		if (normalizedTime == 1.0f)
+		{
+			currState++;
+			currentTime = 0;
+			transformationT1 = transformation;
+		}
+	}
+	else if (currState == 2) {
+		Vec3 translation = T1Translation2 * normalizedTime;
+		Mat4 rotation = Qtrn::slerp(T1Initial, T1Final2, normalizedTime).toRotationMatrix();
+		Mat4 transformation = Mat4::translation(translation) * transformationT1 * rotation;
+		TTetromino1->setModel(transformation);
+
+		if (normalizedTime == 1.0f)
+		{
+			currState++;
+			currentTime = 0;
+			transformationT1 = transformation;
+		}
+	}
+}
+
+void T2Animation0(float normalizedTime)
+{
+	static int currState = 0;
+
+	if (currState == 0) {
+		Vec3 translation = T2Translation0 * normalizedTime;
+		Mat4 transformation = Mat4::translation(translation) * transformationT2;
+		TTetromino2->setModel(transformation);
+
+		if (normalizedTime == 1.0f)
+		{
+			currState++;
+			currentTime = 0;
+			transformationT2 = transformation;
+		}
+	}
+	else if (currState == 1) {
+		Vec3 translation = T2Translation1 * normalizedTime;
+		Mat4 rotation = Qtrn::slerp(T2Initial, T2Final, normalizedTime).toRotationMatrix();
+		Mat4 transformation = Mat4::translation(translation) * rotation * transformationT2;
+		TTetromino2->setModel(transformation);
+
+		if (normalizedTime == 1.0f)
+		{
+			currState++;
+			currentTime = 0;
+			transformationT2 = transformation;
+		}
+	}
+
+}
 
 
 void AppCGJ::update() { 
@@ -160,46 +316,9 @@ void AppCGJ::update() {
 
 	float normalizedTime = currentTime / totalDuration;
 
-	if (currState == 0) {
-		Vec3 translation = LTranslation1 * normalizedTime;
-		Mat4 transformation = Mat4::translation(translation) * transformationL;
-		LTetromino->setModel(transformation);
-
-		if(translation == LTranslation1)
-		{
-			currState++;
-			currentTime = 0;
-			transformationL = transformation;
-		}
-	}
-	else if (currState == 1) {
-		Vec3 translation = LTranslation2 * normalizedTime;
-		Mat4 transformation = Mat4::translation(translation) * transformationL;
-		LTetromino->setModel(transformation);
-
-		if (translation == LTranslation2)
-		{
-			currState++;
-			currentTime = 0;
-			transformationL = transformation;
-		}
-	}
-	else if (currState == 2) {
-		Vec3 translation = LTranslation3 * normalizedTime;
-		Mat4 transformation = Mat4::translation(translation) * transformationL;
-		LTetromino->setModel(transformation);
-
-		if (translation == LTranslation3)
-		{
-			currState++;
-			currentTime = 0;
-			transformationL = transformation;
-		}
-	}
-	else if (currState == 3) {
-
-	}
-
+	LAnimation0(normalizedTime);
+	T1Animation0(normalizedTime);
+	T2Animation0(normalizedTime);
 	
 	cameraController->processInputAndMove(static_cast<float>(getElapsedTime()));
 	sceneGraph->draw();

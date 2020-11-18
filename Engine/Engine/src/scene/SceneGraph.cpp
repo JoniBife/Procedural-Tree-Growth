@@ -44,6 +44,10 @@ void SceneNode::setBeforeDrawFunction(const std::function<void(ShaderProgram*)>&
 	this->beforeDraw = beforeDraw;
 }
 
+void SceneNode::setAfterDrawFunction(const std::function<void()>& afterDraw) {
+	this->afterDraw = afterDraw;
+}
+
 Mat4 SceneNode::getModel() const{
 	return model;
 }
@@ -52,6 +56,9 @@ Mesh* SceneNode::getMesh() const{
 }
 ShaderProgram* SceneNode::getShaderProgram() const{
 	return shaderProgram;
+}
+std::vector<SceneNode*> SceneNode::getChildren() const {
+	return children;
 }
 
 void SceneNode::init() {
@@ -71,6 +78,11 @@ Mat4 SceneNode::retriveModelRecursively() {
 }
 
 void SceneNode::draw() {
+
+	for (SceneNode* child : children) {
+		child->draw();
+	}
+	
 	if (mesh != nullptr) {
 
 		shaderProgram->use();
@@ -83,12 +95,14 @@ void SceneNode::draw() {
 
 		mesh->draw();
 
+		if (afterDraw)
+			afterDraw();
+
 		mesh->unBind();
 		shaderProgram->stopUsing();
 	}
-	for (SceneNode* child : children) {
-		child->draw();
-	}
+
+	
 }
 
 ////////////////////////////////// SCENE GRAPH

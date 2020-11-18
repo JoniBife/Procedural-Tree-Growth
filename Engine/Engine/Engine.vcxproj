@@ -36,7 +36,6 @@
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\shaders\ShaderProgram.cpp" />
     <ClCompile Include="src\meshes\Mesh.cpp" />
-    <ClCompile Include="src\meshes\MeshGroup.cpp" />
     <ClCompile Include="src\utils\ColorRGBA.cpp" />
     <ClCompile Include="src\utils\OpenGLUtils.cpp" />
     <ClCompile Include="src\view\Camera.cpp" />
@@ -66,7 +65,6 @@
     <ClInclude Include="src\shaders\ShaderProgram.h" />
     <ClInclude Include="src\meshes\IDrawable.h" />
     <ClInclude Include="src\meshes\Mesh.h" />
-    <ClInclude Include="src\meshes\MeshGroup.h" />
     <ClInclude Include="src\utils\ColorRGBA.h" />
     <ClInclude Include="src\utils\OpenGLUtils.h" />
     <ClInclude Include="src\view\Camera.h" />

@@ -16,6 +16,7 @@ private:
 	ShaderProgram* shaderProgram = nullptr;
 	std::vector<SceneNode*> children;
 	std::function<void(ShaderProgram*)> beforeDraw;
+	std::function<void()> afterDraw;
 
 	Mat4 retriveModelRecursively();
 
@@ -33,10 +34,12 @@ public:
 	void setModel(const Mat4& model);
 	void setShaderProgram(ShaderProgram* shaderProgram);
 	void setBeforeDrawFunction(const std::function<void(ShaderProgram*)>& beforeDraw);
+	void setAfterDrawFunction(const std::function<void()>& afterDraw);
 
 	Mat4 getModel() const;
 	Mesh* getMesh() const;
 	ShaderProgram* getShaderProgram() const;
+	std::vector<SceneNode*> getChildren() const;
 
 	void init();
 

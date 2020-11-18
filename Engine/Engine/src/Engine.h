@@ -28,7 +28,7 @@ private:
 	virtual void start() = 0;
 
 	/*
-	* Called every frame
+	* Called every frameMesh
 	*/
 	virtual void update() = 0;
 

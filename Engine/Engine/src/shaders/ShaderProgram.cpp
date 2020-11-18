@@ -18,10 +18,10 @@ ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : ver
     
     // This step is unnecessary if you use the location specifier in your shader
     // e.g. layout (location = 0) in vec3 in_Position;
-    GL_CALL(glBindAttribLocation(id, VERTICES, "InPosition"));
-    GL_CALL(glBindAttribLocation(id, NORMALS, "InNormal"));
-    GL_CALL(glBindAttribLocation(id, COLORS, "InColor"));
-    GL_CALL(glBindAttribLocation(id, TEXTCOORDS, "InTextCoord"));
+    GL_CALL(glBindAttribLocation(id, VERTICES, "inPosition"));
+    GL_CALL(glBindAttribLocation(id, NORMALS, "inNormal"));
+    GL_CALL(glBindAttribLocation(id, COLORS, "inColor"));
+    GL_CALL(glBindAttribLocation(id, TEXTCOORDS, "inTextCoord"));
 
 	GL_CALL(glLinkProgram(id));
 

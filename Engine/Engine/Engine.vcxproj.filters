@@ -66,9 +66,6 @@
     <ClCompile Include="src\meshes\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\meshes\MeshGroup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\meshes\MeshLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -144,9 +141,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\meshes\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\meshes\MeshGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\meshes\MeshLoader.h">

@@ -12,7 +12,6 @@
 #include "../utils/ColorRGBA.h"
 
 Mesh* cube;
-Mesh* cube2;
 ShaderProgram* sp;
 ICameraController* cameraController;
 Camera* camera;
@@ -83,8 +82,8 @@ void AppCGJ::start() {
 	cube = Mesh::loadFromFile("../Engine/objs/cube.obj");
 	cube->transform(Mat4::scaling(0.15f)); // Blender Cube has a width and height of 2
 
-	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderAVT.glsl");
-	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderAVT.glsl");
+	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderCGJ.glsl");
+	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderCGJ.glsl");
 	sp = new ShaderProgram(vs, fs);
 
 	// Uniform buffer object binding point
@@ -443,7 +442,7 @@ void updateGround(float elapsedTime, GLFWwindow* win) {
 	Vec3 translation = Vec3::ZERO;
 	bool moved = false;
 
-	// Converting from units per second to units per frame
+	// Converting from units per second to units per frameMesh
 	float ms = movementSpeed * elapsedTime;
 
 	if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS) {
@@ -521,5 +520,4 @@ void AppCGJ::end() {
 	delete cameraController;
 	delete sp;
 	delete cube;
-	delete cube2;
 }

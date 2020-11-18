@@ -66,7 +66,7 @@ bool FreeCameraController::processKeyboardInput(const float elapsedTime) {
 
 	bool moved = false;
 
-	// Converting from units per second to units per frame
+	// Converting from units per second to units per frameMesh
 	float ms = movementSpeed * elapsedTime;
 
 	if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS) {

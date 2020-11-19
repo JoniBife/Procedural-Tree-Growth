@@ -3,6 +3,12 @@
 ///////////////////////////////// SCENE NODE
 SceneNode::SceneNode() {}
 
+SceneNode::~SceneNode() {
+	for (SceneNode* child : children) {
+		delete child;
+	}
+}
+
 SceneNode::SceneNode(Mesh* mesh, const Mat4& model, SceneNode* parent, ShaderProgram* shaderProgram)
 	: mesh(mesh), model(model), parent(parent), shaderProgram(shaderProgram) {}
 
@@ -37,7 +43,6 @@ void SceneNode::setModel(const Mat4& model) {
 
 void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
 	this->shaderProgram = shaderProgram;
-	// TODO WRONG, The old shader program has to be deleted
 }
 
 void SceneNode::setBeforeDrawFunction(const std::function<void(ShaderProgram*)>& beforeDraw){

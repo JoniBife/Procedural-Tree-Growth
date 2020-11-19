@@ -30,7 +30,6 @@ static const float offset = 0.1f;
 static const float width = 0.2f;
 
 SceneNode* createPenroseTriangle(SceneNode* parent) {
-
 	cube->transform(Mat4::scaling(0.10f)); // Blender Cube has a width and height of 2
 	cube->colors = {
 		ColorRGBA::RED,ColorRGBA::RED,ColorRGBA::RED, ColorRGBA::RED,ColorRGBA::RED,ColorRGBA::RED,
@@ -74,8 +73,6 @@ SceneNode* createPenroseTriangle(SceneNode* parent) {
 }
 SceneNode* createBackPiece(SceneNode* parent) {
 	backpieceMesh->paint({ 222.0f/255.0f,184.0f / 255.0f,135.0f / 255.0f, 1.0f });
-
-
 	float zTranslation = -((0.03f * 2.0f) + (0.5f *0.2f)); 
 
 	SceneNode* backp = parent->createChild(backpieceMesh, Mat4::translation(0.0f, 0.0f, zTranslation)*Mat4::scaling(0.9f, 0.9f,0.03f));
@@ -168,7 +165,6 @@ void rotatePainting(float elapsedTime) {
 	frame->setModel(newRotation.toRotationMatrix());
 }
 
-
 static bool animating = false;
 static float translationDistance = width + offset;
 static float translationDuration = 2.0f;
@@ -250,4 +246,6 @@ void AppAVT::end() {
 	delete cameraController;
 	delete sp;
 	delete cube;
+	delete backpieceMesh;
+	delete frameMesh;
 }

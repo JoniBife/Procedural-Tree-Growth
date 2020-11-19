@@ -149,9 +149,9 @@ void Engine::run() {
 		checkForOpenGLErrors("ERROR: MAIN LOOP");
 	}
 
+	end(); //Has to be called before glfwTerminate()
+
 	glfwDestroyWindow(window);
 	glfwTerminate();
-
-	end();
 }
 

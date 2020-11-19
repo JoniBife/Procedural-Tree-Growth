@@ -23,6 +23,7 @@ private:
 public:
 	SceneNode* parent = nullptr;
 	SceneNode();
+	~SceneNode();
 
 	SceneNode(Mesh* mesh, const Mat4& model, SceneNode* parent, ShaderProgram* shaderProgram);
 

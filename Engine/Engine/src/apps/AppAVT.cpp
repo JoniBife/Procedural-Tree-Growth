@@ -214,14 +214,20 @@ void animateTriangle(float elapsedTime) {
 void AppAVT::update() {
 
 	float elapsedTime = static_cast<float>(getElapsedTime());
+	static bool CReleased = false;
 
 	if (glfwGetKey(getWindow(), GLFW_KEY_F) == GLFW_PRESS) {
 		rotating = true;
 	}
 
-	if (glfwGetKey(getWindow(), GLFW_KEY_C) == GLFW_PRESS) {
-		animating = true;
+	if (glfwGetKey(getWindow(), GLFW_KEY_C) == GLFW_PRESS && CReleased) {		
+
+			animating = !animating;
+			CReleased = false;
 	}
+
+	if (glfwGetKey(getWindow(), GLFW_KEY_C) == GLFW_RELEASE)
+		CReleased = true;
 
 	if (rotating)
 		rotatePainting(elapsedTime);

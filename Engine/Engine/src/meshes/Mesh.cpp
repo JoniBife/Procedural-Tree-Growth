@@ -86,7 +86,7 @@ void Mesh::init() {
 		{
 			// Obtaining the number of buffers that need to be created
 			GLsizei numberOfBuffers = 1;
-			int idxVertices, idxNormals, idxColors, idxTextCoords, idxIndices;
+			int idxNormals, idxColors, idxTextCoords, idxIndices;
 			if (!normals.empty()) {
 				idxNormals = numberOfBuffers;
 				++numberOfBuffers;

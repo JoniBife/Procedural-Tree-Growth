@@ -4,8 +4,9 @@
 #include "../math/MathAux.h"
 
 
-FreeCameraController::FreeCameraController(const float movementSpeed, const Vec3& position, const Vec3& front, const Vec3& up, const float yaw, const float pitch, GLFWwindow* win)
-	: movementSpeed(movementSpeed), position(position), front(front.normalize()), up(up), yaw(yaw), pitch(pitch), win(win) {
+FreeCameraController::FreeCameraController(const float movementSpeed, const Vec3& position, const Vec3& front, const Vec3& up, const float yaw, const float pitch,
+	Mat4 orthoProj, Mat4 perspectiveProj, GLFWwindow* win)
+	: movementSpeed(movementSpeed), position(position), front(front.normalize()), up(up), yaw(yaw), pitch(pitch),orthoProj(orthoProj), perspectiveProj(perspectiveProj), currProj(orthoProj), win(win) {
 
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	
@@ -15,7 +16,7 @@ FreeCameraController::FreeCameraController(const float movementSpeed, const Vec3
 	glfwSetCursorPos(win, lastXpos, lastYpos);
 }
 
-void FreeCameraController::setOnMovementListener(const std::function<void(Mat4&)>& onMovement) {
+void FreeCameraController::setOnMovementListener(const std::function<void(Mat4&, Mat4&)>& onMovement) {
 	this->onMovement = onMovement;
 }
 
@@ -41,7 +42,7 @@ void FreeCameraController::processInputAndMove(const float elapsedTime) {
 	moved = processKeyboardInput(elapsedTime) || moved;
 	if (moved) {
 		Mat4 view = lookAt(position, position + front, up);
-		onMovement(view);
+		onMovement(view, currProj);
 	}
 }
 
@@ -55,7 +56,7 @@ void FreeCameraController::snapToPosition(const Vec3 position, const Vec3 front,
 	this->yaw = yaw;
 	this->pitch = pitch;
 	Mat4 view = lookAt(position, position + front, this->up);
-	onMovement(view);
+	onMovement(view, currProj);
 }
 
 /*
@@ -85,6 +86,15 @@ bool FreeCameraController::processKeyboardInput(const float elapsedTime) {
 		position += cross(front, up).normalize() * (ms);
 		moved = true;
 	}		
+
+	static bool isReleased = false;
+	if (glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS && isReleased) {
+		isReleased = false;
+		currProj = (currProj == orthoProj) ? perspectiveProj : orthoProj;
+		moved = true;
+	} else if (glfwGetKey(win, GLFW_KEY_P) == GLFW_RELEASE) {
+		isReleased = true;
+	}
 	
 	return moved;
 }

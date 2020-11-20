@@ -104,7 +104,7 @@ void AppCGJ::start() {
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
 
 	Mat4 orthographicProj = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 0.001f, 100.0f);
-	Mat4 perspectiveProj = perspective(float(M_PI) / 2.0f, getWindowWidth() / getWindowHeight(), 0.001f, 100.0f);
+	Mat4 perspectiveProj = perspective(float(M_PI) / 2.0f, float(getWindowWidth() / getWindowHeight()), 0.001f, 100.0f);
 
 	Mat4 currProjection = perspectiveProj;
 
@@ -117,7 +117,7 @@ void AppCGJ::start() {
 
 	sceneGraph = new SceneGraph(camera);
 	sceneGraph->getRoot()->setShaderProgram(sp);
-	ground = sceneGraph->getRoot()->createChild(cube, Mat4::translation(0.0f, -(2 * width + 1.5*offset + 0.5 * 0.05 * width), 0.0f) * Mat4::scaling({ 10.0f, 0.05f, 10.0f }));
+	ground = sceneGraph->getRoot()->createChild(cube, Mat4::translation(0.0f, -(2.0f * width + 1.5f*offset + 0.5f * 0.05f * width), 0.0f) * Mat4::scaling({ 10.0f, 0.05f, 10.0f }));
 	GLuint colorUniformLocation = sp->getUniformLocation("color");
 	ground->setBeforeDrawFunction([=](ShaderProgram* sp) {
 		sp->setUniform(colorUniformLocation, ColorRGBA::BLACK + 0.2f);
@@ -154,7 +154,7 @@ void LAnimation0(float normalizedTime) {
 
 	switch (state) {
 		case 0: {
-			Vec3 translation = LTranslation0 * normalizedTime;
+			Vec3 translation = Vec3::lerp(Vec3::ZERO, LTranslation0, normalizedTime);
 			Mat4 transformation = Mat4::translation(translation) * transformationL;
 			LTetromino->setModel(transformation);
 
@@ -165,7 +165,7 @@ void LAnimation0(float normalizedTime) {
 			break;
 		}
 		case 1: {
-			Vec3 translation = LTranslation1 * normalizedTime;
+			Vec3 translation = Vec3::lerp(Vec3::ZERO, LTranslation1, normalizedTime);
 			Mat4 transformation = Mat4::translation(translation) * transformationL;
 			LTetromino->setModel(transformation);
 
@@ -176,7 +176,7 @@ void LAnimation0(float normalizedTime) {
 			break;
 		}
 		case 2: {
-			Vec3 translation = LTranslation2 * normalizedTime;
+			Vec3 translation = Vec3::lerp(Vec3::ZERO, LTranslation2, normalizedTime);
 			Mat4 transformation = Mat4::translation(translation) * transformationL;
 			LTetromino->setModel(transformation);
 
@@ -187,7 +187,7 @@ void LAnimation0(float normalizedTime) {
 			break;
 		}
 		case 3: {
-			Vec3 translation = LTranslation3 * normalizedTime;
+			Vec3 translation = Vec3::lerp(Vec3::ZERO, LTranslation3, normalizedTime);
 			Mat4 transformation = Mat4::translation(translation) * transformationL;
 			LTetromino->setModel(transformation);
 
@@ -198,7 +198,7 @@ void LAnimation0(float normalizedTime) {
 			break;
 		}
 		case 4: {
-			Vec3 translation = LTranslation4 * normalizedTime;
+			Vec3 translation = Vec3::lerp(Vec3::ZERO, LTranslation4, normalizedTime);
 			Mat4 transformationLAux = Mat4::translation(translation) * transformationL;
 			Mat4 transformationLineAux = Mat4::translation(translation) * transformationLine;
 			LTetromino->setModel(transformationLAux);
@@ -217,7 +217,7 @@ void LAnimation0(float normalizedTime) {
 void LAnimation0Rev(float normalizedTime) {
 	switch (state) {
 		case 1: {
-			Vec3 translation = -1 * LTranslation0 * normalizedTime;
+			Vec3 translation = -1 * Vec3::lerp(Vec3::ZERO, LTranslation0, normalizedTime);
 			Mat4 transformation = Mat4::translation(translation) * transformationL;
 			LTetromino->setModel(transformation);
 
@@ -228,7 +228,7 @@ void LAnimation0Rev(float normalizedTime) {
 			break;
 		}
 		case 2: {
-			Vec3 translation = -1 * LTranslation1 * normalizedTime;
+			Vec3 translation = -1 * Vec3::lerp(Vec3::ZERO, LTranslation1, normalizedTime);
 			Mat4 transformation = Mat4::translation(translation) * transformationL;
 			LTetromino->setModel(transformation);
 
@@ -239,7 +239,7 @@ void LAnimation0Rev(float normalizedTime) {
 			break;
 		}
 		case 3: {
-			Vec3 translation = -1 * LTranslation2 * normalizedTime;
+			Vec3 translation = -1 * Vec3::lerp(Vec3::ZERO, LTranslation2, normalizedTime);
 			Mat4 transformation = Mat4::translation(translation) * transformationL;
 			LTetromino->setModel(transformation);
 
@@ -250,7 +250,7 @@ void LAnimation0Rev(float normalizedTime) {
 			break;
 		}
 		case 4: {
-			Vec3 translation = -1 * LTranslation3 * normalizedTime;
+			Vec3 translation = -1 * Vec3::lerp(Vec3::ZERO, LTranslation3, normalizedTime);
 			Mat4 transformation = Mat4::translation(translation) * transformationL;
 			LTetromino->setModel(transformation);
 
@@ -261,7 +261,7 @@ void LAnimation0Rev(float normalizedTime) {
 			break;
 		}
 		case 5: {
-			Vec3 translation = -1 * LTranslation4 * normalizedTime;
+			Vec3 translation = -1 * Vec3::lerp(Vec3::ZERO, LTranslation4, normalizedTime);
 			Mat4 transformationLAux = Mat4::translation(translation) * transformationL;
 			Mat4 transformationLineAux = Mat4::translation(translation) * transformationLine;
 			LTetromino->setModel(transformationLAux);
@@ -283,19 +283,20 @@ Vec3 T1Translation0(0, 0, -(width + offset));
 Vec3 T1Translation1(-0.5f*(width + offset), 0, -1.5f * (width + offset));
 Vec3 T1Translation2(0.5f * (width + offset), 0.5f * (width + offset), 0);
 Qtrn T1Initial(1, 0, 0, 0);
-Qtrn T1Final(M_PI_2, { 0,1,0 });
-Qtrn T1Final2(-M_PI_2, { 1,0,0 });
+Qtrn T1Final(float(M_PI_2), { 0,1,0 });
+Qtrn T1Final2(float(-M_PI_2), { 1,0,0 });
 
 Vec3 T2Translation0(0, 0, width + offset);
 Vec3 T2Translation1(0, -0.5f* (width + offset), 1.5f * (width + offset));
 Qtrn T2Initial(1, 0, 0, 0);
-Qtrn T2Final(-M_PI_2, { 1,0,0 });
+Qtrn T2Final(float(-M_PI_2), { 1,0,0 });
 
 void T1Animation0(float normalizedTime)	
 {
 	switch (state) {
 	case 0: {
-		Vec3 translation = T1Translation0 * normalizedTime;
+
+		Vec3 translation = Vec3::lerp(Vec3::ZERO, T1Translation0, normalizedTime);
 		Mat4 transformation = Mat4::translation(translation) * transformationT1;
 		TTetromino1->setModel(transformation);
 
@@ -306,7 +307,7 @@ void T1Animation0(float normalizedTime)
 		break;
 	}
 	case 1: {
-		Vec3 translation = T1Translation1 * normalizedTime;
+		Vec3 translation = Vec3::lerp(Vec3::ZERO, T1Translation1, normalizedTime);
 		Mat4 rotation = Qtrn::slerp(T1Initial, T1Final, normalizedTime).toRotationMatrix();
 		Mat4 transformation = Mat4::translation(translation) * rotation * transformationT1;
 		TTetromino1->setModel(transformation);
@@ -318,7 +319,7 @@ void T1Animation0(float normalizedTime)
 		break;
 	}
 	case 2: {
-		Vec3 translation = T1Translation2 * normalizedTime;
+		Vec3 translation = Vec3::lerp(Vec3::ZERO, T1Translation2, normalizedTime);
 		Mat4 rotation = Qtrn::slerp(T1Initial, T1Final2, normalizedTime).toRotationMatrix();
 		Mat4 transformation = Mat4::translation(translation) * transformationT1 * rotation;
 		TTetromino1->setModel(transformation);
@@ -336,7 +337,7 @@ void T1Animation0Rev(float normalizedTime)
 {
 	switch (state) {
 	case 1: {
-		Vec3 translation = -1 * T1Translation0 * normalizedTime;
+		Vec3 translation = -1 * Vec3::lerp(Vec3::ZERO, T1Translation0, normalizedTime);
 		Mat4 transformation = Mat4::translation(translation) * transformationT1;
 		TTetromino1->setModel(transformation);
 
@@ -347,7 +348,7 @@ void T1Animation0Rev(float normalizedTime)
 		break;
 	}
 	case 2: {
-		Vec3 translation = -1 * T1Translation1 * normalizedTime;
+		Vec3 translation = -1 * Vec3::lerp(Vec3::ZERO, T1Translation1, normalizedTime);
 		Mat4 rotation = Qtrn::slerp(T1Initial, T1Final.inverse(), normalizedTime).toRotationMatrix();
 		Mat4 transformation = rotation * Mat4::translation(translation) * transformationT1;
 		TTetromino1->setModel(transformation);
@@ -359,7 +360,7 @@ void T1Animation0Rev(float normalizedTime)
 		break;
 	}
 	case 3: {
-		Vec3 translation = -1 * T1Translation2 * normalizedTime;
+		Vec3 translation = -1 * Vec3::lerp(Vec3::ZERO, T1Translation2, normalizedTime);
 		Mat4 rotation = Qtrn::slerp(T1Initial, T1Final2.inverse(), normalizedTime).toRotationMatrix();
 		Mat4 transformation = Mat4::translation(translation) * transformationT1 * rotation;
 		TTetromino1->setModel(transformation);
@@ -377,8 +378,8 @@ void T1Animation0Rev(float normalizedTime)
 void T2Animation0(float normalizedTime)
 {
 	switch (state) {
-	case 0: {
-		Vec3 translation = T2Translation0 * normalizedTime;
+	case 0: {	
+		Vec3 translation = Vec3::lerp(Vec3::ZERO, T2Translation0, normalizedTime);
 		Mat4 transformation = Mat4::translation(translation) * transformationT2;
 		TTetromino2->setModel(transformation);
 
@@ -389,7 +390,7 @@ void T2Animation0(float normalizedTime)
 		break;
 	}
 	case 1: {
-		Vec3 translation = T2Translation1 * normalizedTime;
+		Vec3 translation = Vec3::lerp(Vec3::ZERO, T2Translation1, normalizedTime);
 		Mat4 rotation = Qtrn::slerp(T2Initial, T2Final, normalizedTime).toRotationMatrix();
 		Mat4 transformation = Mat4::translation(translation) * rotation * transformationT2;
 		TTetromino2->setModel(transformation);
@@ -407,7 +408,7 @@ void T2Animation0Rev(float normalizedTime)
 {
 	switch (state) {
 	case 1: {
-		Vec3 translation = -1* T2Translation0 * normalizedTime;
+		Vec3 translation = -1* Vec3::lerp(Vec3::ZERO, T2Translation0, normalizedTime);
 		Mat4 transformation = Mat4::translation(translation) * transformationT2;
 		TTetromino2->setModel(transformation);
 
@@ -418,7 +419,7 @@ void T2Animation0Rev(float normalizedTime)
 		break;
 	}
 	case 2: {
-		Vec3 translation = -1* T2Translation1 * normalizedTime;
+		Vec3 translation = -1* Vec3::lerp(Vec3::ZERO, T2Translation1, normalizedTime);
 		Mat4 rotation = Qtrn::slerp(T2Initial, T2Final.inverse(), normalizedTime).toRotationMatrix();
 		Mat4 transformation =  rotation * Mat4::translation(translation) * transformationT2;
 		TTetromino2->setModel(transformation);
@@ -515,7 +516,6 @@ void AppCGJ::update() {
 
 void AppCGJ::end() { 
 	delete sceneGraph;
-	// TODO Confirm if we have to delete the ground and tetrominos as well
 	delete camera;
 	delete cameraController;
 	delete sp;

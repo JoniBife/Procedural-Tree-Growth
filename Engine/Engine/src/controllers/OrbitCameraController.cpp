@@ -26,7 +26,7 @@ OrbitCameraController::OrbitCameraController(const Vec3& eulerAngles, const Qtrn
 	glfwSetScrollCallback(win, scroll_callback);
 }
 
-void OrbitCameraController::setOnMovementListener(const std::function<void(Mat4&)>& onMovement) {
+void OrbitCameraController::setOnMovementListener(const std::function<void(Mat4&, Mat4&)>& onMovement) {
 	this->onMovement = onMovement;
 }
 
@@ -44,9 +44,7 @@ void OrbitCameraController::processInputAndMove(const float elapsedTime) {
 		viewMatrix = Mat4::translation(0.0f, 0.0f, zoom) * Mat4::rotation(eulerAngles.y, Vec3::X) * Mat4::rotation(eulerAngles.x, Vec3::Y);
 		
 	}
-	onMovement(viewMatrix);
-
-	
+	onMovement(viewMatrix, Mat4::IDENTITY);
 }
 
 void OrbitCameraController::processMouseInput() {

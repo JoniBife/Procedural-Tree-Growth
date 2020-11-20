@@ -8,10 +8,10 @@ class Engine {
 
 private:
 	// Only derived classed have access to this members
-	GLFWwindow* window;
-	int windowWidth;
-	int windowHeight;
-	double elapsedTime;
+	GLFWwindow* window = nullptr;
+	int windowWidth = 0;
+	int windowHeight = 0;
+	double elapsedTime = 0.0;
 
 	/* Sets up everything related to glfw */
 	void setupGLFW();

@@ -65,6 +65,8 @@ Mesh* MeshLoader::createMeshFromFileStream(std::ifstream& meshFile) {
     }
 
     Mesh* mesh = new Mesh();
+
+
     //mesh->vertices = verticesData;
 
     bool hasTextCoords = textCoordsData.size() > 0;
@@ -144,13 +146,13 @@ Vec4 MeshLoader::parseVertex(std::stringstream& sin) {
 }
 
 Vec3 MeshLoader::parseNormal(std::stringstream& sin) {
-    Vec3 n; //TODO Should we have a normal struct??
+    Vec3 n; 
     sin >> n.x >> n.y >> n.z;
     return n;
 }
 
 Vec2 MeshLoader::parseTextCoord(std::stringstream& sin) {
-    Vec2 t; // TODO Should we have a textCoord struct???
+    Vec2 t; 
     sin >> t.x >> t.y; // x = u and y = v
     return t;
 }

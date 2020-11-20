@@ -46,6 +46,8 @@ struct Vec3 {
 
 	void toOpenGLFormat(float array[3]) const;
 
+	static Vec3 lerp(Vec3 initial, Vec3 final, float f);
+
 	Vec3 normalize() const;
 	Vec4 toVec4() const;	
 };

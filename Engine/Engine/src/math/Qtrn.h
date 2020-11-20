@@ -37,7 +37,6 @@ public:
 	bool operator==(const Qtrn& q) const;
 	bool operator!=(const Qtrn& q) const;
 
-	// TODO void qGLRotationMatrix(const qtrn& q, mat4 matrix); 
 	static Qtrn lerp(const Qtrn& q0, const Qtrn& q1, float k);
 	static Qtrn slerp(const Qtrn& q0, const Qtrn& q1, float k);
 

@@ -3,17 +3,6 @@
 #include "Configurations.h"
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
-void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	// TODO Add some kind of input manager
-}
-void window_close_callback(GLFWwindow* win)
-{
-	// TODO
-	// For now the shaders and shapes are being deleted at the end
-	// of the runCGJ and runAVT functions automatically becauses 
-	// they go out of scope so the destructor is called automatically
-}
 void window_size_callback(GLFWwindow* win, int winx, int winy)
 {
 	glViewport(0, 0, winx, winy);
@@ -40,8 +29,6 @@ GLFWwindow* setupWindow(int windowWidth, int windowHeight, const char* title,
 }
 void setupCallbacks(GLFWwindow* win)
 {
-	glfwSetKeyCallback(win, glfw_key_callback);
-	glfwSetWindowCloseCallback(win, window_close_callback);
 	glfwSetWindowSizeCallback(win, window_size_callback);
 }
 void Engine::setupGLFW() {

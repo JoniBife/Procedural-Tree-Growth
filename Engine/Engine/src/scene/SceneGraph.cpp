@@ -31,7 +31,6 @@ SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model) {
 }
 
 SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model, ShaderProgram* shaderProgram) {
-	// TODO What to do with the shaderProgram
 	SceneNode* child = new SceneNode(mesh, model, this, shaderProgram);
 	children.push_back(child);
 	return child;

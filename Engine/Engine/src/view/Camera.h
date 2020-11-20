@@ -24,13 +24,11 @@ private:
 	Mat4 view;
 	Mat4 projection;
 	GLuint vbo;
-	// TODO Add ubo and UBO_BP
 
 
 public:
 	Camera(const Mat4& view, const Mat4& projection, const GLuint uboBp);
 
-	// TODO Maybe reconsider this name
 	void update();
 	
 	// Sets the view matrix

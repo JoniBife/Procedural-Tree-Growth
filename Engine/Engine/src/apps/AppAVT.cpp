@@ -23,8 +23,8 @@ static SceneGraph* sceneGraph;
 static SceneNode* penroseTriangle;
 static SceneNode* backpiece;
 static SceneNode* frame;
-std::vector<SceneNode*> cubes;
-std::vector<Mat4> cubesInitialModels;
+static std::vector<SceneNode*> cubes;
+static std::vector<Mat4> cubesInitialModels;
 
 static const float offset = 0.1f;
 static const float width = 0.2f;
@@ -42,7 +42,7 @@ SceneNode* createPenroseTriangle(SceneNode* parent) {
 	};
 
 	SceneNode* base = parent->createChild();
-	base->setModel(Mat4::translation({ 0.6f * (width + offset), 0.0f, 2.5f*(offset + width) }) * Mat4::rotation(M_PI/5, Vec3::Y) * Mat4::rotation(-M_PI/4, Vec3::X));
+	base->setModel(Mat4::translation({ 0.6f * (width + offset), 0.0f, 2.5f*(offset + width) }) * Mat4::rotation(float(M_PI)/5.0f, Vec3::Y) * Mat4::rotation(float(-M_PI)/4.0f, Vec3::X));
 
 	base->createChild(cube, Mat4::translation(-(width + offset), -1.5f * (width + offset), 0.0f));
 	base->createChild(cube, Mat4::translation(-(width + offset)*2, -1.5f * (width + offset), 0.0f));
@@ -57,6 +57,12 @@ SceneNode* createPenroseTriangle(SceneNode* parent) {
 	});
 
 	SceneNode* cube1 = base->createChild(cube, Mat4::translation(0.0f, 1.5f * (width + offset), -(width + offset)));
+	cube1->setBeforeDrawFunction([=](ShaderProgram* sp) {
+		GL_CALL(glDisable(GL_DEPTH_TEST));
+	});
+	cube1->setAfterDrawFunction([]() {
+		GL_CALL(glEnable(GL_DEPTH_TEST));
+	});
 
 	base->createChild(cube, Mat4::translation(0.0f, 1.5f * (width + offset), 0.0f));
 	base->createChild(cube, Mat4::translation(0.0f, 0.5f * (width + offset), 0.0f));
@@ -118,15 +124,13 @@ void AppAVT::start() {
 	Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
 
 	Mat4 orthographicProj = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 0.001f, 100.0f);
-	Mat4 perspectiveProj = perspective(float(M_PI) / 2.0f, getWindowWidth() / getWindowHeight(), 0.001f, 10.0f);
-
-	Mat4 currProjection = orthographicProj;
+	Mat4 perspectiveProj = perspective(float(M_PI) / 2.0f, float(getWindowWidth() / getWindowHeight()), 0.001f, 10.0f);
 
 	//cameraController = new OrbitCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow());
-	cameraController = new FreeCameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, getWindow());
+	cameraController = new FreeCameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, orthographicProj, perspectiveProj, getWindow());
 
 	// Initializing the camera and adding the controller
-	camera = new Camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), currProjection, uboBp);
+	camera = new Camera(lookAt(cameraPos, cameraPos + cameraFront, cameraUp), orthographicProj, uboBp);
 	camera->addCameraController(cameraController);
 
 	sceneGraph = new SceneGraph(camera);
@@ -139,8 +143,8 @@ void AppAVT::start() {
 	sceneGraph->init();
 }
 
-static const Qtrn initialRotation(static_cast<float>(M_PI) /180.0f, {0.0f, 1.0f, 0.0f});
-static const Qtrn finalRotation(static_cast<float>(M_PI) * 2.0f, { 0.0f, 1.0f, 0.0f });
+static const Qtrn initialRotation(float(M_PI) /180.0f, {0.0f, 1.0f, 0.0f});
+static const Qtrn finalRotation(float(M_PI) * 2.0f, { 0.0f, 1.0f, 0.0f });
 static const float rotationDuration = 2.0f;
 static bool rotating = false;
 
@@ -209,7 +213,7 @@ void animateTriangle(float elapsedTime) {
 
 void AppAVT::update() {
 
-	float elapsedTime = static_cast<float>(getElapsedTime());
+	float elapsedTime = float(getElapsedTime());
 	static bool CReleased = false;
 
 	if (glfwGetKey(getWindow(), GLFW_KEY_F) == GLFW_PRESS) {

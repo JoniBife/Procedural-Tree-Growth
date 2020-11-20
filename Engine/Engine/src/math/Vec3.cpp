@@ -126,6 +126,9 @@ Vec4 Vec3::toVec4() const {
 	return Vec4(this->x, this->y, this->z, 0);
 }
 
+Vec3 Vec3::lerp(Vec3 initial, Vec3 final, float f) {
+	return initial + f * (final - initial);
+}
 
 float dot(const Vec3& a, const Vec3& b) {
 	return a.x * b.x + a.y * b.y + a.z * b.z;

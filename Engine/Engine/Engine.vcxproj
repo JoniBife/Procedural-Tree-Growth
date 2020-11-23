@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\apps\AppAVT.cpp" />
     <ClCompile Include="src\apps\AppCGJ.cpp" />
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
     <ClCompile Include="src\controllers\OrbitCameraController.cpp" />
@@ -44,7 +43,6 @@
     <ClCompile Include="src\view\Transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\apps\AppAVT.h" />
     <ClInclude Include="src\apps\AppCGJ.h" />
     <ClInclude Include="src\Configurations.h" />
     <ClInclude Include="src\controllers\ICameraController.h" />
@@ -71,9 +69,7 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragmentShaderAVT.glsl" />
     <None Include="shaders\fragmentShaderCGJ.glsl" />
-    <None Include="shaders\vertexShaderAVT.glsl" />
     <None Include="shaders\vertexShaderCGJ.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

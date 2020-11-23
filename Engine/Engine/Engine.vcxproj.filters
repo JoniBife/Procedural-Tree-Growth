@@ -72,9 +72,6 @@
     <ClCompile Include="src\scene\SceneGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\apps\AppAVT.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\apps\AppCGJ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -152,9 +149,6 @@
     <ClInclude Include="src\meshes\IDrawable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\apps\AppAVT.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\apps\AppCGJ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -165,7 +159,5 @@
   <ItemGroup>
     <None Include="shaders\fragmentShaderCGJ.glsl" />
     <None Include="shaders\vertexShaderCGJ.glsl" />
-    <None Include="shaders\vertexShaderAVT.glsl" />
-    <None Include="shaders\fragmentShaderAVT.glsl" />
   </ItemGroup>
 </Project>

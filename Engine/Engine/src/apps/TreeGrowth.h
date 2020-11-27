@@ -1,12 +1,12 @@
-#ifndef APP_CGJ_H
-#define APP_CGJ_H
+#ifndef TREE_GROWTH_H
+#define TREE_GROWTH_H
 
 #include "../Engine.h"
 
-class AppCGJ : public Engine {
+class TreeGrowth : public Engine {
 
 public:
-	AppCGJ() {}
+	TreeGrowth() {}
 
 	void start() override;
 

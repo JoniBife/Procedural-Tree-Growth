@@ -15,7 +15,7 @@ static ICameraController* cameraController;
 static Texture2D* woodTexture;
 
 void TreeGrowth::start() {
-	cube = Mesh::loadFromFile("../Engine/objs/cylinder64.obj");
+	cube = Mesh::loadFromFile("../Engine/objs/cylinder32.obj");
 
 	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderCGJ.glsl");
 	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderCGJ.glsl");
@@ -38,7 +38,7 @@ void TreeGrowth::start() {
 	SceneNode* node = getSceneGraph()->getRoot()->createChild(cube, Mat4::IDENTITY);
 	node->setBeforeDrawFunction([=](ShaderProgram* sp) {
 		//sp->setUniform(sp->getUniformLocation("color"), ColorRGBA::BLUE);
-		woodTexture->bind();
+		woodTexture->bind(0);
 	});
 	node->setAfterDrawFunction([=]() {
 		woodTexture->unBind();

@@ -27,7 +27,7 @@ public:
 
 	Texture2D(const std::string& textureFilePath);
 
-	void bind();
+	void bind(unsigned int unitNumber);
 
 	void unBind();
 };

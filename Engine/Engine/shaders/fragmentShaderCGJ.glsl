@@ -9,9 +9,9 @@ out vec4 fragmentColor;
 
 uniform vec4 color;
 
-uniform sampler2D woodTexture;
+uniform sampler2D diffuseMap;
 
 void main(void)
 {
-	fragmentColor = texture(woodTexture, exTextCoord);
+	fragmentColor = texture(diffuseMap, exTextCoord);
 }

@@ -90,10 +90,10 @@ void OrbitCameraController::processScrollWheelInput() {
 	float scrollWheelSensitivity = 0.1f;
 	zoom += float(yOffset) * scrollWheelSensitivity;
 
-	if (zoom >= -0.5f)
-		zoom = -0.5f;
-	else if (zoom <= -10.0f)
-		zoom = -10.0f;
+	if (zoom >= -0.1f)
+		zoom = -0.1f;
+	else if (zoom <= -100.0f)
+		zoom = -100.0f;
 
 	yOffset = 0.0;
 }

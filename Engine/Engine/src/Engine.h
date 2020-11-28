@@ -3,12 +3,15 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "scene/SceneGraph.h"
 
 class Engine {
 
 private:
 	// Only derived classed have access to this members
 	GLFWwindow* window = nullptr;
+	SceneGraph* sceneGraph = nullptr;
+	Camera* camera = nullptr;
 	int windowWidth = 0;
 	int windowHeight = 0;
 	double elapsedTime = 0.0;
@@ -21,6 +24,12 @@ private:
 
 	/* Sets up everything related to glfw */
 	void setupOpenGL();
+
+	/* Sets up the camera and sceneGraph */
+	void setupScene();
+
+	/* Frees any memory allocated on the heap */
+	void freeResources();
 
 	/**
 	* Called before main loop
@@ -39,7 +48,9 @@ private:
 	virtual void end() = 0;
 
 protected:
-	GLFWwindow* getWindow();
+	GLFWwindow* getWindow(); 
+	SceneGraph* getSceneGraph();
+	Camera* getCamera();
 	int getWindowWidth();
 	int getWindowHeight();
 	double getElapsedTime();

@@ -1,6 +1,9 @@
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include "Engine.h"
 #include "utils/OpenGLUtils.h"
 #include "Configurations.h"
+#include "view/Transformations.h"
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 void window_size_callback(GLFWwindow* win, int winx, int winy)
@@ -94,10 +97,39 @@ void Engine::setupOpenGL() {
 	GL_CALL(glViewport(0, 0, windowWidth, windowHeight));
 }
 
+////////////////////////////////////////////// SCENE
+void Engine::setupScene() {
+	Vec3 cameraPos(0.0f, 0.0f, 5.0f); // eye
+	Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
+	Vec3 cameraFront = cameraTarget - cameraPos;
+	Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
+
+	camera = new Camera(
+		lookAt(cameraPos, cameraPos + cameraFront, cameraUp),
+		perspective(float(M_PI) / 2.0f, float(windowWidth / windowHeight), 0.001f, 100.0f),
+		0 // Uniform buffer object binding point
+	);
+
+	sceneGraph = new SceneGraph(camera);
+}
+
+////////////////////////////////////////////// RESOURCES
+void Engine::freeResources() {
+	delete sceneGraph;
+	delete camera;
+}
+
 ////////////////////////////////////////////// GETTERS
 GLFWwindow* Engine::getWindow() {
 	return window;
 }
+SceneGraph* Engine::getSceneGraph() {
+	return sceneGraph;
+}
+Camera* Engine::getCamera() {
+	return camera;
+}
+
 int Engine::getWindowWidth() {
 	return windowWidth;
 }
@@ -116,7 +148,9 @@ void Engine::run() {
 	setupGLEW();
 	setupOpenGL();
 
+	setupScene();
 	start();
+	sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 
 	double lastTime = glfwGetTime();
 
@@ -130,12 +164,14 @@ void Engine::run() {
 		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		
 		update();
+		sceneGraph->draw(); // Drawing only after update
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		checkForOpenGLErrors("ERROR: MAIN LOOP");
+		checkForOpenGLErrors("ERROR: MAIN LOOP"); //TODO Prob not necessary
 	}
 
+	freeResources();
 	end(); //Has to be called before glfwTerminate()
 
 	glfwDestroyWindow(window);

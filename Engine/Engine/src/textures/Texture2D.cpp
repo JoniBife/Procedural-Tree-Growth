@@ -3,6 +3,8 @@
 #include "stb_image.h"
 #include <assert.h>
 #include "../utils/OpenGLUtils.h"
+#include "../math/Vec2.h"
+#include "../math/Vec3.h"
 
 Texture2D::Texture2D(const std::string& textureFilePath) {
 	// Loading image data from textureFilePath
@@ -46,3 +48,5 @@ void Texture2D::bind(unsigned int unitNumber) {
 void Texture2D::unBind() {
 	GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
 }
+
+

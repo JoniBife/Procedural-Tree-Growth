@@ -6,6 +6,8 @@
 #define NORMALS 1
 #define COLORS 2
 #define TEXTCOORDS 3
+#define TANGENTS 4
+#define BITANGENTS 5
 
 // In the future we should add other constructors to support other types of shaders
 ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : vertexShader(vertexShader), fragmentShader(fragmentShader) 
@@ -22,6 +24,8 @@ ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : ver
     GL_CALL(glBindAttribLocation(id, NORMALS, "inNormal"));
     GL_CALL(glBindAttribLocation(id, COLORS, "inColor"));
     GL_CALL(glBindAttribLocation(id, TEXTCOORDS, "inTextCoord"));
+    GL_CALL(glBindAttribLocation(id, TANGENTS, "inTangents"));
+    GL_CALL(glBindAttribLocation(id, BITANGENTS, "inBitangents"));
 
 	GL_CALL(glLinkProgram(id));
 

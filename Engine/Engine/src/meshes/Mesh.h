@@ -35,6 +35,8 @@ public:
 	std::vector<Vec4> colors;
 	std::vector<Vec2> textCoords;
 	std::vector<GLubyte> indices;
+	std::vector<Vec3> tangents;
+	std::vector<Vec3> bitangents;
 
 private:
 	GLuint vaoId = GLuint(0);
@@ -43,6 +45,8 @@ private:
 	GLuint vboColorsId = GLuint(0);
 	GLuint vboTextCoordsId = GLuint(0);
 	GLuint eboIndicesId = GLuint(0);
+	GLuint vboTangentsId = GLuint(0);
+	GLuint vboBitangentsId = GLuint(0);
 	bool hasBeenInitialized = false;
 	bool hasBeenBound = false;
 
@@ -64,7 +68,7 @@ public:
 	Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec3>& normals);
 
 	Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec2>& textCoords);
-
+	
 	// Deletes all the vbos, vaos and disables the vertex array atributes
 	~Mesh() override;
 

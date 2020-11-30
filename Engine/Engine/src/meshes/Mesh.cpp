@@ -10,6 +10,8 @@
 #define NORMALS 1
 #define COLORS 2
 #define TEXTCOORDS 3
+#define TANGENTS 4
+#define BITANGENTS 5
 
 Mesh::Mesh() {}
 
@@ -19,6 +21,8 @@ Mesh::Mesh(const Mesh& mesh) {
 	normals = mesh.normals;
 	textCoords = mesh.textCoords;
 	indices = mesh.indices;
+	tangents = mesh.tangents;
+	bitangents = mesh.bitangents;
 }
 
 Mesh::Mesh(const std::vector<Vec4>& vertices) : vertices(vertices) {}
@@ -60,6 +64,12 @@ Mesh::~Mesh() {
 		GL_CALL(glDeleteBuffers(1, &eboIndicesId));
 		GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	}
+	if (!tangents.empty()) {
+		GL_CALL(glDeleteBuffers(1, &vboTangentsId));
+	}
+	if (!bitangents.empty()) {
+		GL_CALL(glDeleteBuffers(1, &vboBitangentsId));
+	}
 	GL_CALL(glDeleteVertexArrays(1, &vaoId));
 	GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	GL_CALL(glBindVertexArray(0));
@@ -86,7 +96,7 @@ void Mesh::init() {
 		{
 			// Obtaining the number of buffers that need to be created
 			GLsizei numberOfBuffers = 1;
-			int idxNormals, idxColors, idxTextCoords, idxIndices;
+			int idxNormals, idxColors, idxTextCoords, idxIndices, idxTangents, idxBitangents;
 			if (!normals.empty()) {
 				idxNormals = numberOfBuffers;
 				++numberOfBuffers;
@@ -101,6 +111,14 @@ void Mesh::init() {
 			}
 			if (!indices.empty()) {
 				idxIndices = numberOfBuffers;
+				++numberOfBuffers;
+			}
+			if (!tangents.empty()) {
+				idxTangents = numberOfBuffers;
+				++numberOfBuffers;
+			}
+			if (!bitangents.empty()) {
+				idxBitangents = numberOfBuffers;
 				++numberOfBuffers;
 			}
 
@@ -161,6 +179,28 @@ void Mesh::init() {
 				GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIndicesId));
 				{
 					GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLubyte), &indices[0], GL_STATIC_DRAW));
+				}
+			}
+
+			if (!tangents.empty()) {
+				vboTangentsId = bufferIds[idxTangents];
+
+				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboTangentsId));
+				{
+					GL_CALL(glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(Vec3), &tangents[0], GL_STATIC_DRAW));
+					GL_CALL(glEnableVertexAttribArray(TANGENTS));
+					GL_CALL(glVertexAttribPointer(TANGENTS, 2, GL_FLOAT, GL_FALSE, sizeof(Vec3), 0));
+				}
+			}
+
+			if (!bitangents.empty()) {
+				vboBitangentsId = bufferIds[idxBitangents];
+
+				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboBitangentsId));
+				{
+					GL_CALL(glBufferData(GL_ARRAY_BUFFER, bitangents.size() * sizeof(Vec3), &bitangents[0], GL_STATIC_DRAW));
+					GL_CALL(glEnableVertexAttribArray(BITANGENTS));
+					GL_CALL(glVertexAttribPointer(BITANGENTS, 2, GL_FLOAT, GL_FALSE, sizeof(Vec3), 0));
 				}
 			}
 

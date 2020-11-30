@@ -165,6 +165,7 @@ void Engine::run() {
 		
 		update();
 		sceneGraph->draw(); // Drawing only after update
+		
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

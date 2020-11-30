@@ -72,7 +72,9 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\fragmentShader2.glsl" />
     <None Include="shaders\fragmentShaderCGJ.glsl" />
+    <None Include="shaders\vertexShader2.glsl" />
     <None Include="shaders\vertexShaderCGJ.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

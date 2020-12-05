@@ -21,7 +21,7 @@ class Texture2D {
 
 private:
 	GLuint id = 0;
-	int width = 0, height = 0, nrChannels = 0;
+	int width = 0, height = 0, nrChannels = 0; // In RGB there are 3 channels while in RGBA there are 4 for example
 
 public:
 
@@ -29,7 +29,7 @@ public:
 
 	void bind(unsigned int unitNumber);
 
-	void unBind();
+	void unBind(unsigned int unitNumber);
 };
 
 #endif

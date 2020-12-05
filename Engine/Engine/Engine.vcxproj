@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\apps\TreeGrowth.cpp" />
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
-    <ClCompile Include="src\controllers\OrbitCameraController.cpp" />
+    <ClCompile Include="src\controllers\SphericalCameraController.cpp" />
     <ClCompile Include="src\math\Mat2.cpp" />
     <ClCompile Include="src\math\Mat3.cpp" />
     <ClCompile Include="src\math\Mat4.cpp" />
@@ -48,7 +48,7 @@
     <ClInclude Include="src\Configurations.h" />
     <ClInclude Include="src\controllers\ICameraController.h" />
     <ClInclude Include="src\controllers\FreeCameraController.h" />
-    <ClInclude Include="src\controllers\OrbitCameraController.h" />
+    <ClInclude Include="src\controllers\SphericalCameraController.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\textures\stb_image.h" />
     <ClInclude Include="src\math\Mat2.h" />

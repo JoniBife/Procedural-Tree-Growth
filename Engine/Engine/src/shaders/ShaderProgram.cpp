@@ -20,6 +20,8 @@ ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : ver
     
     // This step is unnecessary if you use the location specifier in your shader
     // e.g. layout (location = 0) in vec3 in_Position;
+    // Even if the shader does not contain one of these attributes its alright
+    // OpenGL Docs: " It is also permissible to bind a generic attribute index to an attribute variable name that is never used in a vertex shader."
     GL_CALL(glBindAttribLocation(id, VERTICES, "inPosition"));
     GL_CALL(glBindAttribLocation(id, NORMALS, "inNormal"));
     GL_CALL(glBindAttribLocation(id, COLORS, "inColor"));

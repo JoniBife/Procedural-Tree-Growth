@@ -44,6 +44,10 @@ void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
 	this->shaderProgram = shaderProgram;
 }
 
+void SceneNode::addTexture(Texture2D* texture) {
+	this->textures.push_back(texture);
+}
+
 void SceneNode::setBeforeDrawFunction(const std::function<void(ShaderProgram*)>& beforeDraw){
 	this->beforeDraw = beforeDraw;
 }
@@ -92,6 +96,10 @@ void SceneNode::draw() {
 		shaderProgram->use();
 		mesh->bind();
 
+		for (int i = 0; i < textures.size(); ++i) {
+			textures[i]->bind(GL_TEXTURE0 + i);
+		}
+
 		if(beforeDraw)
 			beforeDraw(shaderProgram);
 
@@ -101,6 +109,10 @@ void SceneNode::draw() {
 
 		if (afterDraw)
 			afterDraw();
+
+		for (int i = 0; i < textures.size(); ++i) {
+			textures[i]->unBind(GL_TEXTURE0 + i);
+		}
 
 		mesh->unBind();
 		shaderProgram->stopUsing();
@@ -121,8 +133,8 @@ void SceneGraph::init() {
 	root->init();
 }
 
-void SceneGraph::draw() {
-	camera->update();
+void SceneGraph::draw(const float elapsedTime) {
+	camera->update(elapsedTime);
 	root->draw();
 }
 

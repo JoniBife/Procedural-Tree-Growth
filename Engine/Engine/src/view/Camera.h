@@ -24,12 +24,14 @@ private:
 	Mat4 view;
 	Mat4 projection;
 	GLuint vbo;
+	GLuint uboBp;
+	ICameraController* cameraController;
 
 
 public:
 	Camera(const Mat4& view, const Mat4& projection, const GLuint uboBp);
 
-	void update();
+	void update(const float elapsedTime);
 	
 	// Sets the view matrix
 	void setView(const Mat4& view);
@@ -39,6 +41,9 @@ public:
 
 	// Adds the FreeCameraController
 	void addCameraController(ICameraController* cameraController);
+
+	// UboBP Getter
+	GLuint getUboBindingPoint();
 };
 
 #endif

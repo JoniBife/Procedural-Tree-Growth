@@ -11,7 +11,12 @@ Camera::Camera(const Mat4& view, const Mat4& projection, const GLuint uboBp) : v
 	GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 }
 
-void Camera::update() {
+void Camera::update(float elapsedTime) {
+
+	// Update camera controller if there is one
+	if (cameraController)
+		cameraController->processInputAndMove(elapsedTime);
+
 	GL_CALL(glBindBuffer(GL_UNIFORM_BUFFER, vbo));
 	{
 		float viewOpenGLFormat[16];
@@ -36,10 +41,14 @@ void Camera::setProjection(const Mat4& projection) {
 
 // Adds the FreeCameraController
 void Camera::addCameraController(ICameraController* cameraController) {
-	cameraController->setOnMovementListener([&](Mat4& view, Mat4& proj) {
+	this->cameraController = cameraController;
+	this->cameraController->setOnMovementListener([&](Mat4& view, Mat4& proj) {
 		// Each time the camera moves, we update the view matrix with the new view matrix and the projection matrix with the new projection	
 		setView(view);
 		if (proj != Mat4::IDENTITY)
 			setProjection(proj);
 	});
 }
+
+// UboBp Getter
+GLuint Camera::getUboBindingPoint() { return uboBp; }

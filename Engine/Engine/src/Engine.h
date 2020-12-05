@@ -34,18 +34,18 @@ private:
 	/**
 	* Called before main loop
 	*/
-	virtual void start() = 0;
+	virtual void start() {/*EMPTY*/ }
 
 	/*
 	* Called every frameMesh
 	*/
-	virtual void update() = 0;
+	virtual void update() {/*EMPTY*/ }
 
 	/*
 	* Called after main loop
 	* Should be used to free any memory allocated in start or update
 	*/
-	virtual void end() = 0;
+	virtual void end() {/*EMPTY*/ }
 
 protected:
 	GLFWwindow* getWindow(); 

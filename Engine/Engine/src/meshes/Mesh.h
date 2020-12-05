@@ -86,6 +86,9 @@ public:
 	// Draws the mesh using glDrawArrays
 	void draw() override;
 
+	// Calculates the tangents and bitangents
+	void calculateTangentsAndBitangents();
+
 	// Creates a black centered in clip space (0,0,0)
 	static Mesh square(const float width = 0.75f);
 
@@ -95,9 +98,13 @@ public:
 	// Creates a black centered in clip space (0,0,0)
 	static Mesh triangle(const float width = 1.0f, const float height = 1.0f);
 
+	// Loads the mesh from the file with the filePath
 	static Mesh* loadFromFile(const std::string& filePath);
 
+	// Applies the transformation matrix to all vertices of the mesh
 	void transform(const Mat4& transformation);
+
+	// Fills the colors list with color
 	void paint(const Vec4& color);
 };
 

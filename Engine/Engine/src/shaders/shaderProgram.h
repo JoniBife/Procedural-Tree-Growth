@@ -54,6 +54,10 @@ public:
 	ShaderProgram(Shader& vertexShader, Shader& fragmentShader);
 	~ShaderProgram();
 
+	//void bindAttributeLocation(const std::string& name,const int location); Maybe in the future
+
+	//void init();
+
 	void use();
 	void stopUsing();
 

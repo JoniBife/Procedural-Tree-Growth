@@ -140,6 +140,7 @@ double Engine::getElapsedTime() {
 	return elapsedTime;
 }
 
+
 ////////////////////////////////////////////// MAIN LOOP
 void Engine::run() {
 
@@ -164,7 +165,7 @@ void Engine::run() {
 		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		
 		update();
-		sceneGraph->draw(); // Drawing only after update
+		sceneGraph->draw((float)elapsedTime); // Drawing only after update
 		
 
 		glfwSwapBuffers(window);

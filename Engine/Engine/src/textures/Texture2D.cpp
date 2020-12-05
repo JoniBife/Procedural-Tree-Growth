@@ -41,11 +41,12 @@ Texture2D::Texture2D(const std::string& textureFilePath) {
 }
 
 void Texture2D::bind(unsigned int unitNumber) {
-	GL_CALL(glActiveTexture(GL_TEXTURE0 + unitNumber));
+	GL_CALL(glActiveTexture(unitNumber));
 	GL_CALL(glBindTexture(GL_TEXTURE_2D, id));
 }
 
-void Texture2D::unBind() {
+void Texture2D::unBind(unsigned int unitNumber) {
+	GL_CALL(glActiveTexture(unitNumber));
 	GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
 }
 

@@ -46,9 +46,9 @@ Mesh* MeshLoader::loadFromFile(const std::string& filePath) {
 
 Mesh* MeshLoader::createMeshFromFileStream(std::ifstream& meshFile) {
 
-    std::vector<Vec4> verticesData, vertices;
-    std::vector<Vec3> normalsData, normals;
-    std::vector<Vec2> textCoordsData, textCoords;
+    std::vector<Vec4> verticesData;
+    std::vector<Vec3> normalsData;
+    std::vector<Vec2> textCoordsData;
 
     std::vector<unsigned int> verticesIdx, textCoordsIdx, normalsIdx;
 
@@ -65,7 +65,6 @@ Mesh* MeshLoader::createMeshFromFileStream(std::ifstream& meshFile) {
     }
 
     Mesh* mesh = new Mesh();
-
     bool hasTextCoords = textCoordsData.size() > 0;
     bool hasNormals = normalsData.size() > 0;
 

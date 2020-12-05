@@ -245,44 +245,43 @@ void Mesh::draw() {
 }
 
 void Mesh::calculateTangentsAndBitangents() {
-	{
-		// TODO Calculate the tangents and bitangents in parallel after a certain number of vertices
-		for (int i = 0; i < vertices.size(); i += 3) {
-			// Shortcuts for vertices
-			Vec4& v0 = vertices[i + 0];
-			Vec4& v1 = vertices[i + 1];
-			Vec4& v2 = vertices[i + 2];
+	// TODO Calculate the tangents and bitangents in parallel after a certain number of vertices
+	for (int i = 0; i < vertices.size(); i += 3) {
+		// Shortcuts for vertices
+		Vec4& v0 = vertices[i + 0];
+		Vec4& v1 = vertices[i + 1];
+		Vec4& v2 = vertices[i + 2];
 
-			// Shortcuts for UVs
-			Vec2& uv0 = textCoords[i + 0];
-			Vec2& uv1 = textCoords[i + 1];
-			Vec2& uv2 = textCoords[i + 2];
+		// Shortcuts for UVs
+		Vec2& uv0 = textCoords[i + 0];
+		Vec2& uv1 = textCoords[i + 1];
+		Vec2& uv2 = textCoords[i + 2];
 
-			// Edges of the triangle : position delta
-			Vec4 deltaPos1 = v1 - v0;
-			Vec4 deltaPos2 = v2 - v0;
+		// Edges of the triangle : position delta
+		Vec4 deltaPos1 = v1 - v0;
+		Vec4 deltaPos2 = v2 - v0;
 
-			// UV delta
-			Vec2 deltaUV1 = uv1 - uv0;
-			Vec2 deltaUV2 = uv2 - uv0;
+		// UV delta
+		Vec2 deltaUV1 = uv1 - uv0;
+		Vec2 deltaUV2 = uv2 - uv0;
 
-			float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-			Vec4 tangentAux = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-			Vec4 bitangentAux = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+		Vec4 tangentAux = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+		Vec4 bitangentAux = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
 
-			Vec3 tangent = Vec3(tangentAux.x, tangentAux.y, tangentAux.z);
-			Vec3 bitangent = Vec3(bitangentAux.x, bitangentAux.y, bitangentAux.z);
+		Vec3 tangent = Vec3(tangentAux.x, tangentAux.y, tangentAux.z);
+		Vec3 bitangent = Vec3(bitangentAux.x, bitangentAux.y, bitangentAux.z);
 
-			tangents.push_back(tangent);
-			tangents.push_back(tangent);
-			tangents.push_back(tangent);
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
 
-			// Same thing for bitangents
-			bitangents.push_back(bitangent);
-			bitangents.push_back(bitangent);
-			bitangents.push_back(bitangent);
-		}
+		// Same thing for bitangents
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
 	}
+	
 }
 
 // Creates a black square centered in clip space (0,0,0)

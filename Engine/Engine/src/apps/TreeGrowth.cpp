@@ -30,8 +30,13 @@ void TreeGrowth::start() {
 	sp->bindUniformBlock(sharedMatricesIndex, getCamera()->getUboBindingPoint());
 
 	// Loading textures
+	/*/
 	woodTexture = new Texture2D("../Engine/textures/Seamless_tree_bark_texture.jpg");
 	woodTextureNormalMap = new Texture2D("../Engine/textures/Seamless_tree_bark_texture_NORMAL.jpg");
+	/**/
+	woodTexture = new Texture2D("../Engine/textures/tileable_wood_planks_texture.jpg");
+	woodTextureNormalMap = new Texture2D("../Engine/textures/tileable_wood_planks_texture_NORMAL.jpg");
+	/**/
 
 	// Adding a spherical camera controller
 	cameraController = new SphericalCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow());

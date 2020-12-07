@@ -16,6 +16,7 @@ SceneNode* SceneNode::createChild() {
 	SceneNode* child = new SceneNode();
 	child->parent = this;
 	child->shaderProgram = shaderProgram;
+	child->mesh = mesh;
 	children.push_back(child);
 	return child;
 }

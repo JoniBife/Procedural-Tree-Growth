@@ -29,6 +29,7 @@ public:
 
 	SceneNode(Mesh* mesh, const Mat4& model, SceneNode* parent, ShaderProgram* shaderProgram);
 
+	SceneNode* createChild(SceneNode* parent); // Copies the parents mesh to child
 	SceneNode* createChild();
 	//SceneNode* createChild(Mesh* mesh);
 	SceneNode* createChild(Mesh* mesh, const Mat4& model);

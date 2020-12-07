@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\apps\Tree.cpp" />
     <ClCompile Include="src\apps\TreeGrowth.cpp" />
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
     <ClCompile Include="src\controllers\SphericalCameraController.cpp" />
@@ -44,6 +45,12 @@
     <ClCompile Include="src\view\Transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\apps\BoundingSphere.h" />
+    <ClInclude Include="src\apps\BranchModule.h" />
+    <ClInclude Include="src\apps\BranchNode.h" />
+    <ClInclude Include="src\apps\Equations.h" />
+    <ClInclude Include="src\apps\GrowthParameters.h" />
+    <ClInclude Include="src\apps\Tree.h" />
     <ClInclude Include="src\apps\TreeGrowth.h" />
     <ClInclude Include="src\Configurations.h" />
     <ClInclude Include="src\controllers\ICameraController.h" />

@@ -30,6 +30,7 @@ void main(void)
     exPosition = model * inPosition;   
     exTextCoord = inTextCoord;
     exColor = inColor;
+    exNormal = inNormal;
 
     mat3 normalMatrix = transpose(inverse(mat3(model)));
     vec3 T = normalize(normalMatrix * inTangent);

@@ -5,7 +5,10 @@
 #include <math.h>
 #include "Vec3.h"
 
-#define SQR(x) x * x
+
+#define PI 3.141592741f
+
+#define SQR(x) (x) * (x)
 
 /*
 *

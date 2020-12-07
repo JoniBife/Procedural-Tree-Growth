@@ -21,6 +21,7 @@ struct Mat4 {
 	Mat4(const Mat4& other);
 
 	static Mat4 IDENTITY;
+	static Mat4 ZERO;
 	static Mat4 scaling(const float xyz);
 	static Mat4 scaling(const float x, const float y, const float z);
 	static Mat4 scaling(const Vec3& v);

@@ -41,6 +41,8 @@ struct Vec3 {
 	bool operator==(const Vec3& other) const;
 	bool operator!=(const Vec3& other) const;
 
+	static float angle(const Vec3& a, const Vec3& b);
+
 	float magnitude() const;
 	float sqrMagnitude() const;
 

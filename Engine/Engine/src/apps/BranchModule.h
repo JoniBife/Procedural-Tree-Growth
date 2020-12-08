@@ -29,6 +29,8 @@ struct BranchModule {
 		root->updateNode(physiologicalAge);
 	}
 
+	void adapt() { root->adapt(); }
+
 	BranchModule() {}
 
 };

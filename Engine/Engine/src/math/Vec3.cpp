@@ -96,6 +96,16 @@ bool Vec3::operator!=(const Vec3& other) const {
 	return !(*this == other);
 }
 
+float Vec3::angle(const Vec3& a, const Vec3& b) {
+	float magnitudeA = a.magnitude();
+	float magnitudeB = a.magnitude();
+
+	if (cmpf(magnitudeA, 0.0f) || cmpf(magnitudeB, 0.0f))
+		return 0.0f;
+
+	return acosf(dot(a, b) / (magnitudeA * magnitudeB));
+}
+
 
 float Vec3::magnitude() const {
 	return sqrt(this->x * this->x + this->y * this->y + this->z*this->z);

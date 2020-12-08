@@ -32,4 +32,16 @@ float degreesToRadians(float angle);
 
 float radiansToDegrees(float angleRad);
 
+float lerp(float a, float b, float f);
+
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
+
+#define signf sgn<float>
+#define fsignf sgn<double>
+#define sign sgn<int>
+
+
+
 #endif

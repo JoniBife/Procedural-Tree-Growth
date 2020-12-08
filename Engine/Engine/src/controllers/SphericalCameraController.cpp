@@ -16,8 +16,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	yOffset = yoffset;
 }
 
-SphericalCameraController::SphericalCameraController(const Vec3& eulerAngles, const Qtrn& qtrn, GLFWwindow* win, const float sensitivity)
-: eulerAngles(eulerAngles), qtrn(qtrn), win(win), sensitivity(sensitivity), zoom(-20.0f) {
+SphericalCameraController::SphericalCameraController(const Vec3& eulerAngles, const Qtrn& qtrn, GLFWwindow* win, const float initialZoom, const float sensitivity)
+: eulerAngles(eulerAngles), qtrn(qtrn), win(win), sensitivity(sensitivity), zoom(initialZoom) {
 
 	initialRotation = eulerAngles;
 	initialQtrn = qtrn;

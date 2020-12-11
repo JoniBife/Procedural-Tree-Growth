@@ -8,7 +8,7 @@
 
 #define PI 3.141592741f
 
-#define SQR(x) (x) * (x)
+#define SQR(x) ((x) * (x))
 
 /*
 *

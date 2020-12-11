@@ -28,6 +28,7 @@ struct Mat4 {
 	static Mat4 translation(const float x, const float y, const float z);
 	static Mat4 translation(const Vec3& v);
 	static Mat4 rotation(const float angleRad, const Vec3& axis);
+	static Mat4 rotationFromDir(const Vec3& dir, const Vec3& up = {0.0f, 1.0f, 0.0f});
 
 	Mat4& operator=(const Mat4& other);
 	Mat4& operator+=(const Mat4& other);

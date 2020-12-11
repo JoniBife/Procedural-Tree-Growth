@@ -48,20 +48,19 @@ struct BranchNode {
 			branchDiameter = segmentDiameter(this, growthParameters->thickeningFactor,branchLength/maxBranchLength);
 
 			// We then scale the cylinder and translate it upwards so that its base stays in the same position
-			Mat4 scaling = Mat4::scaling({ branchDiameter, branchLength, branchDiameter});
-			translation = Mat4::translation({ 0.0f, branchLength/2, 0.0f });
+			Mat4 scaling = Mat4::scaling({ branchDiameter, branchLength, branchDiameter });
+			translation = Mat4::translation({ 0.0f, branchLength / 2, 0.0f });
 
 			Vec3 parentPosition = parent->calculatePosition();
-
 			Vec3 dir = ((parentPosition + relativePosition) - parentPosition).normalize();
 
 			// double yaw = Math.Atan2(ds.X, ds.Y);double pitch = Math.Atan2(ds.Z, Math.Sqrt((ds.X * ds.X) + (ds.Y * ds.Y)));	
 
-			float yaw = atan2f(-dir.x, dir.y);
-			float pitch = atan2f(fsignf(dir.y) *dir.z, sqrtf((dir.x*dir.x) + (dir.y *dir.y)));
+			//float yaw = atan2f(-dir.x, dir.y);
+			//float pitch = atan2f(fsignf(dir.y) *dir.z, sqrtf((dir.x*dir.x) + (dir.y *dir.y)));
 			//float yaw = atan2f(-dir.x, dir.z);
 			//float pitch = atan2f(dir.z, sqrtf((dir.x * dir.x) + (dir.y * dir.y)));
-			rotation =   Mat4::rotation(pitch, Vec3::X) * Mat4::rotation(yaw, Vec3::Z);
+			rotation = Mat4::rotationFromDir(dir);
 
 			// Finally we translate the node to its correct position in world space (TODO CHECK IF THIS IS WORLD SPACE)
 			Mat4 positioning = Mat4::translation(parent->calculatePosition());
@@ -74,7 +73,6 @@ struct BranchNode {
 					physiologicalAge = modulePhysiologicalAge;
 				}
 			}
-
 		}
 
 		if (branchLength == maxBranchLength) {
@@ -88,12 +86,27 @@ struct BranchNode {
 	void adapt() {
 
 		if (parent) {
-			Vec3 adaptation = tropismOffset(physiologicalAge, 0.12, 0.10, -1 * Vec3::Y);
-			relativePosition += adaptation;
+
+			Vec3 gravityDir = -1 * Vec3::Y;
+
+			Vec3 adaptation = tropismOffset(physiologicalAge, 0.1, 0.2, gravityDir);
+
+			Vec3 parentDir = parent->calculatePosition() - calculatePosition();
+
+			if (parentDir.normalize() != gravityDir)
+				relativePosition += adaptation;
+
+			for (BranchNode* child : children)
+			{
+				child->adapt();
+			}
 		}
-		for (BranchNode* child : children)
-		{
-			child->adapt();
+		else {
+
+			for (BranchNode* child : children)
+			{
+				child->adapt();
+			}
 		}
 	}
 
@@ -106,7 +119,6 @@ struct BranchNode {
 		return relativePosition + parent->calculatePosition();
 	}
 
-	// Should return a pointer to himself
 	BranchNode* createChild(const Vec3& relativePosition) {
 		BranchNode* child = new BranchNode();
 		child->relativePosition = relativePosition;

@@ -39,7 +39,7 @@ void setupTree(SceneGraph* sceneGraph) {
 	child->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
 	child->growthParameters = growthParameters;
 	child->sceneGraphNode->addTexture(woodTexture);
-	{
+	/*{
 		BranchNode* childA = child->createChild({ 5.0f,5,0.0f });
 		childA->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
 		childA->growthParameters = growthParameters;
@@ -71,7 +71,7 @@ void setupTree(SceneGraph* sceneGraph) {
 			childB2->growthParameters = growthParameters;
 			childB2->sceneGraphNode->addTexture(woodTexture);
 		}
-	}
+	}*/
 }
 
 void TreeGrowth::start() {
@@ -114,9 +114,14 @@ void TreeGrowth::start() {
 	node->addTexture(woodTextureNormalMap);*/
 };
 
+bool adapted = false;
+
 void TreeGrowth::update() {
 	module->updateModule((float)getElapsedTime());
-	//module->adapt();
+
+	//if (module->physiologicalAge > 20 && !adapted) {
+		//module->adapt();
+	//}
 }
 
 void TreeGrowth::end() {

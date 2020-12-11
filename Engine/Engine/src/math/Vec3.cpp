@@ -126,8 +126,11 @@ Vec3 Vec3::normalize() const {
 
 	float magnitude = this->magnitude();
 
+	if (cmpf(magnitude, 0.0f))
+		return *this;
+
 	// Cannot divide by 0
-	assert(magnitude > 0);
+	//assert(magnitude > 0);
 
 	return (*this) / magnitude;
 }

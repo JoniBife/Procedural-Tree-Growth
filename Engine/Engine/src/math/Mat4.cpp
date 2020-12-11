@@ -109,6 +109,36 @@ Mat4 Mat4::rotation(const float angleRad, const Vec3& axis)
 	return identity + sinf(angleRad) * dualMatrix + (1 - cosf(angleRad)) * dualMatrixSqr;
 }
 
+Mat4 Mat4::rotationFromDir(const Vec3& dir, const Vec3& up) {
+	Vec3 xaxis = cross(up, dir).normalize();
+	Vec3 yaxis = cross(dir, xaxis).normalize();
+
+	if (xaxis == Vec3::ZERO && yaxis == Vec3::ZERO)
+		return Mat4::IDENTITY;
+	Mat4 rotation;
+	rotation[0][0] = xaxis.x;
+	rotation[0][1] = yaxis.x;
+	rotation[0][2] = dir.x;
+	rotation[0][3] = 0.0f;
+
+	rotation[1][0] = xaxis.y;
+	rotation[1][1] = yaxis.y;
+	rotation[1][2] = dir.y;
+	rotation[1][3] = 0.0f;
+
+	rotation[2][0] = xaxis.z;
+	rotation[2][1] = yaxis.z;
+	rotation[2][2] = dir.z;
+	rotation[2][3] = 0.0f;
+
+	rotation[3][0] = 0.0f;
+	rotation[3][1] = 0.0f;
+	rotation[3][2] = 0.0f;
+	rotation[3][3] = 1.0f;
+
+	return rotation;
+}
+
 Mat4& Mat4::operator=(const Mat4& other)
 {
 	for (int l = 0; l < 4; l++) {

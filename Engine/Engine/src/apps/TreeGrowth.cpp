@@ -46,6 +46,8 @@ void setupTree(SceneGraph* sceneGraph) {
 	module->root = new BranchNode();
 	module->root->relativePosition = { 0.0f, -10.0f, 0.0f };
 
+	// module 1
+	/** /
 	BranchNode* child = createBranch(sceneGraph, module->root, { 0.0f, 18.0f, 0.0f });
 
 	{
@@ -122,6 +124,54 @@ void setupTree(SceneGraph* sceneGraph) {
 		}
 		
 	}
+	/**/
+	//module 2
+	/**/
+	BranchNode* child = createBranch(sceneGraph, module->root, { 0.0f, 12.0f, 0.0f });
+	{
+		BranchNode* childA = createBranch(sceneGraph, child, { 5.0f, 5.0f, -2.0f });
+		{
+			BranchNode* childA1 = createBranch(sceneGraph, childA, { 3.0f, 1.0f, 1.0f });
+			BranchNode* childA2 = createBranch(sceneGraph, childA, { 4.0f, 5.0f, -2.0f });
+			BranchNode* childA3 = createBranch(sceneGraph, childA, { 1.5f, 2.5f, -1.5f });
+		}
+
+		BranchNode* childB = createBranch(sceneGraph, child, { 0.0f, 7.0f, 0.0f });
+		{
+			BranchNode* childB1 = createBranch(sceneGraph, childB, { 5.0f, 9.5f, 0.5f });
+			BranchNode* childB2 = createBranch(sceneGraph, childB, { 0.0f, 15.0f, 0.0f });
+			{
+				BranchNode* childB2a = createBranch(sceneGraph, childB2, { 2.0f, 4.5f, 1.5f });
+				BranchNode* childB2b = createBranch(sceneGraph, childB2, { 0.0f, 6.5f, 0.0f });
+				{
+					BranchNode* childB2b1 = createBranch(sceneGraph, childB2b, { 3.5f, 6.0f, -0.5f });
+					BranchNode* childB2b2 = createBranch(sceneGraph, childB2b, { 0.0f, 6.5f, 0.0f });
+					BranchNode* childB2b3 = createBranch(sceneGraph, childB2b, { -3.0f, 6.0f, 0.5f });
+				}
+				BranchNode* childB2c = createBranch(sceneGraph, childB2, { -2.5f, 6.0f, -2.0f });
+			}
+
+			BranchNode* childB3 = createBranch(sceneGraph, childB, { -3.0f, 4.5f, 1.5f });
+			{
+				BranchNode* childB3a = createBranch(sceneGraph, childB3, { -1.5f, 3.0f, -0.5f });
+				BranchNode* childB3b = createBranch(sceneGraph, childB3, { -2.0f, 1.5f, 1.0f });
+				BranchNode* childB3c = createBranch(sceneGraph, childB3, { -1.0f, -0.5f, 0.2f });
+			}
+		}
+
+		BranchNode* childC = createBranch(sceneGraph, child, { -5.0f, 5.0f, -2.0f });
+		{
+			BranchNode* childC1 = createBranch(sceneGraph, childC, { -0.2f, 3.5f, -1.0f });
+			BranchNode* childC2 = createBranch(sceneGraph, childC, { -2.5f, 3.0f, -1.5f });
+			{
+				BranchNode* childC2a = createBranch(sceneGraph, childC2, { -1.0f, 3.0f, -0.5f });
+				BranchNode* childC2b = createBranch(sceneGraph, childC2, { -2.0f, 2.0f, 0.0f });
+				BranchNode* childC2c = createBranch(sceneGraph, childC2, { -1.0f, 0.1f, 0.5f });
+			}
+			BranchNode* childC3 = createBranch(sceneGraph, childC, { -3.0f, 0.5f, 1.5f });
+		}
+	}
+	/**/
 }
 
 void TreeGrowth::start() {

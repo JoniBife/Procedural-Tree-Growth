@@ -22,6 +22,17 @@ static BranchModule* module;
 
 static float currTime = 0.0f;
 
+BranchNode* createBranch(SceneGraph* sceneGraph, BranchNode* parent, Vec3 orientation)
+{
+	float length = orientation.magnitude();
+	BranchNode* child = parent->createChild(orientation);
+	child->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
+	child->growthParameters = growthParameters;
+	child->sceneGraphNode->addTexture(woodTexture);
+
+	return child;
+}
+
 void setupTree(SceneGraph* sceneGraph) {
 	growthParameters = new GrowthParameters();
 	growthParameters->gP = 0.12f;
@@ -33,45 +44,84 @@ void setupTree(SceneGraph* sceneGraph) {
 	module = new BranchModule();
 	module->growthRate = growthRate(growthParameters->vRootMax, vMin, growthParameters->vRootMax, growthParameters->gP);
 	module->root = new BranchNode();
-	module->root->relativePosition = { 0.0f, 0.0f, 0.0f };
+	module->root->relativePosition = { 0.0f, -10.0f, 0.0f };
 
-	BranchNode* child = module->root->createChild({ 0.0f,10.0f,0.0f });
-	child->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
-	child->growthParameters = growthParameters;
-	child->sceneGraphNode->addTexture(woodTexture);
-	/*{
-		BranchNode* childA = child->createChild({ 5.0f,5,0.0f });
-		childA->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
-		childA->growthParameters = growthParameters;
-		childA->sceneGraphNode->addTexture(woodTexture);
+	BranchNode* child = createBranch(sceneGraph, module->root, { 0.0f, 18.0f, 0.0f });
+
+	{
+
+		BranchNode* childA = createBranch(sceneGraph, child, { 9.0f, 9.0f, -4.5f });
 		{
-			BranchNode* childA1 = childA->createChild({ 0.0f,5,0.0f });
-			childA1->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
-			childA1->growthParameters = growthParameters;
-			childA1->sceneGraphNode->addTexture(woodTexture);
+			BranchNode* childA1 = createBranch(sceneGraph, childA, { 7.0f, 4.0f, 2.0f });
+			{
+				BranchNode* childA1a = createBranch(sceneGraph, childA1, { 2.0f, 2.0f, -1.0f });
 
-			BranchNode* childA2 = childA->createChild({ 5.0f,0.0f,0.0f });
-			childA2->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
-			childA2->growthParameters = growthParameters;
-			childA2->sceneGraphNode->addTexture(woodTexture);
+				BranchNode* childA1b = createBranch(sceneGraph, childA1, { 4.0f, 1.0f, 0.0f });
+				{
+					BranchNode* childA1b1 = createBranch(sceneGraph, childA1b, { 2.0f, -0.5f, 1.0f });
+					BranchNode* childA1b2 = createBranch(sceneGraph, childA1b, { 2.0f, 3.0f, -1.0f });
+
+				}
+			}
+
+			BranchNode* childA2 = createBranch(sceneGraph, childA, { 2.0f, 7.0f, -3.0f });
+			{
+				BranchNode* childA2a = createBranch(sceneGraph, childA2, { 0.5f, 4.0f, -2.0f });
+
+			}
+
 		}
 
-		BranchNode* childB = child->createChild({ -5.0f,5.0f,0.0f });
-		childB->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
-		childB->growthParameters = growthParameters;
-		childB->sceneGraphNode->addTexture(woodTexture);
+		BranchNode* childB = createBranch(sceneGraph, child, { 0.0f, 12.0f, 0.0f });
 		{
-			BranchNode* childB1 = childB->createChild({ 0.0f,5,0.0f });
-			childB1->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
-			childB1->growthParameters = growthParameters;
-			childB1->sceneGraphNode->addTexture(woodTexture);
+			BranchNode* childB1 = createBranch(sceneGraph, childB, { 6.0f, 12.0f, 2.0f });
+			{
+				BranchNode* childB1a = createBranch(sceneGraph, childB1, { 2.0f, 3.5f,0.0f });
+				{
+					BranchNode* childB1a1 = createBranch(sceneGraph, childB1a, { 1.0f, 6.0f, 0.0f });
+					{
+						BranchNode* childB1a1a = createBranch(sceneGraph, childB1a1, { 1.5f, 3.0f,0.0f });
+						BranchNode* childB1a1b = createBranch(sceneGraph, childB1a1, { -1.0f, 3.0f,0.0f });
 
-			BranchNode* childB2 = childB->createChild({ -5.0f,0.0f,0.0f });
-			childB2->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
-			childB2->growthParameters = growthParameters;
-			childB2->sceneGraphNode->addTexture(woodTexture);
+					}
+				}
+
+				BranchNode* childB1b = createBranch(sceneGraph, childB1, { -0.50f, 3.5f,0.0f });
+				{
+					BranchNode* childB1b1 = createBranch(sceneGraph, childB1b, { 0.0f, 4.0f,0.0f });
+
+				}
+			}
+
+			BranchNode* childB2 = createBranch(sceneGraph, childB, { -4.0f, 6.0f, -2.0f });
+			{
+				BranchNode* childB2a = createBranch(sceneGraph, childB2, { -3.0f, 6.0f, -2.0f });
+
+				BranchNode* childB2b = createBranch(sceneGraph, childB2, { -1.5f, 1.0f,1.0f });
+				{
+					BranchNode* childB21 = createBranch(sceneGraph, childB2b, { 0.5f, 2.0f,0.5f });
+					BranchNode* childB22 = createBranch(sceneGraph, childB2b, { -2.0f, -1.0f, 1.0f });
+				}
+			}
 		}
-	}*/
+		
+		BranchNode* childC = createBranch(sceneGraph, child, { -9.0f, 9.0f, -5.0f });
+		{
+			BranchNode* childC1 = createBranch(sceneGraph, childC, { -3.0f, 12.0f,0.0f });
+			{
+				BranchNode* childC1a = createBranch(sceneGraph, childC1, { 0.0f, 3.0f,0.0f });
+				BranchNode* childC1b = createBranch(sceneGraph, childC1, { -2.0f, 3.5f,0.0f });
+
+			}
+
+			BranchNode* childC2 = createBranch(sceneGraph, childC, { -6.0f, 1.0f,0.0f });
+			{
+				BranchNode* childC2a = createBranch(sceneGraph, childC2, { -5.0f, 2.0f,0.0f });
+				BranchNode* childC2b = createBranch(sceneGraph, childC2, { -2.0f, -1.0f,0.0f });
+			}
+		}
+		
+	}
 }
 
 void TreeGrowth::start() {
@@ -99,7 +149,7 @@ void TreeGrowth::start() {
 	/**/
 
 	// Adding a spherical camera controller
-	cameraController = new SphericalCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow(), -30.0f);
+	cameraController = new SphericalCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow(), -50.0f);
 	getCamera()->addCameraController(cameraController);
 
 	setupTree(getSceneGraph());
@@ -129,6 +179,9 @@ void TreeGrowth::end() {
 	delete sp;
 	delete cylinder;
 	delete woodTexture;
-};
+}
+
+;
+
 
 

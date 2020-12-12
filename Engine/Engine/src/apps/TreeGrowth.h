@@ -14,7 +14,6 @@ public:
 
 	void end() override;
 
-
 };
 
 #endif

@@ -11,7 +11,6 @@
 #define COLORS 2
 #define TEXTCOORDS 3
 #define TANGENTS 4
-#define BITANGENTS 5
 
 Mesh::Mesh() {}
 
@@ -22,7 +21,6 @@ Mesh::Mesh(const Mesh& mesh) {
 	textCoords = mesh.textCoords;
 	indices = mesh.indices;
 	tangents = mesh.tangents;
-	bitangents = mesh.bitangents;
 }
 
 Mesh::Mesh(const std::vector<Vec4>& vertices) : vertices(vertices) {}
@@ -67,9 +65,6 @@ Mesh::~Mesh() {
 	if (!tangents.empty()) {
 		GL_CALL(glDeleteBuffers(1, &vboTangentsId));
 	}
-	if (!bitangents.empty()) {
-		GL_CALL(glDeleteBuffers(1, &vboBitangentsId));
-	}
 	GL_CALL(glDeleteVertexArrays(1, &vaoId));
 	GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	GL_CALL(glBindVertexArray(0));
@@ -96,7 +91,7 @@ void Mesh::init() {
 		{
 			// Obtaining the number of buffers that need to be created
 			GLsizei numberOfBuffers = 1;
-			int idxNormals, idxColors, idxTextCoords, idxIndices, idxTangents, idxBitangents;
+			int idxNormals, idxColors, idxTextCoords, idxIndices, idxTangents;
 			if (!normals.empty()) {
 				idxNormals = numberOfBuffers;
 				++numberOfBuffers;
@@ -115,10 +110,6 @@ void Mesh::init() {
 			}
 			if (!tangents.empty()) {
 				idxTangents = numberOfBuffers;
-				++numberOfBuffers;
-			}
-			if (!bitangents.empty()) {
-				idxBitangents = numberOfBuffers;
 				++numberOfBuffers;
 			}
 
@@ -193,17 +184,6 @@ void Mesh::init() {
 				}
 			}
 
-			if (!bitangents.empty()) {
-				vboBitangentsId = bufferIds[idxBitangents];
-
-				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboBitangentsId));
-				{
-					GL_CALL(glBufferData(GL_ARRAY_BUFFER, bitangents.size() * sizeof(Vec3), &bitangents[0], GL_STATIC_DRAW));
-					GL_CALL(glEnableVertexAttribArray(BITANGENTS));
-					GL_CALL(glVertexAttribPointer(BITANGENTS, 2, GL_FLOAT, GL_FALSE, sizeof(Vec3), 0));
-				}
-			}
-
 			// BufferIds was allocated on the heap therefore we delete it because we no longer need it
 			delete[] bufferIds;
 		}
@@ -244,7 +224,7 @@ void Mesh::draw() {
 	}
 }
 
-void Mesh::calculateTangentsAndBitangents() {
+void Mesh::calculateTangents() {
 	// TODO Calculate the tangents and bitangents in parallel after a certain number of vertices
 	for (int i = 0; i < vertices.size(); i += 3) {
 		// Shortcuts for vertices
@@ -267,19 +247,12 @@ void Mesh::calculateTangentsAndBitangents() {
 
 		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
 		Vec4 tangentAux = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-		Vec4 bitangentAux = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
-
 		Vec3 tangent = Vec3(tangentAux.x, tangentAux.y, tangentAux.z);
-		Vec3 bitangent = Vec3(bitangentAux.x, bitangentAux.y, bitangentAux.z);
+		tangent.normalize();
 
 		tangents.push_back(tangent);
 		tangents.push_back(tangent);
 		tangents.push_back(tangent);
-
-		// Same thing for bitangents
-		bitangents.push_back(bitangent);
-		bitangents.push_back(bitangent);
-		bitangents.push_back(bitangent);
 	}
 	
 }

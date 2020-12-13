@@ -14,11 +14,14 @@ private:
 	Mesh* mesh = nullptr;
 	Mat4 model = Mat4::IDENTITY;
 	GLint modelUniformLocation = GLint(-1);
+	GLint normalUniformLocation = GLint(-1);
 	ShaderProgram* shaderProgram = nullptr;
 	std::vector<Texture2D*> textures;
 	std::vector<SceneNode*> children;
 	std::function<void(ShaderProgram*)> beforeDraw;
 	std::function<void()> afterDraw;
+	// Indicates whether setModel has been called recently, its an optimization to avoid calculating the normal matrix every frame
+	bool modelChanged = true; 
 
 	Mat4 retriveModelRecursively();
 

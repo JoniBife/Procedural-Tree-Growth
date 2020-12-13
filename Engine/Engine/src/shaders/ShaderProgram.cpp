@@ -7,10 +7,9 @@
 #define COLORS 2
 #define TEXTCOORDS 3
 #define TANGENTS 4
-#define BITANGENTS 5
 
 // In the future we should add other constructors to support other types of shaders
-ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : vertexShader(vertexShader), fragmentShader(fragmentShader) 
+ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : vertexShader(vertexShader), fragmentShader(fragmentShader)
 {
 	GL_CALL(id = glCreateProgram());
 
@@ -26,8 +25,7 @@ ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : ver
     GL_CALL(glBindAttribLocation(id, NORMALS, "inNormal"));
     GL_CALL(glBindAttribLocation(id, COLORS, "inColor"));
     GL_CALL(glBindAttribLocation(id, TEXTCOORDS, "inTextCoord"));
-    GL_CALL(glBindAttribLocation(id, TANGENTS, "inTangents"));
-    GL_CALL(glBindAttribLocation(id, BITANGENTS, "inBitangents"));
+    GL_CALL(glBindAttribLocation(id, TANGENTS, "inTangent"));
 
 	GL_CALL(glLinkProgram(id));
 
@@ -51,6 +49,48 @@ ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : ver
     GL_CALL(glDetachShader(id, fragmentShader.getId()));
 }
 
+ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& geometryShader, Shader& fragmentShader) : vertexShader(vertexShader), geometryShader(geometryShader), fragmentShader(fragmentShader) 
+{
+    GL_CALL(id = glCreateProgram());
+
+    // Attaching shaders to program
+    GL_CALL(glAttachShader(id, vertexShader.getId()));
+    GL_CALL(glAttachShader(id, geometryShader.getId()));
+    GL_CALL(glAttachShader(id, fragmentShader.getId()));
+
+    // This step is unnecessary if you use the location specifier in your shader
+    // e.g. layout (location = 0) in vec3 in_Position;
+    // Even if the shader does not contain one of these attributes its alright
+    // OpenGL Docs: " It is also permissible to bind a generic attribute index to an attribute variable name that is never used in a vertex shader."
+    GL_CALL(glBindAttribLocation(id, VERTICES, "inPosition"));
+    GL_CALL(glBindAttribLocation(id, NORMALS, "inNormal"));
+    GL_CALL(glBindAttribLocation(id, COLORS, "inColor"));
+    GL_CALL(glBindAttribLocation(id, TEXTCOORDS, "inTextCoord"));
+    GL_CALL(glBindAttribLocation(id, TANGENTS, "inTangent"));
+
+    GL_CALL(glLinkProgram(id));
+
+    GLint programLinked;
+    GL_CALL(glGetProgramiv(id, GL_LINK_STATUS, &programLinked));
+
+    if (programLinked != GL_TRUE) {
+        int logLength;
+        GL_CALL(glGetProgramiv(id, GL_INFO_LOG_LENGTH, &logLength));
+        char* infoLog = new char[logLength]();
+        GL_CALL(glGetProgramInfoLog(id, logLength, &logLength, infoLog));
+        std::cout << "Program linking ERROR [ " << infoLog << " ]" << std::endl;
+        std::cout << infoLog << std::endl;
+        delete[] infoLog;
+        GL_CALL(glDeleteProgram(id));
+        exit(EXIT_FAILURE);
+    }
+
+    // Program has been created and successfully linked so we detach the shaders
+    GL_CALL(glDetachShader(id, vertexShader.getId()));
+    GL_CALL(glDetachShader(id, geometryShader.getId()));
+    GL_CALL(glDetachShader(id, fragmentShader.getId()));
+}
+
 ShaderProgram::~ShaderProgram() {
     GL_CALL(glDeleteProgram(id));
 }
@@ -70,6 +110,10 @@ GLuint ShaderProgram::getProgramId() const {
 void ShaderProgram::setUniform(const GLint location, const GLint value) {
     assert(location >= 0); // execution should stop if location is < 0
     GL_CALL(glUniform1i(location, value));
+}
+void ShaderProgram::setUniform(const GLint location, const GLuint value) {
+    assert(location >= 0); // execution should stop if location is < 0
+    GL_CALL(glUniform1ui(location, value));
 }
 void ShaderProgram::setUniform(const GLint location, const GLfloat value) {
     assert(location >= 0); // execution should stop if location is < 0

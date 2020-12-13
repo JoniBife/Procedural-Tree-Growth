@@ -24,11 +24,13 @@ class Shader {
 
 private:
 	std::string filePath;
-	GLuint id;
+	GLuint id = -1;
 	GLenum type;
 	std::string code;
 
 public:
+	// Default constructor
+	Shader();
 	// Receives the shader file path and compiles the shader
 	Shader(const GLenum shaderType, const std::string& filePath);
 	// Deletes the shader using glDeleteShader

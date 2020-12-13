@@ -185,11 +185,13 @@
     <ClInclude Include="src\apps\Tree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragmentShaderCGJ.glsl" />
-    <None Include="shaders\vertexShaderCGJ.glsl" />
-    <None Include="shaders\vertexShader2.glsl" />
-    <None Include="shaders\fragmentShader2.glsl" />
+    <None Include="shaders\fragmentShaderNM.glsl" />
+    <None Include="shaders\vertexShaderNM.glsl" />
+    <None Include="shaders\geometryShaderNM.glsl" />
   </ItemGroup>
 </Project>

@@ -85,7 +85,7 @@ void Engine::setupOpenGL() {
 #if _DEBUG
 	printOpenGLInfo();
 #endif
-	GL_CALL(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
+	GL_CALL(glClearColor(BACKGROUND_COLOR));
 	GL_CALL(glEnable(GL_DEPTH_TEST));
 	GL_CALL(glDepthFunc(GL_LEQUAL));
 	GL_CALL(glDepthMask(GL_TRUE));

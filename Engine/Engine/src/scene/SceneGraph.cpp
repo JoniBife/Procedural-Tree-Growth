@@ -39,6 +39,7 @@ SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model, ShaderProgram* 
 
 void SceneNode::setModel(const Mat4& model) {
 	this->model = model;
+	modelChanged = true;
 }
 
 void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
@@ -74,6 +75,7 @@ void SceneNode::init() {
 	if (mesh != nullptr) {
 		mesh->init();
 		modelUniformLocation = shaderProgram->getUniformLocation("model");
+		normalUniformLocation = shaderProgram->getUniformLocation("normal");
 	}
 	for (SceneNode* child : children) {
 		child->init();
@@ -104,7 +106,14 @@ void SceneNode::draw() {
 		if(beforeDraw)
 			beforeDraw(shaderProgram);
 
-		shaderProgram->setUniform(modelUniformLocation, retriveModelRecursively());
+		if (modelChanged) {
+			Mat4 model = retriveModelRecursively();
+			shaderProgram->setUniform(modelUniformLocation, model);
+			Mat3 inverse;
+			bool canInverse = model.toMat3().inverse(inverse);
+			shaderProgram->setUniform(normalUniformLocation, canInverse ? inverse.transpose() : Mat3::ZERO);
+			modelChanged = false;
+		}
 
 		mesh->draw();
 

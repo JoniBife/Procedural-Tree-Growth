@@ -35,6 +35,10 @@ float Mat3::determinant() const {
 			m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
 }
 
+Mat3 Mat3::ZERO = { 0, 0, 0,
+					0, 0, 0,
+					0, 0, 0 };
+
 Mat3 Mat3::IDENTITY = { 1, 0, 0,
 						0, 1, 0,
 						0, 0, 1 };

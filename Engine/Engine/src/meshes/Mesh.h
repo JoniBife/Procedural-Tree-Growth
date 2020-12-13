@@ -36,7 +36,6 @@ public:
 	std::vector<Vec2> textCoords;
 	std::vector<GLubyte> indices;
 	std::vector<Vec3> tangents;
-	std::vector<Vec3> bitangents;
 
 private:
 	GLuint vaoId = GLuint(0);
@@ -87,7 +86,7 @@ public:
 	void draw() override;
 
 	// Calculates the tangents and bitangents
-	void calculateTangentsAndBitangents();
+	void calculateTangents();
 
 	// Creates a black centered in clip space (0,0,0)
 	static Mesh square(const float width = 0.75f);

@@ -57,6 +57,7 @@
     <ClInclude Include="src\controllers\FreeCameraController.h" />
     <ClInclude Include="src\controllers\SphericalCameraController.h" />
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\InputManager.h" />
     <ClInclude Include="src\textures\stb_image.h" />
     <ClInclude Include="src\math\Mat2.h" />
     <ClInclude Include="src\math\Mat3.h" />
@@ -79,10 +80,9 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragmentShader2.glsl" />
-    <None Include="shaders\fragmentShaderCGJ.glsl" />
-    <None Include="shaders\vertexShader2.glsl" />
-    <None Include="shaders\vertexShaderCGJ.glsl" />
+    <None Include="shaders\fragmentShaderNM.glsl" />
+    <None Include="shaders\geometryShaderNM.glsl" />
+    <None Include="shaders\vertexShaderNM.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

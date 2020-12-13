@@ -46,12 +46,14 @@ class ShaderProgram {
 
 private:
 	GLuint id;
-	Shader& vertexShader;
-	Shader& fragmentShader;
+	Shader vertexShader;
+	Shader fragmentShader;
+	Shader geometryShader;
 
 public:
 	// In the future we should add other constructors to support other types of shaders
 	ShaderProgram(Shader& vertexShader, Shader& fragmentShader);
+	ShaderProgram(Shader& vertexShader, Shader& geometryShader, Shader& fragmentShader);
 	~ShaderProgram();
 
 	//void bindAttributeLocation(const std::string& name,const int location); Maybe in the future
@@ -65,6 +67,7 @@ public:
 
 	// All theses methods se the value of a specific uniform
 	void setUniform(const GLint location, const GLint value);
+	void setUniform(const GLint location, const GLuint value);
 	void setUniform(const GLint location, const GLfloat value);
 	void setUniform(const GLint location, const Vec2& value);
 	void setUniform(const GLint location, const Vec3& value);

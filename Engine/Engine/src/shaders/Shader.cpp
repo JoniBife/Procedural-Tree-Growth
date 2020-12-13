@@ -3,6 +3,8 @@
 #include "Shader.h"
 #include "../utils/OpenGLUtils.h"
 
+// Default constructor
+Shader::Shader() { /*EMPTY*/ } 
 
 // Receives the shader file path and compiles the shader
 Shader::Shader(const GLenum shaderType, const std::string& filePath) : type(shaderType), filePath(filePath) {

@@ -15,6 +15,7 @@ struct Mat3 {
 		const float l3c1, const float l3c2, const float l3c3);
 	Mat3(const Mat3& other);
 
+	static Mat3 ZERO;
 	static Mat3 IDENTITY;
 	static Mat3 dual(const Vec3& v);
 	static Mat3 randomMatrix(float min, float max);

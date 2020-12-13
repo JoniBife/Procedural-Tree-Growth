@@ -55,8 +55,8 @@ vec3 calculateLight(vec3 color, vec3 surfaceNormal, vec3 fragPos, vec3 lightPos,
 
 void main(void)
 {
-	// Multiplying texture coordinate by 2 to descrese its size in half
-	vec2 textCoord = exTextCoord * 2.0;
+	// Multiplying texture coordinate by the texture coefficient to scale its size
+	vec2 textCoord = exTextCoord * 2;
 
 	// Texture color
 	vec3 colorTxt = texture(diffuseMap, textCoord).rgb;

@@ -7,6 +7,7 @@
 #include "Equations.h"
 #include "GrowthParameters.h"
 #include "../math/MathAux.h"
+#include "../math/Qtrn.h"
 
 /*
 * Represents a node within a branch module
@@ -51,16 +52,17 @@ struct BranchNode {
 			Mat4 scaling = Mat4::scaling({ branchDiameter, branchLength, branchDiameter });
 			translation = Mat4::translation({ 0.0f, branchLength / 2, 0.0f });
 
+			// We also have to rotate the branch to the direction of its node
 			Vec3 parentPosition = parent->calculatePosition();
-			Vec3 dir = ((parentPosition + relativePosition) - parentPosition).normalize();
+			Vec3 dir = relativePosition.normalize();
+			Vec3 ref = Vec3(0, 1, 0);
 
-			// double yaw = Math.Atan2(ds.X, ds.Y);double pitch = Math.Atan2(ds.Z, Math.Sqrt((ds.X * ds.X) + (ds.Y * ds.Y)));	
+			Vec3 axis = cross(dir, ref); 
+			float t = 1 + dot(dir,ref);
+			Qtrn q(t, -axis.x, axis.y, -axis.z);
+			q = q.normalize();
 
-			//float yaw = atan2f(-dir.x, dir.y);
-			//float pitch = atan2f(fsignf(dir.y) *dir.z, sqrtf((dir.x*dir.x) + (dir.y *dir.y)));
-			//float yaw = atan2f(-dir.x, dir.z);
-			//float pitch = atan2f(dir.z, sqrtf((dir.x * dir.x) + (dir.y * dir.y)));
-			rotation = Mat4::rotationFromDir(dir);
+			Mat4 rotation = q.toRotationMatrix();
 
 			// Finally we translate the node to its correct position in world space (TODO CHECK IF THIS IS WORLD SPACE)
 			Mat4 positioning = Mat4::translation(parent->calculatePosition());
@@ -123,28 +125,30 @@ struct BranchNode {
 		BranchNode* child = new BranchNode();
 		child->relativePosition = relativePosition;
 		child->parent = this;
-		Vec3 parentPosition =this->calculatePosition();
-		child->maxBranchLength = ((parentPosition+relativePosition) - parentPosition).magnitude();
+		child->maxBranchLength = relativePosition.magnitude();
 		children.push_back(child);
 		return child;
 	}
 
 	// Equation 8 of the paper
-	float segmentDiameter(const BranchNode* branchNode, float thickeningFactor, float lerpFactor) {
+	float segmentDiameter(const BranchNode* branchNode, float thickeningFactor, float lerpFactor, bool first = true) {
 
-		if (branchNode->children.size() == 0)
-			return lerp(0,thickeningFactor,lerpFactor);
+		if (branchNode->children.size() == 0) {
+			if (first)
+				return lerp(0, thickeningFactor, lerpFactor);
+			return thickeningFactor;
+		}
 
-		//if (branchNode->branchLength < branchNode->maxBranchLength)
-
-		float branchSegmentDiameter = thickeningFactor;
+		float branchSegmentDiameter = 0.0f;
 		for (BranchNode* child : branchNode->children) {
-			float childSegmentDiameter = segmentDiameter(child, thickeningFactor, child->branchLength/child->maxBranchLength);
+			float childSegmentDiameter = segmentDiameter(child, thickeningFactor, child->branchLength/child->maxBranchLength, false);
 			branchSegmentDiameter += SQR(childSegmentDiameter);
 		}
 
 		return lerp(0,sqrtf(branchSegmentDiameter), lerpFactor);
 	}
+
+
 };
 
 #endif

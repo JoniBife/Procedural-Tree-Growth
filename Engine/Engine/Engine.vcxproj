@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\apps\BoundingSphere.cpp" />
+    <ClCompile Include="src\apps\BranchModule.cpp" />
+    <ClCompile Include="src\apps\BranchNode.cpp" />
+    <ClCompile Include="src\apps\Equations.cpp" />
     <ClCompile Include="src\apps\Tree.cpp" />
     <ClCompile Include="src\apps\TreeGrowth.cpp" />
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
@@ -50,6 +54,7 @@
     <ClInclude Include="src\apps\BranchNode.h" />
     <ClInclude Include="src\apps\Equations.h" />
     <ClInclude Include="src\apps\GrowthParameters.h" />
+    <ClInclude Include="src\apps\Morphospace.h" />
     <ClInclude Include="src\apps\Tree.h" />
     <ClInclude Include="src\apps\TreeGrowth.h" />
     <ClInclude Include="src\Configurations.h" />

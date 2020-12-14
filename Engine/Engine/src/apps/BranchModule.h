@@ -6,32 +6,36 @@
 #include "../math/Vec3.h"
 #include "../apps/BoundingSphere.h"
 #include "Equations.h"
+//#include "Tree.h"
 
 struct BranchModule {
+
 	float lightExposure;
 	float vigour;
 	float growthRate; // Upsilon in the paper
 	float physiologicalAge = 0.0f;
 
-	Vec4 relativePosition;
+	bool main = false;
+
 	Vec3 orientation; // Orientation is represented using Euler Angles (yaw, pitch, roll)
 
-	//BoundingSphere boundingSphere;
+	BranchModule* parent;
+	std::vector<BranchModule*> children;
+
+	BoundingSphere boundingSphere;
+
+	//Tree* tree; // The tree where this module is contained
 
 	BranchNode* root;
+	std::vector<BranchNode*> tips;
 
-	void updateModule(float elapsedTime) {
+	void updateModule(float elapsedTime);
 
-		// First we update the module physiological age
-		physiologicalAge += growthRate * elapsedTime;
+	void adapt();
 
-		// Then we update the diameter and the length of each of the segments of the module
-		root->updateNode(physiologicalAge);
-	}
+	bool reachedMatureAge(BranchNode* branch);
 
-	void adapt() { root->adapt(); }
-
-	BranchModule() {}
+	BranchModule* attachModule(BranchNode* root);
 
 };
 

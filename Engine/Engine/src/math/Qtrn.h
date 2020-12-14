@@ -39,6 +39,7 @@ public:
 
 	static Qtrn lerp(const Qtrn& q0, const Qtrn& q1, float k);
 	static Qtrn slerp(const Qtrn& q0, const Qtrn& q1, float k);
+	static Qtrn fromDir(const Vec3& dir, const Vec3& ref = { 0.0f, 1.0f, 0.0f });
 
 	Mat4 toRotationMatrix() const;
 	

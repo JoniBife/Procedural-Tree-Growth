@@ -27,10 +27,11 @@ static GLint normalMapping = GL_TRUE;
 
 static float currTime = 0.0f;
 
+static float scaleLength = 1.5f;
+
 BranchNode* createBranch(SceneGraph* sceneGraph, BranchNode* parent, Vec3 orientation)
 {
-	float length = orientation.magnitude();
-	BranchNode* child = parent->createChild(orientation);
+	BranchNode* child = parent->createChild(orientation * scaleLength);
 	child->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
 	child->growthParameters = growthParameters;
 	child->sceneGraphNode->addTexture(woodTexture);
@@ -48,12 +49,12 @@ void setupTree(SceneGraph* sceneGraph) {
 	float vMin = 0;
 
 	module = new BranchModule();
-	module->growthRate = growthRate(growthParameters->vRootMax, vMin, growthParameters->vRootMax, growthParameters->gP);
+	module->growthRate = eqt::growthRate(growthParameters->vRootMax, vMin, growthParameters->vRootMax, growthParameters->gP);
 	module->root = new BranchNode();
 	module->root->relativePosition = { 0.0f, -10.0f, 0.0f };
 
 	// module 1
-	/** /
+	/*/
 	BranchNode* child = createBranch(sceneGraph, module->root, { 0.0f, 18.0f, 0.0f });
 
 	{
@@ -269,6 +270,7 @@ void TreeGrowth::start() {
 bool adapted = false;
 
 void TreeGrowth::update() {
+
 	module->updateModule((float)getElapsedTime());
 
 	sp->use();

@@ -159,6 +159,16 @@ Qtrn Qtrn::slerp(const Qtrn& q0, const Qtrn& q1, float k) {
 	return (q0 * k0 + q1 * k1).normalize();
 }
 
+Qtrn Qtrn::fromDir(const Vec3& dir, const Vec3& ref) {
+
+	Vec3 axis = cross(dir, ref);
+	float t = 1 + dot(dir, ref);
+	Qtrn q(t, -axis.x, axis.y, -axis.z);
+	q = q.normalize();
+
+	return q;
+}
+
 Mat4 Qtrn::toRotationMatrix() const {
 	
 	Qtrn qn = this->normalize();

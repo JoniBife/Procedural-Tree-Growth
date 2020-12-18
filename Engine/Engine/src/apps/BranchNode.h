@@ -26,13 +26,14 @@ struct BranchNode {
 
 	bool main = false;
 
-	GrowthParameters* growthParameters;
 	SceneNode* sceneGraphNode; // Contains the mesh that is the cylinder that extends from the parent's position to this position
 	
 	BranchNode* parent;
 	std::vector<BranchNode*> children;
 
 	int reachedMax = 0;
+
+	~BranchNode();
 
 	void updateNode(float modulePhysiologicalAge);
 
@@ -43,7 +44,7 @@ struct BranchNode {
 	// So until it reaches the root, all the positions are relatives positions to each other.
 	Vec3 calculatePosition();
 
-	BranchNode* createChild(const Vec3& relativePosition);
+	BranchNode* createChild(const Vec3& relativePosition, float scaleLength);
 
 	
 	float segmentDiameter(const BranchNode* branchNode, float thickeningFactor, float lerpFactor, bool first = true);

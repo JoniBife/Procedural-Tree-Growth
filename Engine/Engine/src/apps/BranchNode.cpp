@@ -1,5 +1,11 @@
 #include "BranchNode.h"
 
+BranchNode::~BranchNode() {
+	for(BranchNode * child : children) {
+		delete child;
+	}
+}
+
 void BranchNode::updateNode(float modulePhysiologicalAge) {
 
 	if (physiologicalAge > modulePhysiologicalAge)
@@ -10,10 +16,10 @@ void BranchNode::updateNode(float modulePhysiologicalAge) {
 		float branchSegmentAge = eqt::segmentPhysiologicalAge(modulePhysiologicalAge, parent->physiologicalAge);
 
 		// Thirdly we calculate the branch length
-		branchLength = eqt::segmentLength(maxBranchLength, branchSegmentAge, growthParameters->scalingCoefficient);
+		branchLength = eqt::segmentLength(maxBranchLength, branchSegmentAge, GrowthParameters::instance->scalingCoefficient);
 
 		// Secondly we calculate the diameter
-		branchDiameter = segmentDiameter(this, growthParameters->thickeningFactor/*,branchLength/maxBranchLength*/);
+		branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor/*,branchLength/maxBranchLength*/);
 
 		// We then scale the cylinder and translate it upwards so that its base stays in the same position
 		Mat4 scaling = Mat4::scaling({ branchDiameter, branchLength, branchDiameter });
@@ -78,11 +84,14 @@ Vec3 BranchNode::calculatePosition() {
 	return relativePosition + parent->calculatePosition();
 }
 
-BranchNode* BranchNode::createChild(const Vec3& relativePosition) {
+BranchNode* BranchNode::createChild(const Vec3& relativePosition, float scaleLength) {
 	BranchNode* child = new BranchNode();
-	child->relativePosition = relativePosition;
+	child->relativePosition = relativePosition * scaleLength;
 	child->parent = this;
-	child->maxBranchLength = relativePosition.magnitude();
+	child->maxBranchLength = child->relativePosition.magnitude();
+	child->sceneGraphNode = sceneGraphNode->parent->createChild(sceneGraphNode->getMesh(), Mat4::ZERO);
+	child->sceneGraphNode->addTexture(sceneGraphNode->getTextures()[0]);
+	child->sceneGraphNode->addTexture(sceneGraphNode->getTextures()[1]);
 	children.push_back(child);
 	return child;
 }

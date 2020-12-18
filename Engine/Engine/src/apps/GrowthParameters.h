@@ -13,7 +13,12 @@ struct GrowthParameters {
 	float g1; // Controls how fast the tropism effect decreases with time
 	float g2; // Controls the overall strength of the tropism
 	float thickeningFactor; // Phi in the paper
-	float scalingCoefficient; // Its a scaling coefficient used in the paper for calculating the segment length
+	float scalingCoefficient; // Its a scaling coefficient used in the paper for calculating the segment lengt
+
+	float vMax; // Maximum module vigour, not clear in the paper whether this is global or module specific
+	float vMin; // Minimum module vigour, not clear in the paper whether this is global or module specific
+
+	static GrowthParameters* instance; // TODO Use proper singleton pattern
 };
 
 #endif

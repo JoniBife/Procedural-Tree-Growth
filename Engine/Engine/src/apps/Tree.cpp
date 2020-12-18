@@ -1,6 +1,28 @@
 #include "Tree.h"
 #include <math.h>
 #include "Equations.h"
+#include "Morphospace.h"
+
+Tree::Tree(const Vec3& positionRoot, SceneGraph* sceneGraph, Texture2D* woodTexture, Texture2D* woodNormalMap) {
+
+	cylinder = Mesh::loadFromFile("../Engine/objs/cylinder32.obj");
+	cylinder->calculateTangents();
+
+	BranchNode* rootNode = new BranchNode();
+	rootNode->relativePosition = positionRoot;
+	rootNode->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
+	rootNode->sceneGraphNode->addTexture(woodTexture);
+	rootNode->sceneGraphNode->addTexture(woodNormalMap);
+
+	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
+	root->vigour = GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
+}
+
+Tree::~Tree() {
+	delete cylinder;
+	delete root->root; // First we delete the graph of BranchNodes
+	delete root; // Then we delete the graph of BranchModules
+}
 
 
 void Tree::startGrowth(GrowthParameters* growthParameters) {
@@ -17,8 +39,9 @@ void Tree::resumeGrowth() {
 }
 
 void Tree::grow(float elapsedTime) {
-	distributeLightAndVigor();
-	developModules(elapsedTime);
+	//distributeLightAndVigor();
+	//developModules(elapsedTime);
+	root->updateModule(elapsedTime);
 }
 
 void Tree::accumulateModuleLightExposure(BranchModule* module) {
@@ -91,7 +114,6 @@ void Tree::distributeLightAndVigor() {
 	// Finally we do an acropetal (base-to-tip) pass calculating vigor fluxes at each module intersection
 	calculateVigorFluxes(root);
 }
-
 
 
 void Tree::developModules(float elapsedTime) {

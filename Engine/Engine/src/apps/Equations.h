@@ -7,6 +7,9 @@
 
 namespace eqt {
 
+	// Used to obtain the determinacy for tht morphospace
+	float determinacyMS(float vigourParent, float determinacy, float maxVigour);
+
 	// Equation 2 of the paper
 	float vigor(float vigorModule, float apicalControl, float lightExposureUm, float lightExposureUl);
 

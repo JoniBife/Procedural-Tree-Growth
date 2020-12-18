@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "GL/glew.h"
+#include "ITexture.h"
 
 /*
 * Usage example:
@@ -17,10 +18,8 @@
 * 
 * delete tex;
 */
-class Texture2D {
+class Texture2D : public ITexture {
 
-public:
-	GLuint id = 0;
 private:
 	int width = 0, height = 0, nrChannels = 0; // In RGB there are 3 channels while in RGBA there are 4 for example
 
@@ -28,9 +27,9 @@ public:
 
 	Texture2D(const std::string& textureFilePath);
 
-	void bind(unsigned int unitNumber);
+	void bind(unsigned int unitNumber) override;
 
-	void unBind(unsigned int unitNumber);
+	void unBind(unsigned int unitNumber) override;
 };
 
 #endif

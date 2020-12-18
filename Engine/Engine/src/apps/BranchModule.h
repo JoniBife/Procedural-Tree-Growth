@@ -10,6 +10,7 @@
 
 struct BranchModule {
 
+public:
 	float lightExposure;
 	float vigour;
 	float growthRate; // Upsilon in the paper
@@ -24,10 +25,12 @@ struct BranchModule {
 
 	BoundingSphere boundingSphere;
 
-	//Tree* tree; // The tree where this module is contained
-
 	BranchNode* root;
 	std::vector<BranchNode*> tips;
+
+	BranchModule(BranchNode* root);
+
+	~BranchModule();
 
 	void updateModule(float elapsedTime);
 
@@ -35,7 +38,9 @@ struct BranchModule {
 
 	bool reachedMatureAge(BranchNode* branch);
 
-	BranchModule* attachModule(BranchNode* root);
+	void attachModule(BranchNode* root);
+
+	void calculateCenterOfGeometry();
 
 };
 

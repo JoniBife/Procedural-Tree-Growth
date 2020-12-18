@@ -4,6 +4,8 @@
 #include <map> 
 #include "GrowthParameters.h"
 #include "BranchModule.h"
+#include "../meshes/Mesh.h"
+#include "../textures/Texture2D.h"
 
 class Tree {
 
@@ -14,6 +16,11 @@ public:
 	//std::map<int, float> intersections; // map that contains all the intersections volumes between spheres
 	std::vector<BranchModule*> modules;
 	std::vector<BranchModule*> tips;
+	Mesh* cylinder;
+	
+	Tree(const Vec3& positionRoot, SceneGraph* sceneGraph, Texture2D* woodTexture, Texture2D* woodNormalMap);
+
+	~Tree();
 
 public:
 	void startGrowth(GrowthParameters* growthParameters);

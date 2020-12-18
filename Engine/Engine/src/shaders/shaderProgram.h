@@ -46,9 +46,6 @@ class ShaderProgram {
 
 private:
 	GLuint id;
-	Shader vertexShader;
-	Shader fragmentShader;
-	Shader geometryShader;
 
 public:
 	// In the future we should add other constructors to support other types of shaders

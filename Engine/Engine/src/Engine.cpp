@@ -158,6 +158,8 @@ void Engine::run() {
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
+
+
 		double time = glfwGetTime();
 		elapsedTime = time - lastTime;
 		lastTime = time;
@@ -165,6 +167,8 @@ void Engine::run() {
 		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		
 		update();
+		// TODO Maybe this should not be here
+		sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 		sceneGraph->draw((float)elapsedTime); // Drawing only after update
 		
 

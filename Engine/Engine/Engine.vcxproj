@@ -23,6 +23,9 @@
     <ClCompile Include="src\apps\BranchModule.cpp" />
     <ClCompile Include="src\apps\BranchNode.cpp" />
     <ClCompile Include="src\apps\Equations.cpp" />
+    <ClCompile Include="src\apps\GrowthParameters.cpp" />
+    <ClCompile Include="src\apps\Morphospace.cpp" />
+    <ClCompile Include="src\apps\Singleton.cpp" />
     <ClCompile Include="src\apps\Tree.cpp" />
     <ClCompile Include="src\apps\TreeGrowth.cpp" />
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
@@ -55,6 +58,7 @@
     <ClInclude Include="src\apps\Equations.h" />
     <ClInclude Include="src\apps\GrowthParameters.h" />
     <ClInclude Include="src\apps\Morphospace.h" />
+    <ClInclude Include="src\apps\Singleton.h" />
     <ClInclude Include="src\apps\Tree.h" />
     <ClInclude Include="src\apps\TreeGrowth.h" />
     <ClInclude Include="src\Configurations.h" />
@@ -63,6 +67,7 @@
     <ClInclude Include="src\controllers\SphericalCameraController.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\InputManager.h" />
+    <ClInclude Include="src\textures\ITexture.h" />
     <ClInclude Include="src\textures\stb_image.h" />
     <ClInclude Include="src\math\Mat2.h" />
     <ClInclude Include="src\math\Mat3.h" />

@@ -1,5 +1,9 @@
 #include "Equations.h"
 
+float eqt::determinacyMS(float vigourParent, float determinacy, float maxVigour) {
+	return vigourParent * (determinacy / maxVigour);
+}
+
 // Equation 2 of the paper
 float eqt::vigor(float vigorModule, float apicalControl, float lightExposureUm, float lightExposureUl) {
 	return vigorModule * ((apicalControl * lightExposureUm) / (apicalControl * lightExposureUm + (1 - apicalControl) * lightExposureUl));

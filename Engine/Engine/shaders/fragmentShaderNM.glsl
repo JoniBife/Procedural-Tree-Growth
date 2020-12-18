@@ -18,9 +18,6 @@ uniform float ambientStrength;
 uniform float specularStrength;
 uniform uint shininess;
 
-// The color of the object
-uniform vec3 color;
-
 uniform sampler2D diffuseMap;
 uniform sampler2D normalMap;
 

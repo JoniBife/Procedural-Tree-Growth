@@ -9,7 +9,7 @@
 #define TANGENTS 4
 
 // In the future we should add other constructors to support other types of shaders
-ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : vertexShader(vertexShader), fragmentShader(fragmentShader)
+ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader)
 {
 	GL_CALL(id = glCreateProgram());
 
@@ -49,7 +49,7 @@ ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader) : ver
     GL_CALL(glDetachShader(id, fragmentShader.getId()));
 }
 
-ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& geometryShader, Shader& fragmentShader) : vertexShader(vertexShader), geometryShader(geometryShader), fragmentShader(fragmentShader) 
+ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& geometryShader, Shader& fragmentShader)
 {
     GL_CALL(id = glCreateProgram());
 

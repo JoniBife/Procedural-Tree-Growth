@@ -46,7 +46,7 @@ void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
 	this->shaderProgram = shaderProgram;
 }
 
-void SceneNode::addTexture(Texture2D* texture) {
+void SceneNode::addTexture(ITexture* texture) {
 	this->textures.push_back(texture);
 }
 
@@ -69,6 +69,10 @@ ShaderProgram* SceneNode::getShaderProgram() const{
 }
 std::vector<SceneNode*> SceneNode::getChildren() const {
 	return children;
+}
+
+std::vector<ITexture*> SceneNode::getTextures() const {
+	return textures;
 }
 
 void SceneNode::init() {

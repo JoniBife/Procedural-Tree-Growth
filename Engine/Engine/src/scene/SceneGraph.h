@@ -6,7 +6,7 @@
 #include "../view/Camera.h"
 #include "../meshes/Mesh.h"
 #include "../math/Mat4.h"
-#include "../textures/Texture2D.h"
+#include "../textures/ITexture.h"
 
 class SceneNode {
 
@@ -16,7 +16,7 @@ private:
 	GLint modelUniformLocation = GLint(-1);
 	GLint normalUniformLocation = GLint(-1);
 	ShaderProgram* shaderProgram = nullptr;
-	std::vector<Texture2D*> textures;
+	std::vector<ITexture*> textures;
 	std::vector<SceneNode*> children;
 	std::function<void(ShaderProgram*)> beforeDraw;
 	std::function<void()> afterDraw;
@@ -40,7 +40,7 @@ public:
 
 	void setModel(const Mat4& model);
 	void setShaderProgram(ShaderProgram* shaderProgram);
-	void addTexture(Texture2D* texture);
+	void addTexture(ITexture* texture);
 	void setBeforeDrawFunction(const std::function<void(ShaderProgram*)>& beforeDraw);
 	void setAfterDrawFunction(const std::function<void()>& afterDraw);
 
@@ -48,6 +48,7 @@ public:
 	Mesh* getMesh() const;
 	ShaderProgram* getShaderProgram() const;
 	std::vector<SceneNode*> getChildren() const;
+	std::vector<ITexture*> getTextures() const;
 
 	void init();
 

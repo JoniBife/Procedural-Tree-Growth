@@ -17,11 +17,13 @@
 #include "../utils/OpenGLUtils.h"
 
 static ShaderProgram* sp;
+static ShaderProgram* sp2;
 static FreeCameraController* cameraController;
 static Texture2D* woodTexture;
 static Texture2D* woodTextureNormalMap;
 static Tree* tree;
 static Mesh* sphere;
+static Mesh* plane;
 static SceneNode* sceneNode;
 
 static GLint cameraPosL;
@@ -30,7 +32,7 @@ static GLint normalMapping = GL_TRUE;
 
 static float currTime = 0.0f;
 
-void setupTextures() {
+static void setupTextures() {
 	// Loading textures
 	woodTexture = new Texture2D("../Engine/textures/barkTexture.jpg");
 	woodTextureNormalMap = new Texture2D("../Engine/textures/barkNormalMap.jpg");
@@ -43,7 +45,7 @@ void setupTextures() {
 	sp->setUniform(normalMapID, 1);
 }
 
-void setupLight() {
+static void setupLight() {
 	Vec3 lightColor(1.0f, 1.0f, 1.0f);
 	float ambientStrength = 0.1f;
 
@@ -70,14 +72,14 @@ void setupLight() {
 	sp->stopUsing();
 }
 
-void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int windowHeight) {
+static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int windowHeight) {
 	// Adding a spherical camera controller
 	float cameraMovementSpeed = 30.0f;
 	// Since we are looking at the -z axis in our initial orientation, yaw has to be set -90 degress otherwise we would look at +x axis
 	float initialYaw = -90.0f;
 	float initialPitch = 0.0f;
 
-	Vec3 cameraPos(0.0f, 0.0f, 20.0f); // eye
+	Vec3 cameraPos(0.0f, 0.0f, 50.0f); // eye
 	Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
 	Vec3 cameraFront = cameraTarget - cameraPos;
 	Vec3 cameraUp(0.0f, 50.0f, 0.0f); // up
@@ -91,19 +93,20 @@ void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int window
 	//cameraController = new SphericalCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow(), -5.0f);
 	camera->addCameraController(cameraController);
 	camera->setView(lookAt(cameraPos, cameraPos + cameraFront, cameraUp));
+	camera->setProjection(perspectiveProj);
 }
 
-void setupTree(SceneGraph* sceneGraph) {
+static void setupTree(SceneGraph* sceneGraph) {
 
 	GrowthParameters* growthParameters = new GrowthParameters();
 	growthParameters->gP = 0.12f;
-	growthParameters->scalingCoefficient = 10.0f;
+	growthParameters->scalingCoefficient = 1.29f;
 	growthParameters->vRootMax = 900;
 	growthParameters->thickeningFactor = 0.5f; // original 1.41
 	growthParameters->pMax = 950;
 	growthParameters->vMin = 0.0f;
 	growthParameters->vMax = growthParameters->vRootMax;
-	growthParameters->determinacy = 0.93f;
+	growthParameters->determinacy = 0.01f;
 	growthParameters->apicalControl = 0.87f;
 	growthParameters->tropismAngle = 0.66f;
 	growthParameters->w1 = 0.14f;
@@ -129,23 +132,35 @@ void TreeGrowth::start() {
 	GLuint sharedMatricesIndex = sp->getUniformBlockIndex("SharedMatrices");
 	sp->bindUniformBlock(sharedMatricesIndex, getCamera()->getUboBindingPoint());
 
+	// Loading the shaders and creating the shader program
+	Shader vs2(GL_VERTEX_SHADER, "../Engine/shaders/simpleVertexShader.glsl");
+	Shader fs2(GL_FRAGMENT_SHADER, "../Engine/shaders/simpleFragmentShader.glsl");
+	sp2 = new ShaderProgram(vs2, fs2);
+	// Associating the shared matrix index with the binding point of the camera (0)
+	GLuint sharedMatricesIndex2 = sp->getUniformBlockIndex("SharedMatrices");
+	sp2->bindUniformBlock(sharedMatricesIndex2, getCamera()->getUboBindingPoint());
+
 	setupTextures();
 	setupTree(getSceneGraph());
 	setupCamera(getCamera(), getWindow(),getWindowWidth(), getWindowHeight());
 	setupLight();
 
 	sphere = Mesh::loadFromFile("../Engine/objs/sphere.obj");
+	sphere->paint(ColorRGBA::GREEN);
 
-	sceneNode = getSceneGraph()->getRoot()->createChild(sphere, Mat4::IDENTITY);
+	sceneNode = getSceneGraph()->getRoot()->createChild(sphere, Mat4::IDENTITY, sp2);
 	sceneNode->setBeforeDrawFunction([=](ShaderProgram* sp) {
 		GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 	});
 	sceneNode->setAfterDrawFunction([]() {
 		GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 	});
-};
 
-bool adapted = false;
+	plane = Mesh::loadFromFile("../Engine/objs/plane.obj");
+	plane->paint(ColorRGBA::WHITE);
+	SceneNode* sceneNodePlane = getSceneGraph()->getRoot()->createChild(plane, Mat4::IDENTITY, sp2);
+	sceneNodePlane->setModel(Mat4::translation({ 0.0f, -10.5f, 0.0f }));
+};
 
 void TreeGrowth::update() {
 	

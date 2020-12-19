@@ -1,6 +1,6 @@
 #include "BranchModule.h"
 #include "Morphospace.h"
-#include <numeric>
+
 
 BranchModule::BranchModule(BranchNode* root) : root(root) {}
 
@@ -12,30 +12,44 @@ BranchModule::~BranchModule() {
 
 void BranchModule::updateModule(float elapsedTime) {
 
-	GrowthParameters* growthParameters = GrowthParameters::instance;
+	if (!reachedMaturity) {
 
-	// Firstly we update the growth rate from the vigour which we previously calculated
-	growthRate = eqt::growthRate(vigour, growthParameters->vMin, growthParameters->vMax, growthParameters->gP);
+		GrowthParameters* growthParameters = GrowthParameters::instance;
 
-	// Secondly we update the module physiological age
-	physiologicalAge += eqt::ageVariation(elapsedTime, growthRate);
+		// Firstly we update the growth rate from the vigour which we previously calculated
+		growthRate = eqt::growthRate(vigour, growthParameters->vMin, growthParameters->vMax, growthParameters->gP);
 
-	// Then we update the diameter and the length of each of the segments of the module
-	root->updateNode(physiologicalAge);
+		// After using the growth rate we have to reset the vigour and light exposure
+		//vigour = 0.0f;
+		//lightExposure = 0.0f;
 
-	calculateCenterOfGeometry();
+		// Secondly we update the module physiological age
+		physiologicalAge += eqt::ageVariation(elapsedTime, growthRate);
 
-	if (reachedMatureAge(root)) {
-		/*while (!tips.empty()) {
-			BranchNode* tip = tips.back();
-			tips.pop_back();
-			attachModule(tip);
-		}*/
-		//float lightExposureTerminalNodes = lightExposure / (tips.size());
+		// Then we update the diameter and the length of each of the segments of the module
+		root->children[0]->updateNode(physiologicalAge);
+
+
+		calculateCenterOfGeometry();
+
+		reachedMaturity = reachedMatureAge(root);
 	}
+
 
 	for (BranchModule* child : children) {
 		child->updateModule(elapsedTime);
+	}
+
+	if (reachedMaturity && !tips.empty()) {
+
+		distributeLightAndVigor();
+
+		float vMin = GrowthParameters::instance->vMin;
+
+		for (BranchNode* tip : tips) {
+			if (tip->vigour > vMin)
+				attachModule(tip);
+		}
 	}
 }
 
@@ -70,7 +84,11 @@ void BranchModule::attachModule(BranchNode* root) {
 	BranchModule* module = morphospace->selectModule(growthParameters->apicalControl, determinacyMS, root);
 	module->root = root;
 	module->parent = this;
+	module->tree = tree;
+	module->calculateCenterOfGeometry();
+	module->physiologicalAge = physiologicalAge;
 	children.push_back(module);
+	tree->modules.push_back(module);
 
 	//module->root = root;
 	//module->orientation = orientation;
@@ -79,16 +97,11 @@ void BranchModule::attachModule(BranchNode* root) {
 	//module->tree = tree;
 }
 
-Vec3 maxPos = { FLT_MIN, FLT_MIN, FLT_MIN };
-Vec3 minPos = { FLT_MAX, FLT_MAX, FLT_MAX };
-
-
-
-void calculateCenterOfGeometryRecurs(BranchNode* node, Vec3 position) {
+void BranchModule::calculateCenterOfGeometryRecurs(BranchNode* node, Vec3 position, std::vector<Vec3>& currentTips) {
 
 	Vec3 realPosition = position + node->relativePosition * (node->branchLength/node->maxBranchLength);
 
-	if (node->children.size() == 0) {
+	if (node->children.size() == 0 || node->branchLength < node->maxBranchLength || node->isTip) {
 
 		if (realPosition.x > maxPos.x)
 			maxPos.x = realPosition.x;
@@ -104,30 +117,113 @@ void calculateCenterOfGeometryRecurs(BranchNode* node, Vec3 position) {
 			maxPos.z = realPosition.z;
 		else if (realPosition.z < minPos.z)
 			minPos.z = realPosition.z;
+
+		currentTips.push_back(realPosition);
 	} else {
 		for (BranchNode* child : node->children) {
-			calculateCenterOfGeometryRecurs(child, realPosition);
+			calculateCenterOfGeometryRecurs(child, realPosition, currentTips);
 		}
 	}
 }
 
 void BranchModule::calculateCenterOfGeometry() {
-	calculateCenterOfGeometryRecurs(root->children[0], root->relativePosition);
+
+	std::vector<Vec3> currentTips;
+	Vec3 rootPosition = root->calculatePosition();
+	currentTips.push_back(rootPosition);
+
+	if (rootPosition.x > maxPos.x)
+		maxPos.x = rootPosition.x;
+	else if (rootPosition.x < minPos.x)
+		minPos.x = rootPosition.x;
+
+	if (rootPosition.y > maxPos.y)
+		maxPos.y = rootPosition.y;
+	else if (rootPosition.y < minPos.y)
+		minPos.y = rootPosition.y;
+
+	if (rootPosition.z > maxPos.z)
+		maxPos.z = rootPosition.z;
+	else if (rootPosition.z < minPos.z)
+		minPos.z = rootPosition.z;
+
+	calculateCenterOfGeometryRecurs(root->children[0], rootPosition, currentTips);
 
 	Vec3 center = (maxPos + minPos) * 0.5f;
 
-	Vec3 diff = maxPos - minPos;
+	float radius = 0.0f;
 
-	float radius = diff.x / 2;
-
-	if (diff.y > radius)
-		radius = diff.y / 2;
-	
-	if (diff.z > radius)
-		radius = diff.z / 2;
+	for (Vec3 tip : currentTips) {
+		Vec3 diff = tip - center;
+		float sqrdMagnitude = diff.sqrMagnitude();
+		if (sqrdMagnitude > radius)
+			radius = sqrdMagnitude;
+	}
 
 	boundingSphere.center = center;
-	boundingSphere.radius = radius;
+	boundingSphere.radius = sqrtf(radius);
+}
+
+void BranchModule::accumulateNodeLightExposure(BranchNode* node) {
+	if (!node->parent)
+		return;
+
+	node->parent->lightExposure += node->lightExposure;
+
+	if (node->parent == root)
+		return;
+
+	accumulateNodeLightExposure(node->parent);
+}
+
+void BranchModule::calculateVigorFluxes(BranchNode* root) {
+	if (root->children.size() == 0 || root->isTip)
+		return;
+
+	float sumLateralLightExposure = 0.0f;
+	float mainLightExposure = 0.0f;
+
+	// First we calculate the sum of lateral nodes light exposure and the main light exposure
+	for (BranchNode* child : root->children) {
+
+		// Is child a lateral branch
+		if (!child->main)
+			sumLateralLightExposure += child->lightExposure;
+		else
+			mainLightExposure = child->lightExposure;
+	}
+
+	// Secondly we calculate the vigor of the main node using equation 2, and the lateral vigor
+	float vigorMain = eqt::vigor(root->vigour, GrowthParameters::instance->apicalControl, mainLightExposure, sumLateralLightExposure);
+	float vigorLateral = root->vigour - vigorMain;
+
+	// Finally we distribute the lateral vigor correctly using the porportional amount of light exposure they provided to equation 2
+	for (BranchNode* child : root->children) {
+		// Is child a lateral branch
+		if (!child->main) {
+			// Each lateral node takes a percentage of the lateral vigor
+			child->vigour = (child->lightExposure / sumLateralLightExposure) * vigorLateral;
+		}
+		else
+			child->vigour = vigorMain;
+
+		// The child then propagates its vigor to his children
+		calculateVigorFluxes(child);
+	}
+	
+}
+
+void BranchModule::distributeLightAndVigor() {
+	float lightExposureTerminalNodes = lightExposure / (tips.size());
+
+	// We do a basipetal (tip-to-base) pass from tips to root accumulating the value of total light exposure
+	for (BranchNode* tip : tips) {
+		tip->lightExposure = lightExposureTerminalNodes;
+		accumulateNodeLightExposure(tip);
+	}
+
+	// Finally we do an acropetal (base-to-tip) pass calculating vigor fluxes at each node intersection
+	calculateVigorFluxes(root);
 }
 
 

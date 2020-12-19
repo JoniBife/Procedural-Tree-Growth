@@ -108,6 +108,9 @@
     <ClCompile Include="src\apps\GrowthParameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\apps\ShadowMapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h">
@@ -218,10 +221,15 @@
     <ClInclude Include="src\textures\ITexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\apps\ShadowMapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
     <None Include="shaders\vertexShaderNM.glsl" />
     <None Include="shaders\geometryShaderNM.glsl" />
+    <None Include="shaders\simpleFragmentShader.glsl" />
+    <None Include="shaders\simpleVertexShader.glsl" />
   </ItemGroup>
 </Project>

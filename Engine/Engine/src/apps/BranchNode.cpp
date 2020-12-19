@@ -36,12 +36,18 @@ void BranchNode::updateNode(float modulePhysiologicalAge) {
 
 		sceneGraphNode->setModel(positioning * rotation * translation * scaling);
 
+		lightExposure = 0.0f;
+		vigour = 0.0f;
+
 		if (branchLength == maxBranchLength) {
 			++reachedMax;
 			if (reachedMax == 1) {
 				physiologicalAge = modulePhysiologicalAge;
 			}
 		}
+
+		if (isTip)
+			return;
 	}
 
 	if (branchLength == maxBranchLength) {
@@ -84,7 +90,7 @@ Vec3 BranchNode::calculatePosition() {
 	return relativePosition + parent->calculatePosition();
 }
 
-BranchNode* BranchNode::createChild(const Vec3& relativePosition, float scaleLength) {
+BranchNode* BranchNode::createChild(const Vec3& relativePosition, float scaleLength, bool isTip) {
 	BranchNode* child = new BranchNode();
 	child->relativePosition = relativePosition * scaleLength;
 	child->parent = this;
@@ -92,6 +98,7 @@ BranchNode* BranchNode::createChild(const Vec3& relativePosition, float scaleLen
 	child->sceneGraphNode = sceneGraphNode->parent->createChild(sceneGraphNode->getMesh(), Mat4::ZERO);
 	child->sceneGraphNode->addTexture(sceneGraphNode->getTextures()[0]);
 	child->sceneGraphNode->addTexture(sceneGraphNode->getTextures()[1]);
+	child->isTip = isTip;
 	children.push_back(child);
 	return child;
 }

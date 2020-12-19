@@ -6,7 +6,7 @@
 
 FreeCameraController::FreeCameraController(const float movementSpeed, const Vec3& position, const Vec3& front, const Vec3& up, const float yaw, const float pitch,
 	Mat4 orthoProj, Mat4 perspectiveProj, GLFWwindow* win)
-	: movementSpeed(movementSpeed), position(position), front(front.normalize()), up(up), yaw(yaw), pitch(pitch),orthoProj(orthoProj), perspectiveProj(perspectiveProj), currProj(orthoProj), win(win) {
+	: movementSpeed(movementSpeed), position(position), front(front.normalize()), up(up), yaw(yaw), pitch(pitch),orthoProj(orthoProj), perspectiveProj(perspectiveProj), currProj(perspectiveProj), win(win) {
 
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	

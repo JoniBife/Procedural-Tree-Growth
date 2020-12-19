@@ -13,9 +13,13 @@ Tree::Tree(const Vec3& positionRoot, SceneGraph* sceneGraph, Texture2D* woodText
 	rootNode->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
 	rootNode->sceneGraphNode->addTexture(woodTexture);
 	rootNode->sceneGraphNode->addTexture(woodNormalMap);
+	rootNode->vigour =  GrowthParameters::instance->vRootMax;
 
 	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
 	root->vigour = GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
+	root->tree = this;
+
+	modules.push_back(root);
 }
 
 Tree::~Tree() {
@@ -39,9 +43,8 @@ void Tree::resumeGrowth() {
 }
 
 void Tree::grow(float elapsedTime) {
-	//distributeLightAndVigor();
-	//developModules(elapsedTime);
-	root->updateModule(elapsedTime);
+	distributeLightAndVigor();
+	developModules(elapsedTime);
 }
 
 void Tree::accumulateModuleLightExposure(BranchModule* module) {
@@ -55,7 +58,7 @@ void Tree::accumulateModuleLightExposure(BranchModule* module) {
 
 void Tree::calculateVigorFluxes(BranchModule* module) {
 
-	if (root->children.size() == 0)
+	if (module->children.size() == 0)
 		return;
 
 	float sumLateralLightExposure = 0.0f;
@@ -72,7 +75,7 @@ void Tree::calculateVigorFluxes(BranchModule* module) {
 	}
 
 	// Secondly we calculate the vigor of the main module using equation 2, and the lateral vigor
-	float vigorMain = eqt::vigor(module->vigour, growthParameters->apicalControl, mainLightExposure, sumLateralLightExposure);
+	float vigorMain = eqt::vigor(module->vigour, GrowthParameters::instance->apicalControl, mainLightExposure, sumLateralLightExposure);
 	float vigorLateral = module->vigour - vigorMain;
 
 	// Finally we distribute the lateral vigor correctly using the porportional amount of light exposure they provided to equation 2
@@ -101,7 +104,7 @@ void Tree::distributeLightAndVigor() {
 			if (moduleA == moduleB)
 				continue;
 
-			fCollisions += moduleA->boundingSphere.intersectVolume(moduleB->boundingSphere);
+			fCollisions += moduleA->boundingSphere.intersectVolume(moduleB->boundingSphere)/1000;
 		}
 		moduleA->lightExposure = expf(-fCollisions);
 	}

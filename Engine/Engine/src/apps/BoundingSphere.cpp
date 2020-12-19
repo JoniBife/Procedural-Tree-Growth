@@ -23,15 +23,17 @@ float BoundingSphere::intersectVolume(BoundingSphere& boundingSphere) {
 		return 0.0f;
 	}
 
-	// When the distance is 0 we compare the volumes
-	if (cmpf(0, d)) {
-		float volumeA = this->volume();
-		float volumeB = boundingSphere.volume();
+	float smallerRadius = R;
+	float largerRadius = r;
 
-		if (!cmpf(volumeA, volumeB) && volumeA < volumeB)
-			return volumeA;
+	if (R > r) {
+		smallerRadius = r;
+		largerRadius = R;
+	}
 
-		return volumeB;
+	// Checking if one of the spheres is within the other, if thats the case we return the one with the least volume
+	if (cmpf(0.0f, d) || smallerRadius + d < largerRadius) {
+		return (4.0f / 3.0f) * PI * (smallerRadius * smallerRadius * smallerRadius);
 	}
 
 	// Special case for when both radius are equal, the expression can be simplified

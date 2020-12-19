@@ -27,12 +27,18 @@ SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model) {
 	SceneNode* child = new SceneNode(mesh, model, this, shaderProgram);
 	if (this->beforeDraw)
 		child->beforeDraw = this->beforeDraw;
+	if (this->afterDraw)
+		child->afterDraw = this->afterDraw;
 	children.push_back(child);
 	return child;
 }
 
 SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model, ShaderProgram* shaderProgram) {
 	SceneNode* child = new SceneNode(mesh, model, this, shaderProgram);
+	if (this->beforeDraw)
+		child->beforeDraw = this->beforeDraw;
+	if (this->afterDraw)
+		child->afterDraw = this->afterDraw;
 	children.push_back(child);
 	return child;
 }
@@ -110,14 +116,12 @@ void SceneNode::draw() {
 		if(beforeDraw)
 			beforeDraw(shaderProgram);
 
-		if (modelChanged) {
-			Mat4 model = retriveModelRecursively();
-			shaderProgram->setUniform(modelUniformLocation, model);
-			Mat3 inverse;
-			bool canInverse = model.toMat3().inverse(inverse);
-			shaderProgram->setUniform(normalUniformLocation, canInverse ? inverse.transpose() : Mat3::ZERO);
-			modelChanged = false;
-		}
+		Mat4 model = retriveModelRecursively();
+		shaderProgram->setUniform(modelUniformLocation, model);
+		Mat3 inverse;
+		bool canInverse = model.toMat3().inverse(inverse);
+		shaderProgram->setUniform(normalUniformLocation, canInverse ? inverse.transpose() : Mat3::ZERO);
+		modelChanged = false;
 
 		mesh->draw();
 

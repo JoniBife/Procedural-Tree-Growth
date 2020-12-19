@@ -30,6 +30,7 @@ public:
 	void grow(float elapsedTime);
 
 private:
+	// Methods related to the extended borchet-honda method at tree scale
 	void accumulateModuleLightExposure(BranchModule* module);
 	void calculateVigorFluxes(BranchModule* root);
 	void distributeLightAndVigor();

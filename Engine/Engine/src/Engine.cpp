@@ -158,8 +158,6 @@ void Engine::run() {
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
-
-
 		double time = glfwGetTime();
 		elapsedTime = time - lastTime;
 		lastTime = time;

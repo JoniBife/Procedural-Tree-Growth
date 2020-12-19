@@ -25,6 +25,7 @@
     <ClCompile Include="src\apps\Equations.cpp" />
     <ClCompile Include="src\apps\GrowthParameters.cpp" />
     <ClCompile Include="src\apps\Morphospace.cpp" />
+    <ClCompile Include="src\apps\ShadowMapping.cpp" />
     <ClCompile Include="src\apps\Singleton.cpp" />
     <ClCompile Include="src\apps\Tree.cpp" />
     <ClCompile Include="src\apps\TreeGrowth.cpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="src\apps\Equations.h" />
     <ClInclude Include="src\apps\GrowthParameters.h" />
     <ClInclude Include="src\apps\Morphospace.h" />
+    <ClInclude Include="src\apps\ShadowMapping.h" />
     <ClInclude Include="src\apps\Singleton.h" />
     <ClInclude Include="src\apps\Tree.h" />
     <ClInclude Include="src\apps\TreeGrowth.h" />
@@ -92,6 +94,8 @@
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
     <None Include="shaders\geometryShaderNM.glsl" />
+    <None Include="shaders\simpleFragmentShader.glsl" />
+    <None Include="shaders\simpleVertexShader.glsl" />
     <None Include="shaders\vertexShaderNM.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

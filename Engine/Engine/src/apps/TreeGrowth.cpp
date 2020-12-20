@@ -30,7 +30,24 @@ static GLint cameraPosL;
 static GLint normalMappingL;
 static GLint normalMapping = GL_TRUE;
 
-static float currTime = 0.0f;
+static void setupShaders(SceneGraph* sceneGraph, Camera* camera) {
+	// Loading the shaders and creating the shader program
+	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderNM.glsl");
+	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderNM.glsl");
+	sp = new ShaderProgram(vs, fs);
+	sceneGraph->getRoot()->setShaderProgram(sp);
+	// Associating the shared matrix index with the binding point of the camera (0)
+	GLuint sharedMatricesIndex = sp->getUniformBlockIndex("SharedMatrices");
+	sp->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
+
+	// Loading the shaders and creating the shader program
+	Shader vs2(GL_VERTEX_SHADER, "../Engine/shaders/simpleVertexShader.glsl");
+	Shader fs2(GL_FRAGMENT_SHADER, "../Engine/shaders/simpleFragmentShader.glsl");
+	spSimple = new ShaderProgram(vs2, fs2);
+	// Associating the shared matrix index with the binding point of the camera (0)
+	GLuint sharedMatricesIndex2 = sp->getUniformBlockIndex("SharedMatrices");
+	spSimple->bindUniformBlock(sharedMatricesIndex2, camera->getUboBindingPoint());
+}
 
 static void setupTextures() {
 	// Loading textures
@@ -106,7 +123,7 @@ static void setupTree(SceneGraph* sceneGraph) {
 	growthParameters->pMax = 950;
 	growthParameters->vMin = 0.0f;
 	growthParameters->vMax = (float)growthParameters->vRootMax;
-	growthParameters->determinacy = 0.93f;
+	growthParameters->determinacy = 0.93f; 
 	growthParameters->apicalControl = 0.87f;
 	growthParameters->tropismAngle = 0.66f;
 	growthParameters->w1 = 0.14f;
@@ -123,28 +140,13 @@ static void setupTree(SceneGraph* sceneGraph) {
 
 void TreeGrowth::start() {
 
-	// Loading the shaders and creating the shader program
-	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderNM.glsl");
-	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderNM.glsl");
-	sp = new ShaderProgram(vs, fs);
-	getSceneGraph()->getRoot()->setShaderProgram(sp);
-	// Associating the shared matrix index with the binding point of the camera (0)
-	GLuint sharedMatricesIndex = sp->getUniformBlockIndex("SharedMatrices");
-	sp->bindUniformBlock(sharedMatricesIndex, getCamera()->getUboBindingPoint());
-
-	// Loading the shaders and creating the shader program
-	Shader vs2(GL_VERTEX_SHADER, "../Engine/shaders/simpleVertexShader.glsl");
-	Shader fs2(GL_FRAGMENT_SHADER, "../Engine/shaders/simpleFragmentShader.glsl");
-	spSimple = new ShaderProgram(vs2, fs2);
-	// Associating the shared matrix index with the binding point of the camera (0)
-	GLuint sharedMatricesIndex2 = sp->getUniformBlockIndex("SharedMatrices");
-	spSimple->bindUniformBlock(sharedMatricesIndex2, getCamera()->getUboBindingPoint());
-
+	setupShaders(getSceneGraph(), getCamera());
 	setupTextures();
 	setupTree(getSceneGraph());
 	setupCamera(getCamera(), getWindow(),getWindowWidth(), getWindowHeight());
 	setupLight();
 
+	// Bounding sphere
 	sphere = Mesh::loadFromFile("../Engine/objs/sphere.obj");
 	sphere->paint(ColorRGBA::GREEN);
 
@@ -157,35 +159,45 @@ void TreeGrowth::start() {
 	});
 };
 
+static bool drawSphere = true;
+
 void TreeGrowth::update() {
-	
-	sceneNode->setModel(Mat4::translation(tree->root->boundingSphere.center) * Mat4::scaling(tree->root->boundingSphere.radius * 2));
+
+	static bool isBReleased = false;
+	if (glfwGetKey(getWindow(), GLFW_KEY_B) == GLFW_PRESS && isBReleased) {
+		isBReleased = false;
+		drawSphere = !drawSphere;
+	}
+	else if (glfwGetKey(getWindow(), GLFW_KEY_B) == GLFW_RELEASE) {
+		isBReleased = true;
+	}
+
+	if (drawSphere)
+		sceneNode->setModel(Mat4::translation(tree->root->boundingSphere.center) * Mat4::scaling(tree->root->boundingSphere.radius * 2));
+	else
+		sceneNode->setModel(Mat4::ZERO);
 
 	tree->grow(float(getElapsedTime()));
 
 	sp->use();
 	sp->setUniform(cameraPosL, cameraController->position);
 
-	static bool isReleased = false;
-	if (glfwGetKey(getWindow(), GLFW_KEY_N) == GLFW_PRESS && isReleased) {
-		isReleased = false;
+	static bool isNReleased = false;
+	if (glfwGetKey(getWindow(), GLFW_KEY_N) == GLFW_PRESS && isNReleased) {
+		isNReleased = false;
 		normalMapping = (normalMapping == GL_TRUE) ? GL_FALSE : GL_TRUE;
 		sp->setUniform(normalMappingL, normalMapping);
 	}
 	else if (glfwGetKey(getWindow(), GLFW_KEY_N) == GLFW_RELEASE) {
-		isReleased = true;
+		isNReleased = true;
 	}
-
 	sp->stopUsing();
-
-	//if (module->physiologicalAge > 20 && !adapted) {
-		//module->adapt();
-	//}
 }
 
 void TreeGrowth::end() {
 	delete cameraController;
 	delete sp;
+	delete spSimple;
 	delete woodTexture;
 	delete woodTextureNormalMap;
 	delete tree;

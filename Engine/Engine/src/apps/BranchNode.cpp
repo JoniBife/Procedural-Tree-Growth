@@ -63,23 +63,15 @@ void BranchNode::adapt() {
 
 		Vec3 gravityDir = -1 * Vec3::Y;
 
-		Vec3 adaptation = eqt::tropismOffset(physiologicalAge, 0.1, 0.2, gravityDir);
+		Vec3 adaptation = eqt::tropismOffset(physiologicalAge, 0.1f, 0.2f, gravityDir);
 
-		Vec3 parentDir = parent->calculatePosition() - calculatePosition();
-
-		if (parentDir.normalize() != gravityDir)
+		if (relativePosition.normalize() != gravityDir)
 			relativePosition += adaptation;
 
 		for (BranchNode* child : children)
 		{
-			child->adapt();
-		}
-	}
-	else {
-
-		for (BranchNode* child : children)
-		{
-			child->adapt();
+			if (!child->main)
+				child->adapt();
 		}
 	}
 }

@@ -741,8 +741,8 @@ BranchModule* Morphospace::selectModule(float apicalControl, float determinacy, 
 	In our case each square has an area of 0.333..*0.333..
 	*/
 
-	int idxApicalControl = floorf(apicalControl * 3.0f);
-	int idxDeterminacy = floorf(determinacy * 3.0f);
+	int idxApicalControl = int(apicalControl * 3.0f);
+	int idxDeterminacy = int(determinacy * 3.0f);
 
 	BranchModule* module = new BranchModule(root);
 

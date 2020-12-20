@@ -75,7 +75,7 @@ void BranchModule::attachModule(BranchNode* root) {
 	GrowthParameters* growthParameters = GrowthParameters::instance;
 
 	// TODO For now we assume 
-	float determinacyMS = eqt::determinacyMS(vigour, growthParameters->determinacy, growthParameters->vRootMax);
+	float determinacyMS = eqt::determinacyMS(vigour, growthParameters->determinacy, (float)growthParameters->vRootMax);
 
 	// Selecting new module from morphospace
 	BranchModule* module = morphospace->selectModule(growthParameters->apicalControl, determinacyMS, root);

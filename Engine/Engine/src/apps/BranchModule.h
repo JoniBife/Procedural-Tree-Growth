@@ -13,9 +13,9 @@ class Tree;
 struct BranchModule {
 
 public:
-	float lightExposure;
-	float vigour;
-	float growthRate; // Upsilon in the paper
+	float lightExposure = 0.0f;
+	float vigour = 0.0f;
+	float growthRate = 0.0f; // Upsilon in the paper
 	float physiologicalAge = 0.0f;
 
 	bool main = false;

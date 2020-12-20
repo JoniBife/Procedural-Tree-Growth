@@ -20,8 +20,6 @@ private:
 	std::vector<SceneNode*> children;
 	std::function<void(ShaderProgram*)> beforeDraw;
 	std::function<void()> afterDraw;
-	// Indicates whether setModel has been called recently, its an optimization to avoid calculating the normal matrix every frame
-	bool modelChanged = true; 
 
 	Mat4 retriveModelRecursively();
 

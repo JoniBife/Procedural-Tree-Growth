@@ -19,10 +19,6 @@ void BranchModule::updateModule(float elapsedTime) {
 		// Firstly we update the growth rate from the vigour which we previously calculated
 		growthRate = eqt::growthRate(vigour, growthParameters->vMin, growthParameters->vMax, growthParameters->gP);
 
-		// After using the growth rate we have to reset the vigour and light exposure
-		//vigour = 0.0f;
-		//lightExposure = 0.0f;
-
 		// Secondly we update the module physiological age
 		physiologicalAge += eqt::ageVariation(elapsedTime, growthRate);
 
@@ -40,7 +36,8 @@ void BranchModule::updateModule(float elapsedTime) {
 		child->updateModule(elapsedTime);
 	}
 
-	if (reachedMaturity && !tips.empty()) {
+	// We are not orienting the modules so until next delivery we don't attach any
+	/*if (reachedMaturity && !tips.empty()) {
 
 		distributeLightAndVigor();
 
@@ -50,7 +47,7 @@ void BranchModule::updateModule(float elapsedTime) {
 			if (tip->vigour > vMin)
 				attachModule(tip);
 		}
-	}
+	}*/
 }
 
 void BranchModule::adapt() { root->adapt(); }

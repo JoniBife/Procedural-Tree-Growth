@@ -40,6 +40,10 @@ Texture2D::Texture2D(const std::string& textureFilePath) {
 	stbi_image_free(data);
 }
 
+Texture2D::~Texture2D() {
+	GL_CALL(glDeleteTextures(1, &id));
+}
+
 void Texture2D::bind(unsigned int unitNumber) {
 	GL_CALL(glActiveTexture(unitNumber));
 	GL_CALL(glBindTexture(GL_TEXTURE_2D, id));

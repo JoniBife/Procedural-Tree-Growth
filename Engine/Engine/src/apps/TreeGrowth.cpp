@@ -17,7 +17,7 @@
 #include "../utils/OpenGLUtils.h"
 
 static ShaderProgram* sp;
-static ShaderProgram* sp2;
+static ShaderProgram* spSimple;
 static FreeCameraController* cameraController;
 static Texture2D* woodTexture;
 static Texture2D* woodTextureNormalMap;
@@ -105,8 +105,8 @@ static void setupTree(SceneGraph* sceneGraph) {
 	growthParameters->thickeningFactor = 0.5f; // original 1.41
 	growthParameters->pMax = 950;
 	growthParameters->vMin = 0.0f;
-	growthParameters->vMax = growthParameters->vRootMax;
-	growthParameters->determinacy = 0.01f;
+	growthParameters->vMax = (float)growthParameters->vRootMax;
+	growthParameters->determinacy = 0.93f;
 	growthParameters->apicalControl = 0.87f;
 	growthParameters->tropismAngle = 0.66f;
 	growthParameters->w1 = 0.14f;
@@ -135,10 +135,10 @@ void TreeGrowth::start() {
 	// Loading the shaders and creating the shader program
 	Shader vs2(GL_VERTEX_SHADER, "../Engine/shaders/simpleVertexShader.glsl");
 	Shader fs2(GL_FRAGMENT_SHADER, "../Engine/shaders/simpleFragmentShader.glsl");
-	sp2 = new ShaderProgram(vs2, fs2);
+	spSimple = new ShaderProgram(vs2, fs2);
 	// Associating the shared matrix index with the binding point of the camera (0)
 	GLuint sharedMatricesIndex2 = sp->getUniformBlockIndex("SharedMatrices");
-	sp2->bindUniformBlock(sharedMatricesIndex2, getCamera()->getUboBindingPoint());
+	spSimple->bindUniformBlock(sharedMatricesIndex2, getCamera()->getUboBindingPoint());
 
 	setupTextures();
 	setupTree(getSceneGraph());
@@ -148,18 +148,13 @@ void TreeGrowth::start() {
 	sphere = Mesh::loadFromFile("../Engine/objs/sphere.obj");
 	sphere->paint(ColorRGBA::GREEN);
 
-	sceneNode = getSceneGraph()->getRoot()->createChild(sphere, Mat4::IDENTITY, sp2);
+	sceneNode = getSceneGraph()->getRoot()->createChild(sphere, Mat4::IDENTITY, spSimple);
 	sceneNode->setBeforeDrawFunction([=](ShaderProgram* sp) {
 		GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 	});
 	sceneNode->setAfterDrawFunction([]() {
 		GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 	});
-
-	plane = Mesh::loadFromFile("../Engine/objs/plane.obj");
-	plane->paint(ColorRGBA::WHITE);
-	SceneNode* sceneNodePlane = getSceneGraph()->getRoot()->createChild(plane, Mat4::IDENTITY, sp2);
-	sceneNodePlane->setModel(Mat4::translation({ 0.0f, -10.5f, 0.0f }));
 };
 
 void TreeGrowth::update() {
@@ -172,12 +167,12 @@ void TreeGrowth::update() {
 	sp->setUniform(cameraPosL, cameraController->position);
 
 	static bool isReleased = false;
-	if (glfwGetKey(getWindow(), GLFW_KEY_M) == GLFW_PRESS && isReleased) {
+	if (glfwGetKey(getWindow(), GLFW_KEY_N) == GLFW_PRESS && isReleased) {
 		isReleased = false;
 		normalMapping = (normalMapping == GL_TRUE) ? GL_FALSE : GL_TRUE;
 		sp->setUniform(normalMappingL, normalMapping);
 	}
-	else if (glfwGetKey(getWindow(), GLFW_KEY_M) == GLFW_RELEASE) {
+	else if (glfwGetKey(getWindow(), GLFW_KEY_N) == GLFW_RELEASE) {
 		isReleased = true;
 	}
 

@@ -45,7 +45,6 @@ SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model, ShaderProgram* 
 
 void SceneNode::setModel(const Mat4& model) {
 	this->model = model;
-	modelChanged = true;
 }
 
 void SceneNode::setShaderProgram(ShaderProgram* shaderProgram) {
@@ -121,7 +120,6 @@ void SceneNode::draw() {
 		Mat3 inverse;
 		bool canInverse = model.toMat3().inverse(inverse);
 		shaderProgram->setUniform(normalUniformLocation, canInverse ? inverse.transpose() : Mat3::ZERO);
-		modelChanged = false;
 
 		mesh->draw();
 

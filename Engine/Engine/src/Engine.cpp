@@ -119,6 +119,11 @@ void Engine::freeResources() {
 	delete camera;
 }
 
+////////////////////////////////////////////// SETTERS
+void Engine::setPreRender(std::function<void(std::function<void()> renderScene)> preRender) {
+	this->preRender = preRender;
+}
+
 ////////////////////////////////////////////// GETTERS
 GLFWwindow* Engine::getWindow() {
 	return window;
@@ -162,13 +167,37 @@ void Engine::run() {
 		elapsedTime = time - lastTime;
 		lastTime = time;
 
-		GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-		
 		update();
-		// TODO Maybe this should not be here
-		sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
-		sceneGraph->draw((float)elapsedTime); // Drawing only after update
-		
+		if (preRender) {
+
+			// PreRender has been defined so we render the scene once first
+			preRender([&]() {
+				sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
+				sceneGraph->draw((float)elapsedTime); // Drawing only after update
+			});
+
+			// After Pre render we render the scene as expected
+			GL_CALL(glClearColor(BACKGROUND_COLOR));
+			GL_CALL(glEnable(GL_DEPTH_TEST));
+			GL_CALL(glDepthFunc(GL_LEQUAL));
+			GL_CALL(glDepthMask(GL_TRUE));
+			GL_CALL(glDepthRange(0.0, 1.0));
+			GL_CALL(glClearDepth(1.0));
+			GL_CALL(glEnable(GL_CULL_FACE));
+			GL_CALL(glCullFace(GL_BACK));
+			GL_CALL(glFrontFace(GL_CCW));
+			GL_CALL(glViewport(0, 0, windowWidth, windowHeight));
+
+			GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+			sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
+			sceneGraph->draw((float)elapsedTime); // Drawing only after update
+		} else {
+			GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+			sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
+			sceneGraph->draw((float)elapsedTime); // Drawing only after update
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

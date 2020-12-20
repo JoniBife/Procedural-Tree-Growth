@@ -15,6 +15,7 @@ private:
 	int windowWidth = 0;
 	int windowHeight = 0;
 	double elapsedTime = 0.0;
+	std::function<void(std::function<void()> renderScene)> preRender;
 
 	/* Sets up everything related to glfw */
 	void setupGLFW();
@@ -56,6 +57,8 @@ protected:
 	double getElapsedTime();
 
 public:
+	/* If called, the lambda preRender will be called before the rendering of the scene, useful for shadow mapping for example*/
+	void setPreRender(std::function<void(std::function<void()> renderScene)> preRender);
 	void run();
 };
 

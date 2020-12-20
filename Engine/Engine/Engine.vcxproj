@@ -44,6 +44,7 @@
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\shaders\ShaderProgram.cpp" />
     <ClCompile Include="src\meshes\Mesh.cpp" />
+    <ClCompile Include="src\textures\DepthMap.cpp" />
     <ClCompile Include="src\textures\Texture2D.cpp" />
     <ClCompile Include="src\utils\ColorRGBA.cpp" />
     <ClCompile Include="src\utils\OpenGLUtils.cpp" />
@@ -69,6 +70,7 @@
     <ClInclude Include="src\controllers\SphericalCameraController.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\InputManager.h" />
+    <ClInclude Include="src\textures\DepthMap.h" />
     <ClInclude Include="src\textures\ITexture.h" />
     <ClInclude Include="src\textures\stb_image.h" />
     <ClInclude Include="src\math\Mat2.h" />
@@ -93,10 +95,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
+    <None Include="shaders\fragmentShaderShadows.glsl" />
+    <None Include="shaders\fragmentShaderSM.glsl" />
     <None Include="shaders\geometryShaderNM.glsl" />
     <None Include="shaders\simpleFragmentShader.glsl" />
     <None Include="shaders\simpleVertexShader.glsl" />
     <None Include="shaders\vertexShaderNM.glsl" />
+    <None Include="shaders\vertexShaderShadows.glsl" />
+    <None Include="shaders\vertexShaderSM.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

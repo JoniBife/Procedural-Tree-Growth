@@ -13,10 +13,10 @@ Tree::Tree(const Vec3& positionRoot, SceneGraph* sceneGraph, Texture2D* woodText
 	rootNode->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
 	rootNode->sceneGraphNode->addTexture(woodTexture);
 	rootNode->sceneGraphNode->addTexture(woodNormalMap);
-	rootNode->vigour =  GrowthParameters::instance->vRootMax;
+	rootNode->vigour =  (float)GrowthParameters::instance->vRootMax;
 
 	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
-	root->vigour = GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
+	root->vigour = (float)GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
 	root->tree = this;
 
 	modules.push_back(root);
@@ -43,7 +43,7 @@ void Tree::resumeGrowth() {
 }
 
 void Tree::grow(float elapsedTime) {
-	distributeLightAndVigor();
+	//distributeLightAndVigor();
 	developModules(elapsedTime);
 }
 
@@ -99,7 +99,7 @@ void Tree::distributeLightAndVigor() {
 
 	// First we calculate the light exposure of each module
 	for (BranchModule* moduleA : modules) {
-		int fCollisions = 0.0f;
+		float fCollisions = 0.0f;
 		for (BranchModule* moduleB : modules) {
 			if (moduleA == moduleB)
 				continue;

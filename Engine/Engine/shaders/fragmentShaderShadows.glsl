@@ -90,7 +90,7 @@ void main(void)
 {
 	vec3 result = calculateLight(lightColor, exNormal, vec3(fragPos), lightPosition, viewPos);
 
-	fragmentColor = vec4(result * exColor, 1.0f);
+	fragmentColor = vec4(result * vec3(exColor), 1.0f);
 }
 
 

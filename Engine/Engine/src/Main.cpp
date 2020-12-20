@@ -5,8 +5,9 @@
 
 int main(int argc, char* argv[])
 {
-	//Engine* eng = &ShadowMapping();
-	Engine* eng = &TreeGrowth();
+	//Engine* eng = new ShadowMapping();
+	Engine* eng = new TreeGrowth();
 	eng->run();
+	delete eng;
 	exit(EXIT_SUCCESS);
 }

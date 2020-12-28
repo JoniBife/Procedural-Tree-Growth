@@ -123,8 +123,8 @@ static void setupTree(SceneGraph* sceneGraph) {
 	growthParameters->pMax = 950;
 	growthParameters->vMin = 0.0f;
 	growthParameters->vMax = (float)growthParameters->vRootMax;
-	growthParameters->determinacy = 0.93f; 
-	growthParameters->apicalControl = 0.87f;
+	growthParameters->determinacy = 0.0f;	// 0.93f
+	growthParameters->apicalControl = 0.0f; // 0.87f
 	growthParameters->tropismAngle = 0.66f;
 	growthParameters->w1 = 0.14f;
 	growthParameters->w2 = 0.14f;

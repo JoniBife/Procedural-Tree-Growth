@@ -11,79 +11,116 @@ Morphospace::Morphospace(float scaleLength): scaleLength(scaleLength) {
 	modulePrototypeFunctions[0][0] = [=](BranchModule* module) -> BranchModule* {
 		BranchNode* child = module->root->createChild({ 0.0f, 18.0f, 0.0f }, scaleLength);
 		{
-			BranchNode* childA = child->createChild({ 9.0f, 9.0f, -4.5f }, scaleLength);
+			BranchNode* childA = child->createChild({ 9.0f, 8.0f, 0.0f }, scaleLength);
 			{
-				BranchNode* childA1 = childA->createChild({ 7.0f, 4.0f, 2.0f }, scaleLength);
+				BranchNode* childA1 = childA->createChild({ 8.0f, 3.0f, 3.0f }, scaleLength);
 				{
-					BranchNode* childA1a = childA1->createChild({ 2.0f, 2.0f, -1.0f }, scaleLength, true);
-					module->tips.push_back(childA1a);
-
-					BranchNode* childA1b = childA1->createChild({ 4.0f, 1.0f, 0.0f }, scaleLength);
+					BranchNode* childA1a = childA1->createChild({ 5.5f, 0.5f, 1.0f }, scaleLength);
 					{
-						BranchNode* childA1b1 = childA1b->createChild({ 2.0f, -0.5f, 1.0f }, scaleLength, true);
-						module->tips.push_back(childA1b1);
-						BranchNode* childA1b2 = childA1b->createChild({ 2.0f, 3.0f, -1.0f }, scaleLength, true);
-						module->tips.push_back(childA1b2);
-					}
-				}
-
-				BranchNode* childA2 = childA->createChild({ 2.0f, 7.0f, -3.0f }, scaleLength);
-				{
-					BranchNode* childA2a = childA2->createChild({ 0.5f, 4.0f, -2.0f }, scaleLength, true);
-					module->tips.push_back(childA2a);
-				}
-
-			}
-
-			BranchNode* childB = child->createChild({ 0.0f, 12.0f, 0.0f }, scaleLength);
-			{
-				BranchNode* childB1 = childB->createChild({ 6.0f, 12.0f, 2.0f }, scaleLength);
-				{
-					BranchNode* childB1a = childB1->createChild({ 2.0f, 3.5f,0.0f }, scaleLength);
-					{
-						BranchNode* childB1a1 = childB1a->createChild({ 1.0f, 6.0f, 0.0f }, scaleLength);
+						BranchNode* childA1a1 = childA1a->createChild({ 3.0f, -1.0f, 1.0f }, scaleLength);
 						{
-							BranchNode* childB1a1a = childB1a1->createChild({ 1.5f, 3.0f,0.0f }, scaleLength, true);
-							module->tips.push_back(childB1a1a);
-							BranchNode* childB1a1b = childB1a1->createChild({ -1.0f, 3.0f,0.0f }, scaleLength, true);
-							module->tips.push_back(childB1a1b);
+							BranchNode* childA1a1A = childA1a1->createChild({ 2.5f, -2.0f, 1.0f }, scaleLength);
+							BranchNode* childA1a1B = childA1a1->createChild({ 3.0f, 0.0f, 0.0f }, scaleLength);
+						}
+						BranchNode* childA1a2 = childA1a->createChild({ 3.0f, 2.5f, -2.0f }, scaleLength);
+						{
+							BranchNode* childA1a2A = childA1a2->createChild({ 3.0f, 0.5f, 1.0f }, scaleLength);
+							BranchNode* childA1a2B = childA1a2->createChild({ 2.0f, 2.5f, -2.0f }, scaleLength);
 						}
 					}
-
-					BranchNode* childB1b = childB1->createChild({ -0.50f, 3.5f,0.0f }, scaleLength);
+					BranchNode* childA1b = childA1->createChild({ 2.0f, 2.5f, -2.0f }, scaleLength);
 					{
-						BranchNode* childB1b1 = childB1b->createChild({ 0.0f, 4.0f,0.0f }, scaleLength, true);
-						module->tips.push_back(childB1b1);
+						BranchNode* childA1b1 = childA1b->createChild({ 3.5f, 0.0f, 1.0f }, scaleLength);
+						{
+							BranchNode* childA1b1a = childA1b1->createChild({ 1.0f, 1.0f, 1.0f }, scaleLength);
+							BranchNode* childA1b1b = childA1b1->createChild({ 2.0f, 1.0f, -1.0f }, scaleLength);
+						}
+						BranchNode* childA1b2 = childA1b->createChild({ 0.0f, 3.0f, -2.0f }, scaleLength);
+						{
+							BranchNode* childA1b2a = childA1b2->createChild({ 1.0f, 1.0f, 1.0f }, scaleLength);
+							BranchNode* childA1b2b = childA1b2->createChild({ 0.5f, 2.5f, -1.5f }, scaleLength);
+						}
 					}
 				}
-
-				BranchNode* childB2 = childB->createChild({ -4.0f, 6.0f, -2.0f }, scaleLength);
+				BranchNode* childA2 = childA->createChild({ 2.0f, 6.5f, -2.0f }, scaleLength);
 				{
-					BranchNode* childB2a = childB2->createChild({ -3.0f, 6.0f, -2.0f }, scaleLength, true);
-					module->tips.push_back(childB2a);
-
-					BranchNode* childB2b = childB2->createChild({ -1.5f, 1.0f,1.0f }, scaleLength);
+					BranchNode* childA2a = childA2->createChild({ 2.5f, 2.0f, 1.0f }, scaleLength);
 					{
-						BranchNode* childB21 = childB2b->createChild({ 0.5f, 2.0f,0.5f }, scaleLength, true);
-						module->tips.push_back(childB21);
-						BranchNode* childB22 = childB2b->createChild({ -2.0f, -1.0f, 1.0f }, scaleLength, true);
-						module->tips.push_back(childB22);
+						BranchNode* childA2a1 = childA2a->createChild({ 2.0f, 0.5f, 0.5f }, scaleLength);
+						BranchNode* childA2a2 = childA2a->createChild({ 0.5f, 2.0f, -1.0f }, scaleLength);
+					}
+					BranchNode* childA2b = childA2->createChild({ 2.0f, 5.5f, -2.0f }, scaleLength);
+					{
+						BranchNode* childA2b1 = childA2b->createChild({ 3.0f, 3.5f, 0.0f }, scaleLength);
+						{
+							BranchNode* childA2b1a = childA2b1->createChild({ 2.5f, 1.0f, -1.0f }, scaleLength);
+							BranchNode* childA2b1b = childA2b1->createChild({ 1.0f, 2.5f, 0.5f }, scaleLength);
+						}
+						BranchNode* childA2b2 = childA2b->createChild({ 0.0f, 5.0f, 1.0f }, scaleLength);
+						{
+							BranchNode* childA2b2a = childA2b2->createChild({ -1.0f, 3.0f, 0.0f }, scaleLength);
+							BranchNode* childA2b2b = childA2b2->createChild({ 1.0f, 3.0f, 0.5f }, scaleLength);
+						}
 					}
 				}
 			}
-
-			BranchNode* childC = child->createChild({ -9.0f, 9.0f, -5.0f }, scaleLength);
+			BranchNode* childB = child->createChild({ -9.5f, 8.0f, 0.0f }, scaleLength);
 			{
-				BranchNode* childC1 = childC->createChild({ -3.0f, 12.0f,0.0f }, scaleLength);
+				BranchNode* childB1 = childB->createChild({ -2.0f, 10.0f, 2.0f }, scaleLength);
 				{
-					BranchNode* childC1a = childC1->createChild({ 0.0f, 3.0f,0.0f }, scaleLength, true);
-					BranchNode* childC1b = childC1->createChild({ -2.0f, 3.5f,0.0f }, scaleLength, true);
+					BranchNode* childB1a = childB1->createChild({ -0.5f, 4.0f, -1.0f }, scaleLength);
+					{
+						BranchNode* childB1a1 = childB1a->createChild({ 1.0f, 2.5f, -1.0f }, scaleLength);
+						{
+							BranchNode* childB1a1A = childB1a1->createChild({ 1.5f, 0.5f, 1.0f }, scaleLength);
+							BranchNode* childB1a1B = childB1a1->createChild({ 0.5f, 2.0f, -1.0f }, scaleLength);
+						}
+						BranchNode* childB1a2 = childB1a->createChild({ -2.5f, 4.0f, 1.0f }, scaleLength);
+						{
+							BranchNode* childB1a2A = childB1a2->createChild({ -1.5f, 1.5f, -0.5f }, scaleLength);
+							BranchNode* childB1a2B = childB1a2->createChild({ -2.5f, 4.0f, 1.0f }, scaleLength);
+						}
+					}
+					BranchNode* childB1b = childB1->createChild({ -2.0f, 4.5f, 0.0f }, scaleLength);
+					{
+						BranchNode* childB1b1 = childB1b->createChild({ 0.0f, 2.5f, 1.0f }, scaleLength);
+						{
+							BranchNode* childB1b1A = childB1b1->createChild({ 1.0f, 1.5f, 1.0f }, scaleLength);
+							BranchNode* childB1b1B = childB1b1->createChild({ -0.5f, 3.0f, -1.0f }, scaleLength);
+						}
+						BranchNode* childB1b2 = childB1b->createChild({ -2.0f, 3.0f, -1.0f }, scaleLength);
+						{
+							BranchNode* childB1b2A = childB1b2->createChild({ -1.0f, 3.5f, -0.5f }, scaleLength);
+							BranchNode* childB1b2B = childB1b2->createChild({ -2.5f, 2.0f, -0.5f }, scaleLength);
+						}
+					}
 				}
-
-				BranchNode* childC2 = childC->createChild({ -6.0f, 1.0f,0.0f }, scaleLength);
+				BranchNode* childB2 = childB->createChild({ -8.0f, 0.0f, -1.0f }, scaleLength);
 				{
-					BranchNode* childC2a = childC2->createChild({ -5.0f, 2.0f,0.0f }, scaleLength, true);
-					BranchNode* childC2b = childC2->createChild({ -2.0f, -1.0f,0.0f }, scaleLength, true);
+					BranchNode* childB2a = childB2->createChild({ -6.0f, 2.0f, -2.0f }, scaleLength);
+					{
+						BranchNode* childB2a1 = childB2a->createChild({ -3.5f, 1.0f, -1.0f }, scaleLength);
+						{
+							BranchNode* childB2a1A = childB2a1->createChild({ -1.0f, 1.5f, -0.5f }, scaleLength);
+							BranchNode* childB2a1B = childB2a1->createChild({ -2.5f, 0.5f, 0.0f }, scaleLength);
+						}
+						BranchNode* childB2a2 = childB2a->createChild({ -4.0f, 0.0f, 1.0f }, scaleLength);
+						{
+							BranchNode* childB2a2A = childB2a2->createChild({ -2.5f, 1.0f, -1.0f }, scaleLength);
+							BranchNode* childB2a2B = childB2a2->createChild({ -2.0f, -1.0f, 0.5f }, scaleLength);
+						}
+					}
+					BranchNode* childB2b = childB2->createChild({ -3.5f, -2.0f, 2.0f }, scaleLength);
+					{
+						BranchNode* childB2b1 = childB2b->createChild({ -0.5f, 1.0f, -0.5f }, scaleLength);
+						BranchNode* childB2b2 = childB2b->createChild({ -3.0f, -2.0f, 2.0f }, scaleLength);
+						{
+							BranchNode* childB2b2A = childB2b2->createChild({ -2.5f, -0.5f, 0.5f }, scaleLength);
+							BranchNode* childB2b2B = childB2b2->createChild({ -2.0f, -3.0f, 1.0f }, scaleLength);
+						}
+						BranchNode* childB2b3 = childB2b->createChild({ -0.5f, -1.0f, 0.5f }, scaleLength);
+
+					}
 				}
 			}
 		}
@@ -251,82 +288,57 @@ Morphospace::Morphospace(float scaleLength): scaleLength(scaleLength) {
 		}
 		return module;
 	};
+	// CORRECT
 	modulePrototypeFunctions[1][0] = [=](BranchModule* module) -> BranchModule* {
 		BranchNode* child = module->root->createChild({ 0.0f, 18.0f, 0.0f }, scaleLength);
 		{
-			BranchNode* childA = child->createChild({ 9.0f, 9.0f, -4.5f }, scaleLength);
+			BranchNode* childA = child->createChild({ 8.0f, 9.0f, 3.0f }, scaleLength);
 			{
-				BranchNode* childA1 = childA->createChild({ 7.0f, 4.0f, 2.0f }, scaleLength);
+				BranchNode* childA1 = childA->createChild({ 7.5f, 3.5f, 2.0f }, scaleLength);
 				{
-					BranchNode* childA1a = childA1->createChild({ 2.0f, 2.0f, -1.0f }, scaleLength, true);
-					module->tips.push_back(childA1a);
-
-					BranchNode* childA1b = childA1->createChild({ 4.0f, 1.0f, 0.0f }, scaleLength);
+					BranchNode* childA1a = childA1->createChild({ 5.5f, 3.0f, 1.0f }, scaleLength);
 					{
-						BranchNode* childA1b1 = childA1b->createChild({ 2.0f, -0.5f, 1.0f }, scaleLength, true);
-						module->tips.push_back(childA1b1);
-						BranchNode* childA1b2 = childA1b->createChild({ 2.0f, 3.0f, -1.0f }, scaleLength, true);
-						module->tips.push_back(childA1b2);
+						BranchNode* childA1a1 = childA1a->createChild({ 3.5f, -0.5f, 3.0f }, scaleLength);
+						BranchNode* childA1a2 = childA1a->createChild({ 3.0f, 3.0f, -1.5f }, scaleLength);
+
 					}
-				}
+					BranchNode* childA1b = childA1->createChild({ 3.0f, 3.0f, -2.0f }, scaleLength);
 
-				BranchNode* childA2 = childA->createChild({ 2.0f, 7.0f, -3.0f }, scaleLength);
+				}
+				BranchNode* childA2 = childA->createChild({ 1.5f, 7.5f, -5.0f }, scaleLength);
 				{
-					BranchNode* childA2a = childA2->createChild({ 0.5f, 4.0f, -2.0f }, scaleLength, true);
-					module->tips.push_back(childA2a);
+					BranchNode* childA2a = childA2->createChild({ 1.5f, 5.0f, -3.0f }, scaleLength);
 				}
-
 			}
 
-			BranchNode* childB = child->createChild({ 0.0f, 12.0f, 0.0f }, scaleLength);
+			BranchNode* childB = child->createChild({ -8.0f, 9.0f, 0.0f }, scaleLength);
 			{
-				BranchNode* childB1 = childB->createChild({ 6.0f, 12.0f, 2.0f }, scaleLength);
+				BranchNode* childB1 = childB->createChild({ -2.0f, 10.0f, -3.0f }, scaleLength);
 				{
-					BranchNode* childB1a = childB1->createChild({ 2.0f, 3.5f,0.0f }, scaleLength);
+					BranchNode* childB1a = childB1->createChild({ 0.0f, 4.0f, -3.0f }, scaleLength);
 					{
-						BranchNode* childB1a1 = childB1a->createChild({ 1.0f, 6.0f, 0.0f }, scaleLength);
+						BranchNode* childB1a1 = childB1a->createChild({ 3.0f, 1.5f, -1.5f }, scaleLength);
+						BranchNode* childB1a2 = childB1a->createChild({ -2.0f, 4.0f, 2.0f }, scaleLength);
+
+					}
+					BranchNode* childB1b = childB1->createChild({ -2.5f, 5.0f, 2.0f }, scaleLength);
+					{
+						BranchNode* childB1b1 = childB1b->createChild({ 0.5f, 2.0f, 0.0f }, scaleLength);
+						BranchNode* childB1b2 = childB1b->createChild({ -2.0f, 3.5f, 1.0f }, scaleLength);
 						{
-							BranchNode* childB1a1a = childB1a1->createChild({ 1.5f, 3.0f,0.0f }, scaleLength, true);
-							module->tips.push_back(childB1a1a);
-							BranchNode* childB1a1b = childB1a1->createChild({ -1.0f, 3.0f,0.0f }, scaleLength, true);
-							module->tips.push_back(childB1a1b);
+							BranchNode* childB1b2A = childB1b2->createChild({ 0.0f, 2.5f, -1.0f }, scaleLength);
+							BranchNode* childB1b2B = childB1b2->createChild({ -2.0f, 1.0f, 1.0f }, scaleLength);
 						}
 					}
-
-					BranchNode* childB1b = childB1->createChild({ -0.50f, 3.5f,0.0f }, scaleLength);
+				}
+				BranchNode* childB2 = childB->createChild({ -8.0f, 2.0f, 4.0f }, scaleLength);
+				{
+					BranchNode* childB2a = childB2->createChild({ -5.5f, 3.0f, -2.0f }, scaleLength);
+					BranchNode* childB2b = childB2->createChild({ -3.5f, -1.0f, 2.5f }, scaleLength);
 					{
-						BranchNode* childB1b1 = childB1b->createChild({ 0.0f, 4.0f,0.0f }, scaleLength, true);
-						module->tips.push_back(childB1b1);
+						BranchNode* childB2b1 = childB2b->createChild({ -1.0f, 1.0f, -1.0f }, scaleLength);
+						BranchNode* childB2b2 = childB2b->createChild({ -4.0f, -1.5f, 2.0f }, scaleLength);
 					}
-				}
-
-				BranchNode* childB2 = childB->createChild({ -4.0f, 6.0f, -2.0f }, scaleLength);
-				{
-					BranchNode* childB2a = childB2->createChild({ -3.0f, 6.0f, -2.0f }, scaleLength, true);
-					module->tips.push_back(childB2a);
-
-					BranchNode* childB2b = childB2->createChild({ -1.5f, 1.0f,1.0f }, scaleLength);
-					{
-						BranchNode* childB21 = childB2b->createChild({ 0.5f, 2.0f,0.5f }, scaleLength, true);
-						module->tips.push_back(childB21);
-						BranchNode* childB22 = childB2b->createChild({ -2.0f, -1.0f, 1.0f }, scaleLength, true);
-						module->tips.push_back(childB22);
-					}
-				}
-			}
-
-			BranchNode* childC = child->createChild({ -9.0f, 9.0f, -5.0f }, scaleLength);
-			{
-				BranchNode* childC1 = childC->createChild({ -3.0f, 12.0f,0.0f }, scaleLength);
-				{
-					BranchNode* childC1a = childC1->createChild({ 0.0f, 3.0f,0.0f }, scaleLength, true);
-					BranchNode* childC1b = childC1->createChild({ -2.0f, 3.5f,0.0f }, scaleLength, true);
-				}
-
-				BranchNode* childC2 = childC->createChild({ -6.0f, 1.0f,0.0f }, scaleLength);
-				{
-					BranchNode* childC2a = childC2->createChild({ -5.0f, 2.0f,0.0f }, scaleLength, true);
-					BranchNode* childC2b = childC2->createChild({ -2.0f, -1.0f,0.0f }, scaleLength, true);
 				}
 			}
 		}
@@ -495,82 +507,50 @@ Morphospace::Morphospace(float scaleLength): scaleLength(scaleLength) {
 		}
 		return module;
 	};
+	// CORRECT
 	modulePrototypeFunctions[2][0] = [=](BranchModule* module) -> BranchModule* {
 		BranchNode* child = module->root->createChild({ 0.0f, 18.0f, 0.0f }, scaleLength);
 		{
-			BranchNode* childA = child->createChild({ 9.0f, 9.0f, -4.5f }, scaleLength);
+			BranchNode* childA = child->createChild({ 3.0f, 8.0f, -3.0f }, scaleLength);
 			{
-				BranchNode* childA1 = childA->createChild({ 7.0f, 4.0f, 2.0f }, scaleLength);
+				BranchNode* childA1 = childA->createChild({ 6.0f, 8.0f, -1.0f }, scaleLength);
 				{
-					BranchNode* childA1a = childA1->createChild({ 2.0f, 2.0f, -1.0f }, scaleLength, true);
-					module->tips.push_back(childA1a);
-
-					BranchNode* childA1b = childA1->createChild({ 4.0f, 1.0f, 0.0f }, scaleLength);
-					{
-						BranchNode* childA1b1 = childA1b->createChild({ 2.0f, -0.5f, 1.0f }, scaleLength, true);
-						module->tips.push_back(childA1b1);
-						BranchNode* childA1b2 = childA1b->createChild({ 2.0f, 3.0f, -1.0f }, scaleLength, true);
-						module->tips.push_back(childA1b2);
-					}
+					BranchNode* childA1a = childA1->createChild({ 2.0f, 0.5f, 2.0f }, scaleLength);
+					BranchNode* childA1b = childA1->createChild({ 1.0f, 4.0f, -0.5f }, scaleLength);
 				}
-
-				BranchNode* childA2 = childA->createChild({ 2.0f, 7.0f, -3.0f }, scaleLength);
-				{
-					BranchNode* childA2a = childA2->createChild({ 0.5f, 4.0f, -2.0f }, scaleLength, true);
-					module->tips.push_back(childA2a);
-				}
-
+				BranchNode* childA2 = childA->createChild({ -0.5f, 4.0f, -1.0f }, scaleLength);
 			}
 
-			BranchNode* childB = child->createChild({ 0.0f, 12.0f, 0.0f }, scaleLength);
+			BranchNode* childB = child->createChild({ -4.0f, 11.0f, 2.0f }, scaleLength);
 			{
-				BranchNode* childB1 = childB->createChild({ 6.0f, 12.0f, 2.0f }, scaleLength);
+				BranchNode* childB1 = childB->createChild({ 0.0f, 9.0f, 1.5f }, scaleLength);
 				{
-					BranchNode* childB1a = childB1->createChild({ 2.0f, 3.5f,0.0f }, scaleLength);
+					BranchNode* childB1a = childB1->createChild({ -0.5f, 2.5f, 0.0f }, scaleLength);
 					{
-						BranchNode* childB1a1 = childB1a->createChild({ 1.0f, 6.0f, 0.0f }, scaleLength);
+						BranchNode* childB1a1 = childB1a->createChild({ 3.0f, 2.0f, -2.0f }, scaleLength);
+						BranchNode* childB1a2 = childB1a->createChild({ 0.2f, 2.5f, -2.5f }, scaleLength);
+						BranchNode* childB1a3 = childB1a->createChild({ -1.5f, 5.0f, 2.0f }, scaleLength);
 						{
-							BranchNode* childB1a1a = childB1a1->createChild({ 1.5f, 3.0f,0.0f }, scaleLength, true);
-							module->tips.push_back(childB1a1a);
-							BranchNode* childB1a1b = childB1a1->createChild({ -1.0f, 3.0f,0.0f }, scaleLength, true);
-							module->tips.push_back(childB1a1b);
+							BranchNode* childB1a3A = childB1a3->createChild({ 1.0f, 3.0f, 1.0f }, scaleLength);
+							{
+								BranchNode* childB1a3A1 = childB1a3A->createChild({ 1.0f, 1.0f, 1.0f }, scaleLength);
+								BranchNode* childB1a3A2 = childB1a3A->createChild({ -1.0f, 1.0f, -0.5f }, scaleLength);
+								{
+									BranchNode* childB1a3A1a = childB1a3A2->createChild({ 0.0f, 2.0f, -1.0f }, scaleLength);
+								}
+							}
+							BranchNode* childB1a3B = childB1a3->createChild({ -2.0f, 1.0f, 1.0f }, scaleLength);
 						}
 					}
-
-					BranchNode* childB1b = childB1->createChild({ -0.50f, 3.5f,0.0f }, scaleLength);
-					{
-						BranchNode* childB1b1 = childB1b->createChild({ 0.0f, 4.0f,0.0f }, scaleLength, true);
-						module->tips.push_back(childB1b1);
-					}
 				}
-
-				BranchNode* childB2 = childB->createChild({ -4.0f, 6.0f, -2.0f }, scaleLength);
+				BranchNode* childB2 = childB->createChild({ -3.5f, 4.0f, -3.0f }, scaleLength);
 				{
-					BranchNode* childB2a = childB2->createChild({ -3.0f, 6.0f, -2.0f }, scaleLength, true);
-					module->tips.push_back(childB2a);
-
-					BranchNode* childB2b = childB2->createChild({ -1.5f, 1.0f,1.0f }, scaleLength);
-					{
-						BranchNode* childB21 = childB2b->createChild({ 0.5f, 2.0f,0.5f }, scaleLength, true);
-						module->tips.push_back(childB21);
-						BranchNode* childB22 = childB2b->createChild({ -2.0f, -1.0f, 1.0f }, scaleLength, true);
-						module->tips.push_back(childB22);
-					}
-				}
-			}
-
-			BranchNode* childC = child->createChild({ -9.0f, 9.0f, -5.0f }, scaleLength);
-			{
-				BranchNode* childC1 = childC->createChild({ -3.0f, 12.0f,0.0f }, scaleLength);
-				{
-					BranchNode* childC1a = childC1->createChild({ 0.0f, 3.0f,0.0f }, scaleLength, true);
-					BranchNode* childC1b = childC1->createChild({ -2.0f, 3.5f,0.0f }, scaleLength, true);
-				}
-
-				BranchNode* childC2 = childC->createChild({ -6.0f, 1.0f,0.0f }, scaleLength);
-				{
-					BranchNode* childC2a = childC2->createChild({ -5.0f, 2.0f,0.0f }, scaleLength, true);
-					BranchNode* childC2b = childC2->createChild({ -2.0f, -1.0f,0.0f }, scaleLength, true);
+						BranchNode* childB2a = childB2->createChild({ -2.0f, 3.0f, -2.0f }, scaleLength);
+						BranchNode* childB2b = childB2->createChild({ -2.0f, 1.0f, 1.0f }, scaleLength);
+						{
+							BranchNode* childB2b1 = childB2b->createChild({ 0.0f, 2.0f, -1.0f }, scaleLength);
+							BranchNode* childB2b2 = childB2b->createChild({ -2.0f, -0.5f, 1.0f }, scaleLength);
+						}
 				}
 			}
 		}

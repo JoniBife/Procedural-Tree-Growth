@@ -16,7 +16,7 @@ void BranchNode::updateNode(float modulePhysiologicalAge) {
 		float branchSegmentAge = eqt::segmentPhysiologicalAge(modulePhysiologicalAge, parent->physiologicalAge);
 
 		// Thirdly we calculate the branch length
-		branchLength = eqt::segmentLength(maxBranchLength, branchSegmentAge, GrowthParameters::instance->scalingCoefficient);
+		branchLength = maxBranchLength;//eqt::segmentLength(maxBranchLength, branchSegmentAge, GrowthParameters::instance->scalingCoefficient);
 
 		// Secondly we calculate the diameter
 		branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor/*,branchLength/maxBranchLength*/);
@@ -25,25 +25,22 @@ void BranchNode::updateNode(float modulePhysiologicalAge) {
 		Mat4 scaling = Mat4::scaling({ branchDiameter, branchLength, branchDiameter });
 		Mat4 translation = Mat4::translation({ 0.0f, branchLength / 2, 0.0f });
 
-		// We also have to rotate the branch to the direction of its node
-		Vec3 parentPosition = parent->calculatePosition();
-		Vec3 dir = relativePosition.normalize();
-		Qtrn q = Qtrn::fromDir(dir);
-		Mat4 rotation = q.toRotationMatrix();
+		Vec4 currRelativePosition = { 0.0f, branchLength, 0.0f, 1.0f};
+		currRelativePosition = rotation * currRelativePosition;
 
-		// Finally we translate the node to its correct position in world space (TODO CHECK IF THIS IS WORLD SPACE)
+		// Finally we translate the node to its correct position in world space
 		Mat4 positioning = Mat4::translation(parent->calculatePosition());
 
-		sceneGraphNode->setModel(positioning * rotation * translation * scaling);
+		sceneGraphNode->setModel(moduleOrientation * positioning * rotation * translation * scaling);
 
 		lightExposure = 0.0f;
 		vigour = 0.0f;
 
-		if (branchLength == maxBranchLength) {
-			++reachedMax;
-			if (reachedMax == 1) {
-				physiologicalAge = modulePhysiologicalAge;
-			}
+		if (branchLength == maxBranchLength && !reachedMax) {
+			// The age of a branch segment is 0 throughout the growth process, and once it reached the maximum length its
+			// age is set to the age of the module at that time
+			reachedMax = true;
+			physiologicalAge = modulePhysiologicalAge;
 		}
 
 		if (isTip)
@@ -63,17 +60,18 @@ void BranchNode::adapt() {
 
 		Vec3 gravityDir = -1 * Vec3::Y;
 
-		Vec3 adaptation = eqt::tropismOffset(physiologicalAge, 0.1f, 0.2f, gravityDir);
+		adaptationOffset = eqt::tropismOffset(physiologicalAge, GrowthParameters::instance->g1, GrowthParameters::instance->g2, gravityDir);
 
-		if (relativePosition.normalize() != gravityDir)
-			relativePosition += adaptation;
-
-		for (BranchNode* child : children)
-		{
-			if (!child->main)
-				child->adapt();
-		}
+		if (isTip)
+			return;
 	}
+
+	for (BranchNode* child : children)
+	{
+		if (!child->main)
+			child->adapt();
+	}
+	
 }
 
 Vec3 BranchNode::calculatePosition() {
@@ -91,6 +89,7 @@ BranchNode* BranchNode::createChild(const Vec3& relativePosition, float scaleLen
 	child->sceneGraphNode->addTexture(sceneGraphNode->getTextures()[0]);
 	child->sceneGraphNode->addTexture(sceneGraphNode->getTextures()[1]);
 	child->isTip = isTip;
+	child->calculateRotation();
 	children.push_back(child);
 	return child;
 }
@@ -122,4 +121,12 @@ float BranchNode::segmentDiameter(const BranchNode* branchNode, float thickening
 		branchSegmentDiameter += SQR(childSegmentDiameter);
 	}
 	return sqrtf(branchSegmentDiameter);
+}
+
+void BranchNode::calculateRotation() {
+	// We also have to rotate the branch to the direction of its node
+	Vec3 parentPosition = parent->calculatePosition();
+	Vec3 dir = (relativePosition + adaptationOffset).normalize();
+	Qtrn q = Qtrn::fromDir(dir);
+	rotation = q.toRotationMatrix();
 }

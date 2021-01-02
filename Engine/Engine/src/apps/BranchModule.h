@@ -56,6 +56,11 @@ public:
 	void calculateVigorFluxes(BranchNode* root);
 	void distributeLightAndVigor();
 
+	void setOrientation(Mat4& orientation);
+
+private:
+	void setOrientationRecurs(Mat4& orientation, BranchNode* curr);
+
 };
 
 #include "Tree.h"

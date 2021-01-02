@@ -111,12 +111,15 @@ void Engine::setupScene() {
 	);
 
 	sceneGraph = new SceneGraph(camera);
+
+	gui = new GUI();
 }
 
 ////////////////////////////////////////////// RESOURCES
 void Engine::freeResources() {
 	delete sceneGraph;
 	delete camera;
+	delete gui;
 }
 
 ////////////////////////////////////////////// SETTERS
@@ -134,6 +137,9 @@ SceneGraph* Engine::getSceneGraph() {
 Camera* Engine::getCamera() {
 	return camera;
 }
+GUI* Engine::getGui() {
+	return gui;
+}
 
 int Engine::getWindowWidth() {
 	return windowWidth;
@@ -144,6 +150,7 @@ int Engine::getWindowHeight() {
 double Engine::getElapsedTime() {
 	return elapsedTime;
 }
+
 
 
 ////////////////////////////////////////////// MAIN LOOP
@@ -203,6 +210,8 @@ void Engine::run() {
 		glfwPollEvents();
 		checkForOpenGLErrors("ERROR: MAIN LOOP"); //TODO Prob not necessary
 	}
+
+	gui->drawUI();// After everything from the scene is rendered, we render the UI;
 
 	freeResources();
 	end(); //Has to be called before glfwTerminate()

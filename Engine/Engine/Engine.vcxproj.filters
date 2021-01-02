@@ -114,6 +114,27 @@
     <ClCompile Include="src\textures\DepthMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\apps\TextRendering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\FontLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\textures\GlyphTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\GUIComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\TextRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h">
@@ -230,6 +251,27 @@
     <ClInclude Include="src\textures\DepthMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\apps\TextRendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\GUIComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\FontLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\textures\GlyphTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\Text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\TextRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
@@ -241,5 +283,8 @@
     <None Include="shaders\vertexShaderSM.glsl" />
     <None Include="shaders\fragmentShaderShadows.glsl" />
     <None Include="shaders\vertexShaderShadows.glsl" />
+    <None Include="shaders\fragmentShaderLighting.glsl" />
+    <None Include="shaders\textFragmentShader.glsl" />
+    <None Include="shaders\textVertexShader.glsl" />
   </ItemGroup>
 </Project>

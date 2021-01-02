@@ -16,10 +16,16 @@
 struct BranchNode {
 
 	Vec3 relativePosition; // The position of the node relative to its parent
+	Vec3 adaptationOffset = { 0.0f, 0.0f, 0.0f }; // An offset that is added to the branch node position to simulate the adaptation of the module
+	Vec3 currRelativePosition;
 	float physiologicalAge = 0.0f;
 	float branchLength = 0.0f;
 	float branchDiameter;
 	float maxBranchLength;
+
+	Mat4 rotation; // The rotation matrix created from the dir of the branch segment associated with this node
+
+	Mat4 moduleOrientation; // The orientation of the module where this node is contained
 
 	float lightExposure;
 	float vigour;
@@ -32,7 +38,7 @@ struct BranchNode {
 	BranchNode* parent;
 	std::vector<BranchNode*> children;
 
-	int reachedMax = 0;
+	bool reachedMax = false;
 
 	~BranchNode();
 
@@ -47,11 +53,12 @@ struct BranchNode {
 
 	BranchNode* createChild(const Vec3& relativePosition, float scaleLength, bool isTip = false);
 
-	
 	float segmentDiameter(const BranchNode* branchNode, float thickeningFactor, float lerpFactor, bool first = true);
 
 	// Equation 8 of the paper
 	float segmentDiameter(const BranchNode* branchNode, float thickeningFactor);
+
+	void calculateRotation();
 };
 
 #endif

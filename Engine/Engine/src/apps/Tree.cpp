@@ -18,7 +18,7 @@ Tree::Tree(const Vec3& positionRoot, SceneGraph* sceneGraph, Texture2D* woodText
 	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
 	root->vigour = (float)GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
 	root->tree = this;
-
+	root->setOrientation(Mat4::IDENTITY);
 	modules.push_back(root);
 }
 
@@ -43,7 +43,7 @@ void Tree::resumeGrowth() {
 }
 
 void Tree::grow(float elapsedTime) {
-	//distributeLightAndVigor();
+	distributeLightAndVigor();
 	developModules(elapsedTime);
 }
 

@@ -49,8 +49,11 @@ Mesh::~Mesh() {
 
 	// Bind the the vao so that we can disable the vertex attrib array
 	GL_CALL(glBindVertexArray(vaoId));
-	GL_CALL(glDisableVertexAttribArray(0));
-	GL_CALL(glDisableVertexAttribArray(1));
+	GL_CALL(glDisableVertexAttribArray(VERTICES));
+	GL_CALL(glDisableVertexAttribArray(NORMALS));
+	GL_CALL(glDisableVertexAttribArray(COLORS));
+	GL_CALL(glDisableVertexAttribArray(TEXTCOORDS));
+	GL_CALL(glDisableVertexAttribArray(TANGENTS));
 	GL_CALL(glDeleteBuffers(1, &vboVerticesId));
 	if (!normals.empty())
 		GL_CALL(glDeleteBuffers(1, &vboNormalsId));

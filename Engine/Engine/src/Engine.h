@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "scene/SceneGraph.h"
+#include "gui/GUI.h"
 
 class Engine {
 
@@ -12,6 +13,7 @@ private:
 	GLFWwindow* window = nullptr;
 	SceneGraph* sceneGraph = nullptr;
 	Camera* camera = nullptr;
+	GUI* gui;
 	int windowWidth = 0;
 	int windowHeight = 0;
 	double elapsedTime = 0.0;
@@ -55,6 +57,7 @@ protected:
 	int getWindowWidth();
 	int getWindowHeight();
 	double getElapsedTime();
+	GUI* getGui();
 
 public:
 	/* If called, the lambda preRender will be called before the rendering of the scene, useful for shadow mapping for example*/

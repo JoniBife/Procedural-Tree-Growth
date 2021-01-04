@@ -1,14 +1,29 @@
+#include "TextRenderer.h"
+#include "UIRenderer.h"
 #include "GUI.h"
+#include "../view/Transformations.h"
 
 #define ever (;;)
 
-GUI::GUI() {
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	Mat4 projection = ortho(0.0f, width, 0.0f, height);
 
+	TextRenderer::getInstance()->updateProjection(projection);
+	UIRenderer::getInstance()->updateProjection(projection);
 }
+
+
+GUI::GUI(GLFWwindow* window) : window(window) {
+	// Setting a callback to scale the UI when the window framebuffer size changes
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+}
+
 GUI::~GUI() {
 	for (GUIComponent* comp : guiComponents)
 		delete comp;
 }
+
 
 void GUI::drawUI() {
 	/*
@@ -25,6 +40,11 @@ void GUI::drawUI() {
 
 void GUI::removeComponent(GUIComponent* component) {
 	guiComponents.remove(component);
+}
+
+void GUI::addComponent(GUIComponent* component) {
+	component->setWindow(window);
+	addComponentSort(component);
 }
 
 void GUI::addComponentSort(GUIComponent* component) {

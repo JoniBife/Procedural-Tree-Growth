@@ -9,16 +9,17 @@ class GUI {
 private: 
 	// Doubly-linked list, the list is sorted from the largest depth to the smallest depth 
 	std::list<GUIComponent*> guiComponents;
+	GLFWwindow* window;
 
 public:
-	GUI();
+	GUI(GLFWwindow* window);
 	~GUI();
 
 	void drawUI();
 
 	void removeComponent(GUIComponent* component);
 
-	void addComponent
+	void addComponent(GUIComponent* component);
 
 private:
 	void addComponentSort(GUIComponent* component);

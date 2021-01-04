@@ -20,6 +20,7 @@ struct Character {
 	Vec2 bearing; // Offset from baseline to left/top of glyph
 	unsigned int advanceX; // Offset to advance to next glyph
 	unsigned int advanceY; // Offset to advance to next glyph
+	Vec4 vertices[6];
 };
 
 class FontLoader {
@@ -28,10 +29,15 @@ private:
 	// A map that contains all the fonts that have been loaded, this way we don't reload them everytime
 	std::map<std::string, std::map<char, Character>*> fontCache; 
 	FT_Library ft;
+	static FontLoader* instance; // Singleton
 
 public:
 	FontLoader(); // Loads the default font on constructor
 	~FontLoader();
+
+	static FontLoader* getInstance();
+
+	static void destroyInstance();
 
 	std::map<char, Character>* loadFont(const std::string& fontName);
 

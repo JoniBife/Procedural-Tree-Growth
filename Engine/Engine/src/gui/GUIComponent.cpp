@@ -7,3 +7,7 @@ unsigned int GUIComponent::getDepth() const {
 void GUIComponent::setDepth(unsigned int depth) {
 	this->depth = depth;
 }
+
+void GUIComponent::setWindow(GLFWwindow* window) {
+	this->window = window;
+}

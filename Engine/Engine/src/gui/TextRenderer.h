@@ -1,6 +1,7 @@
 #ifndef TEXT_RENDERER_H
 #define TEXT_RENDERER_H
 
+#include <vector>
 #include "../shaders/ShaderProgram.h"
 #include "GL/glew.h"
 #include "FontLoader.h"
@@ -12,10 +13,10 @@ private:
 	ShaderProgram* textShader;
 	GLuint vaoId;
 	GLuint vboId;
-	FontLoader* fontLoader;
 	
 	GLint textLocation;
 	GLint textColorLocation;
+	GLint modelLocation;
 	GLint projectionLocation;
 
 	Mat4 projection; // Right now we are using orthografic with the screen size
@@ -31,7 +32,9 @@ public:
 
 	static void destroyInstance();
 
-	void renderText(const std::string& text, const std::string& font, const Vec2& position, float scale, const Vec4& color);
+	void renderText(const std::vector<Character> text, const std::string& font, const Vec2& position, float scale, const Vec4& color);
+
+	void updateProjection(const Mat4& projection);
 };
 
 #endif

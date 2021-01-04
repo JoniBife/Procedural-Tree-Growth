@@ -261,10 +261,10 @@ void Mesh::calculateTangents() {
 }
 
 // Creates a black square centered in clip space (0,0,0)
-Mesh Mesh::square(const float width) {
-	Mesh square;
+Mesh* Mesh::square(const float width) {
+	Mesh* square = new Mesh();
 
-		square.vertices = {
+		square->vertices = {
 			// first triangle
 			{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
 			{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
@@ -279,18 +279,28 @@ Mesh Mesh::square(const float width) {
 }
 
 // Creates a black rectangle centered in clip space (0,0,0)
-Mesh Mesh::rectangle(const float width, const float height) {
-	Mesh rectangle;
+Mesh* Mesh::rectangle(const float width, const float height) {
+	Mesh* rectangle = new Mesh();
 
-		rectangle.vertices = {
+		rectangle->vertices = {
 			// first triangle
-			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
-			{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
-			// second triangle
 			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
 			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+
+			// second triangle
+			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
 			{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
+		};
+
+		rectangle->textCoords = {
+			{0.0f, 0.0f},
+			{0.0f, 1.0f},
+			{1.0f, 1.0f},
+			{0.0f, 0.0f},
+			{1.0f, 1.0f},
+			{1.0f, 0.0f}
 		};
 
 	return rectangle;
@@ -298,10 +308,10 @@ Mesh Mesh::rectangle(const float width, const float height) {
 }
 
 // Creates a black triangle centered in clip space (0,0,0)
-Mesh Mesh::triangle(const float width, const float height) {
-	Mesh triangle;
+Mesh* Mesh::triangle(const float width, const float height) {
+	Mesh* triangle = new Mesh();
 
-		triangle.vertices = {
+		triangle->vertices = {
 			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
 			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
 			{0, height / 2, 0.0f, 1.0f} // top center vertex		

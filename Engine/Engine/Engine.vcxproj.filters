@@ -135,6 +135,15 @@
     <ClCompile Include="src\gui\TextRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\Button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\UIRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\Panel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h">
@@ -272,6 +281,15 @@
     <ClInclude Include="src\gui\TextRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gui\Button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\UIRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\Panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
@@ -286,5 +304,7 @@
     <None Include="shaders\fragmentShaderLighting.glsl" />
     <None Include="shaders\textFragmentShader.glsl" />
     <None Include="shaders\textVertexShader.glsl" />
+    <None Include="shaders\uiFragmentShader.glsl" />
+    <None Include="shaders\uiVertexShader.glsl" />
   </ItemGroup>
 </Project>

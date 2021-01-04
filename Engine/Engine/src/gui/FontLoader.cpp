@@ -2,6 +2,8 @@
 #include "GL/glew.h"
 #include "../utils/OpenGLUtils.h"
 
+FontLoader* FontLoader::instance = nullptr;
+
 FontLoader::FontLoader() {
 	if (FT_Init_FreeType(&ft))
 	{
@@ -24,6 +26,19 @@ FontLoader::~FontLoader() {
 	}
 }
 
+FontLoader* FontLoader::getInstance() {
+    if (instance)
+        return instance;
+
+    instance = new FontLoader();
+    return instance;
+}
+
+void FontLoader::destroyInstance() {
+    if (instance)
+    delete instance;
+}
+
 std::map<char, Character>* FontLoader::loadFont(const std::string& name) {
 	
 	auto cacheEntry = fontCache.find(name);
@@ -34,10 +49,8 @@ std::map<char, Character>* FontLoader::loadFont(const std::string& name) {
 
 	// Otherwise we have to load the font from the file
 
-    GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // disable byte-alignment restriction from OpenGL which requires that textures all have a 4-byte alignment
-
     // Creating path to find the font
-    std::string path = "fonts/";
+    std::string path = "../Engine/fonts/";
     path.append(name).append(".ttf");
 
     // Loading font from a TrueType file as an 8 - bit grayscale bitmap image for us that we can access via face->glyph->bitmap.
@@ -51,6 +64,11 @@ std::map<char, Character>* FontLoader::loadFont(const std::string& name) {
         std::cout << "FREETYPE ERROR [ Failed to load a font from path: " << path << " ]." << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // disable byte-alignment restriction from OpenGL which requires that textures all have a 4-byte alignment
+
+    // set size to load glyphs as
+    FT_Set_Pixel_Sizes(face, 0, 48);
 
     std::map<char, Character>* fontMap = new std::map<char, Character>();
 
@@ -79,6 +97,20 @@ std::map<char, Character>* FontLoader::loadFont(const std::string& name) {
             face->glyph->advance.y
         };
 
+        float xpos = character.bearing.x;
+        float ypos = character.height - character.bearing.y;
+
+        float w = character.width;
+        float h = character.height;
+
+        // Different characters have quads of different sizes so we ajust the vertices for each character
+        character.vertices[0] = { xpos,     ypos + h,   0.0f, 0.0f };
+        character.vertices[1] = { xpos,     ypos,       0.0f, 1.0f };
+        character.vertices[2] = { xpos + w, ypos,       1.0f, 1.0f };
+        character.vertices[3] = { xpos,     ypos + h,   0.0f, 0.0f };
+        character.vertices[4] = { xpos + w, ypos,       1.0f, 1.0f };
+        character.vertices[5] = { xpos + w, ypos + h,   1.0f, 0.0f };
+       
         fontMap->insert(std::pair<char, Character>(c, character));
     }
 

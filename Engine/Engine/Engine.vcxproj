@@ -32,6 +32,9 @@
     <ClCompile Include="src\apps\TreeGrowth.cpp" />
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
     <ClCompile Include="src\controllers\SphericalCameraController.cpp" />
+    <ClCompile Include="src\gui\Button.cpp" />
+    <ClCompile Include="src\gui\Panel.cpp" />
+    <ClCompile Include="src\gui\UIRenderer.cpp" />
     <ClCompile Include="src\gui\FontLoader.cpp" />
     <ClCompile Include="src\gui\GUI.cpp" />
     <ClCompile Include="src\gui\GUIComponent.cpp" />
@@ -77,6 +80,9 @@
     <ClInclude Include="src\controllers\FreeCameraController.h" />
     <ClInclude Include="src\controllers\SphericalCameraController.h" />
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\gui\Button.h" />
+    <ClInclude Include="src\gui\Panel.h" />
+    <ClInclude Include="src\gui\UIRenderer.h" />
     <ClInclude Include="src\gui\GUI.h" />
     <ClInclude Include="src\gui\GUIComponent.h" />
     <ClInclude Include="src\gui\FontLoader.h" />
@@ -108,6 +114,8 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\uiFragmentShader.glsl" />
+    <None Include="shaders\uiVertexShader.glsl" />
     <None Include="shaders\fragmentShaderLighting.glsl" />
     <None Include="shaders\fragmentShaderNM.glsl" />
     <None Include="shaders\fragmentShaderShadows.glsl" />

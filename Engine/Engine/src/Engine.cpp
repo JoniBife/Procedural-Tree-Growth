@@ -112,7 +112,7 @@ void Engine::setupScene() {
 
 	sceneGraph = new SceneGraph(camera);
 
-	gui = new GUI();
+	gui = new GUI(window);
 }
 
 ////////////////////////////////////////////// RESOURCES
@@ -156,12 +156,12 @@ double Engine::getElapsedTime() {
 ////////////////////////////////////////////// MAIN LOOP
 void Engine::run() {
 
-	// Setup 
-	setupGLFW();
-	setupGLEW();
+	// Setup (DO NOT CHANGE ORDER OF SETUP)
+	setupGLFW(); 
+	setupGLEW();  
 	setupOpenGL();
-
 	setupScene();
+
 	start();
 	sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 
@@ -206,13 +206,12 @@ void Engine::run() {
 			sceneGraph->draw((float)elapsedTime); // Drawing only after update
 		}
 
+		gui->drawUI();// After everything from the scene is rendered, we render the UI;
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		checkForOpenGLErrors("ERROR: MAIN LOOP"); //TODO Prob not necessary
 	}
-
-	gui->drawUI();// After everything from the scene is rendered, we render the UI;
-
 	freeResources();
 	end(); //Has to be called before glfwTerminate()
 

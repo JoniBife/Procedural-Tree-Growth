@@ -114,6 +114,9 @@
     <ClCompile Include="src\textures\DepthMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\apps\Blending.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h">
@@ -230,6 +233,9 @@
     <ClInclude Include="src\textures\DepthMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\apps\Blending.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
@@ -241,5 +247,8 @@
     <None Include="shaders\vertexShaderSM.glsl" />
     <None Include="shaders\fragmentShaderShadows.glsl" />
     <None Include="shaders\vertexShaderShadows.glsl" />
+    <None Include="shaders\fragmentShaderLighting.glsl" />
+    <None Include="shaders\fragmentShaderBlending.glsl" />
+    <None Include="shaders\vertexShaderBlending.glsl" />
   </ItemGroup>
 </Project>

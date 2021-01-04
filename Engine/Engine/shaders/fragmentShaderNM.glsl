@@ -41,11 +41,11 @@ vec3 calculateLight(vec3 color, vec3 surfaceNormal, vec3 fragPos, vec3 lightPos,
 	 // When using the blinn model the angle is usually smaller, so we increase the shininess to match the result of the phong model
 	float spec = pow(max(dot(normalizedNormal, halfwayDir), 0.0), shininess * 4.0);
 	vec3 specular = specularStrength * spec * color;
-	/*/ // Phong
+	/* // Phong
 	vec3 reflectDir = reflect(-lightDir, normalizedNormal);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 	vec3 specular = specularStrength * spec * lightColor; 
-	/**/
+	*/
 
 	return ambient + diffuse + specular;
 }
@@ -71,20 +71,3 @@ void main(void)
 
 	fragmentColor = vec4(result * colorTxt.xyz, 1.0f);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

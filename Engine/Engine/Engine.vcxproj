@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\apps\Blending.cpp" />
     <ClCompile Include="src\apps\BoundingSphere.cpp" />
     <ClCompile Include="src\apps\BranchModule.cpp" />
     <ClCompile Include="src\apps\BranchNode.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="src\apps\BranchNode.h" />
     <ClInclude Include="src\apps\Equations.h" />
     <ClInclude Include="src\apps\GrowthParameters.h" />
+    <ClInclude Include="src\apps\Blending.h" />
     <ClInclude Include="src\apps\Morphospace.h" />
     <ClInclude Include="src\apps\ShadowMapping.h" />
     <ClInclude Include="src\apps\Singleton.h" />
@@ -94,12 +96,15 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\fragmentShaderBlending.glsl" />
+    <None Include="shaders\fragmentShaderLighting.glsl" />
     <None Include="shaders\fragmentShaderNM.glsl" />
     <None Include="shaders\fragmentShaderShadows.glsl" />
     <None Include="shaders\fragmentShaderSM.glsl" />
     <None Include="shaders\geometryShaderNM.glsl" />
     <None Include="shaders\simpleFragmentShader.glsl" />
     <None Include="shaders\simpleVertexShader.glsl" />
+    <None Include="shaders\vertexShaderBlending.glsl" />
     <None Include="shaders\vertexShaderNM.glsl" />
     <None Include="shaders\vertexShaderShadows.glsl" />
     <None Include="shaders\vertexShaderSM.glsl" />

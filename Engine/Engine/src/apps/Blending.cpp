@@ -1,0 +1,143 @@
+#include "Blending.h"
+#include "../meshes/Mesh.h"
+#include "../shaders/ShaderProgram.h"
+#include "../scene/SceneGraph.h"
+#include "../view/Transformations.h"
+#include "../controllers/SphericalCameraController.h"
+#include "../controllers/FreeCameraController.h"
+#include "../textures/Texture2D.h"
+#include "../utils/ColorRGBA.h"
+#include "../math/MathAux.h"
+#include "../textures/DepthMap.h"
+
+
+static ShaderProgram* spBlending;
+static ShaderProgram* spSimple;
+static FreeCameraController* cameraController;
+static Mesh* leaves;
+static Mesh* plane;
+static Texture2D* leavesTexture;
+
+static SceneNode* sceneNodePlane;
+static SceneNode* sceneNodeLeaves;
+static SceneNode* sceneNodeLeaves1;
+
+static GLint cameraPosL;
+
+static void setupShaders(SceneGraph* sceneGraph, Camera* camera) {
+
+	Shader vsB(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderBlending.glsl");
+	Shader fsB(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderBlending.glsl");
+
+	spBlending = new ShaderProgram(vsB, fsB);
+
+	Shader vsSimple(GL_VERTEX_SHADER, "../Engine/shaders/SimpleVertexShader.glsl");
+	Shader fsSimple(GL_FRAGMENT_SHADER, "../Engine/shaders/SimpleFragmentShader.glsl");
+
+	spSimple = new ShaderProgram(vsSimple, fsSimple);
+
+	GLuint sharedMatricesIndex = spBlending->getUniformBlockIndex("SharedMatrices");
+	spBlending->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
+
+}
+
+static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int windowHeight) {
+	// Adding a spherical camera controller
+	float cameraMovementSpeed = 5.0f;
+	// Since we are looking at the -z axis in our initial orientation, yaw has to be set -90 degress otherwise we would look at +x axis
+	float initialYaw = -90.0f;
+	float initialPitch = 0.0f;
+
+	Vec3 cameraPos(0.0f, 0.0f, 3.0f); // eye
+	Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
+	Vec3 cameraFront = cameraTarget - cameraPos;
+	Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
+
+	Mat4 orthographicProj = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 0.001f, 1000.0f);
+	Mat4 perspectiveProj = perspective(PI / 2.0f, float(windowWidth / windowHeight), 0.001f, 1000.0f);
+
+	cameraController = new FreeCameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, orthographicProj, perspectiveProj, window);
+
+	camera->addCameraController(cameraController);
+	camera->setView(lookAt(cameraPos, cameraPos + cameraFront, cameraUp));
+	camera->setProjection(perspectiveProj);
+}
+
+std::vector<Vec4> transparentVertices = {
+	// positions       
+	(0.0f,  0.5f,  0.0f, 1.0f),
+	(0.0f, -0.5f,  0.0f, 1.0f),
+	(1.0f, -0.5f,  0.0f, 1.0f),
+
+	(0.0f,  0.5f,  0.0f, 1.0f),
+	(1.0f, -0.5f,  0.0f, 1.0f),
+	(1.0f,  0.5f,  0.0f, 1.0f)
+};
+
+std::vector<Vec2> transparentTextCoords = {
+	// texture Coords (swapped y coordinates because texture is flipped upside down)
+	(0.0f,  0.0f),
+	(0.0f,  1.0f),
+	(1.0f,  1.0f),
+
+	(0.0f,  0.0f),
+	(1.0f,  1.0f),
+	(1.0f,  0.0f)
+};
+
+static void setupTextures() {
+	// Loading textures
+	leavesTexture = new Texture2D("../Engine/textures/grass.png");
+
+	GLint textureID = spBlending->getUniformLocation("texture1");
+
+	spBlending->use();
+	spBlending->setUniform(textureID, 0);
+}
+
+void Blending::start() {
+	setupShaders(getSceneGraph(), getCamera());
+	setupCamera(getCamera(), getWindow(), getWindowWidth(), getWindowHeight());
+	setupTextures();
+	/*/
+	plane = Mesh::loadFromFile("../Engine/objs/plane.obj");
+	plane->paint(ColorRGBA::ORANGE);
+	sceneNodePlane = getSceneGraph()->getRoot()->createChild(plane, Mat4::IDENTITY, spSimple);
+	sceneNodePlane->setModel(Mat4::translation({ 0.0f, -0.5f, 0.0f }));
+	sceneNodePlane->setShaderProgram(spSimple);
+	/**/
+	leaves = new Mesh(transparentVertices, transparentTextCoords);
+
+	std::vector<Vec3> vegetation;
+	vegetation.push_back(Vec3(0.0f, 0.0f, 0.0f));
+	vegetation.push_back(Vec3(-1.5f, 0.0f, -0.48f));
+	vegetation.push_back(Vec3(1.5f, 0.0f, 0.51f));
+	/*vegetation.push_back(Vec3(0.0f, 0.0f, 0.7f));
+	vegetation.push_back(Vec3(-0.3f, 0.0f, -2.3f));
+	vegetation.push_back(Vec3(0.5f, 0.0f, -0.6f));*/
+
+
+	leaves->paint(ColorRGBA::BLACK);
+	sceneNodeLeaves = getSceneGraph()->getRoot()->createChild(leaves, Mat4::IDENTITY, spSimple);
+	//sceneNodeLeaves->setModel(Mat4::translation(vegetation[0]) * Mat4::rotation(PI/2, (1.0f, 0.0f, 0.0f)));
+	sceneNodeLeaves->setShaderProgram(spSimple);
+	/*/
+	sceneNodeLeaves1 = getSceneGraph()->getRoot()->createChild(leaves, Mat4::IDENTITY, spBlending);
+	sceneNodeLeaves1->setModel(Mat4::translation(vegetation[1]));
+
+	sceneNodeLeaves1->addTexture(leavesTexture);
+	/**/
+	//sceneNodeLeaves->addTexture(leavesTexture);
+
+}
+
+void Blending::update() {
+}
+
+void Blending::end() {
+	delete cameraController;
+	delete spBlending;
+	delete spSimple;
+	delete leaves;
+	delete plane;
+}

@@ -56,7 +56,7 @@ bool Button::isButtonPressed() {
 		canRelease = true;
 		return true;
 	}
-	else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE && canRelease) {
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE && canRelease) {
 		onClick(); // When the button is released we fire onClick
 		canRelease = false;
 		return false;

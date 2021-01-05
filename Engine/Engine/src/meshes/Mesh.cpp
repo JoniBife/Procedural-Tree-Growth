@@ -54,7 +54,7 @@ Mesh::~Mesh() {
 	GL_CALL(glDisableVertexAttribArray(COLORS));
 	GL_CALL(glDisableVertexAttribArray(TEXTCOORDS));
 	GL_CALL(glDisableVertexAttribArray(TANGENTS));
-	GL_CALL(glDeleteBuffers(1, &vboVerticesId));
+	GL_CALL(glDeleteBuffers(1, &vboId));
 	if (!normals.empty())
 		GL_CALL(glDeleteBuffers(1, &vboNormalsId));
 	if (!colors.empty())
@@ -122,9 +122,9 @@ void Mesh::init() {
 			// Generating all buffers at once, its better than generating each of them separately 
 			GL_CALL(glGenBuffers(numberOfBuffers, bufferIds));
 
-			vboVerticesId = bufferIds[0];
+			vboId = bufferIds[0];
 			// Binding the vertices to the first vbo
-			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId));
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboId));
 			{
 				// The spec ensures that vectors store their elements contiguously
 				// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array

@@ -4,6 +4,7 @@
 #include "utils/OpenGLUtils.h"
 #include "Configurations.h"
 #include "view/Transformations.h"
+#include "InputManager.h"
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 void window_size_callback(GLFWwindow* win, int winx, int winy)
@@ -113,6 +114,8 @@ void Engine::setupScene() {
 	sceneGraph = new SceneGraph(camera);
 
 	gui = new GUI(window);
+
+	InputManager::createInstance(window);
 }
 
 ////////////////////////////////////////////// RESOURCES
@@ -166,6 +169,8 @@ void Engine::run() {
 	sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 
 	double lastTime = glfwGetTime();
+
+	InputManager::getInstance()->startTextInput();
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))

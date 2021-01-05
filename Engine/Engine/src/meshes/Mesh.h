@@ -39,7 +39,7 @@ public:
 
 private:
 	GLuint vaoId = GLuint(0);
-	GLuint vboVerticesId = GLuint(0);
+	GLuint vboId = GLuint(0);
 	GLuint vboNormalsId = GLuint(0);
 	GLuint vboColorsId = GLuint(0);
 	GLuint vboTextCoordsId = GLuint(0);

@@ -2,6 +2,7 @@
 #include "../gui/Text.h"
 #include "../gui/Button.h"
 #include "../gui/Panel.h"
+#include "../gui/TextField.h"
 #include "../utils/ColorRGBA.h"
 
 Text* fpsName;
@@ -38,12 +39,18 @@ void TextRendering::start() {
 	fpsName->setPosition({ fpsName->getWidth() / 2 , fpsName->getHeight() / 2 });
 	fps->setPosition({ fpsName->getWidth() + fpsOffset, fpsName->getHeight() / 2 });
 
-	Button* button = new Button({200.0f, 300.0f});
+	Button* button = new Button({100.0f + 45, 300.0f});
 	{
 		button->setDepth(1);
 		button->setButtonText("Click me!", ColorRGBA::BLACK, 3.0f);
 		button->setOnClickListener([=]() {std::cout << "Clicked !" << std::endl;});
 		getGui()->addComponent(button);
+	}
+	
+	TextField* textField = new TextField({ 50.0f, 300.0f }, 90.0f, 30.0f);
+	{
+		textField->setDepth(1);
+		getGui()->addComponent(textField);
 	}
 
 	initialTime = getElapsedTime();

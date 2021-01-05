@@ -144,6 +144,15 @@
     <ClCompile Include="src\gui\Panel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\TextField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\LineRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h">
@@ -290,6 +299,12 @@
     <ClInclude Include="src\gui\Panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gui\TextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\LineRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
@@ -306,5 +321,7 @@
     <None Include="shaders\textVertexShader.glsl" />
     <None Include="shaders\uiFragmentShader.glsl" />
     <None Include="shaders\uiVertexShader.glsl" />
+    <None Include="shaders\lineVertexShader.glsl" />
+    <None Include="shaders\lineFragmentShader.glsl" />
   </ItemGroup>
 </Project>

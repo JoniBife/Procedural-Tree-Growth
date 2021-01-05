@@ -33,7 +33,9 @@
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
     <ClCompile Include="src\controllers\SphericalCameraController.cpp" />
     <ClCompile Include="src\gui\Button.cpp" />
+    <ClCompile Include="src\gui\LineRenderer.cpp" />
     <ClCompile Include="src\gui\Panel.cpp" />
+    <ClCompile Include="src\gui\TextField.cpp" />
     <ClCompile Include="src\gui\UIRenderer.cpp" />
     <ClCompile Include="src\gui\FontLoader.cpp" />
     <ClCompile Include="src\gui\GUI.cpp" />
@@ -61,6 +63,7 @@
     <ClCompile Include="src\view\Camera.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\view\Transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +84,8 @@
     <ClInclude Include="src\controllers\SphericalCameraController.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\gui\Button.h" />
+    <ClInclude Include="src\gui\LineRenderer.h" />
+    <ClInclude Include="src\gui\TextField.h" />
     <ClInclude Include="src\gui\Panel.h" />
     <ClInclude Include="src\gui\UIRenderer.h" />
     <ClInclude Include="src\gui\GUI.h" />
@@ -114,6 +119,8 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\lineFragmentShader.glsl" />
+    <None Include="shaders\lineVertexShader.glsl" />
     <None Include="shaders\uiFragmentShader.glsl" />
     <None Include="shaders\uiVertexShader.glsl" />
     <None Include="shaders\fragmentShaderLighting.glsl" />

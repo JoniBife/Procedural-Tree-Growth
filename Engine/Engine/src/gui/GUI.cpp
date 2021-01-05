@@ -1,5 +1,6 @@
 #include "TextRenderer.h"
 #include "UIRenderer.h"
+#include "LineRenderer.h"
 #include "GUI.h"
 #include "../view/Transformations.h"
 
@@ -11,6 +12,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 	TextRenderer::getInstance()->updateProjection(projection);
 	UIRenderer::getInstance()->updateProjection(projection);
+	LineRenderer::getInstance()->updateProjection(projection);
+
 }
 
 

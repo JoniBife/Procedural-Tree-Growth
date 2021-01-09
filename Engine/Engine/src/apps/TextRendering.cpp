@@ -7,9 +7,11 @@
 
 Text* fpsName;
 Text* fps;
+TextField* textField;
 int cn = 0;
 double initialTime;
 double currTime;
+std::string currText = "";
 
 void TextRendering::start() {
 
@@ -47,20 +49,26 @@ void TextRendering::start() {
 		getGui()->addComponent(button);
 	}
 	
-	TextField* textField = new TextField({ 50.0f, 300.0f }, 90.0f, 30.0f);
+	textField = new TextField({ 50.0f, 300.0f }, 90.0f, 30.0f);
 	{
 		textField->setDepth(1);
 		getGui()->addComponent(textField);
 	}
 
+	currText = textField->getInput();
+
 	initialTime = getElapsedTime();
 	currTime = getElapsedTime();
 }
-
 void TextRendering::update() {
 	++cn;
 	currTime += getElapsedTime();
 	fps->setContent(std::to_string(int(cn/(currTime - initialTime))));
+	std::string input = textField->getInput();
+	if (input != currText) {
+		currText = input;
+		std::cout << currText << std::endl;
+	}
 }
 
 void TextRendering::end() {

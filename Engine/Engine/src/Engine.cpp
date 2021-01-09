@@ -179,7 +179,7 @@ void Engine::run() {
 		elapsedTime = time - lastTime;
 		lastTime = time;
 
-		update();
+		//update();
 		if (preRender) {
 
 			// PreRender has been defined so we render the scene once first
@@ -209,6 +209,8 @@ void Engine::run() {
 
 			sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 			sceneGraph->draw((float)elapsedTime); // Drawing only after update
+
+			update();
 		}
 
 		gui->drawUI();// After everything from the scene is rendered, we render the UI;

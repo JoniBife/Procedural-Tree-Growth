@@ -153,6 +153,9 @@
     <ClCompile Include="src\gui\LineRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\apps\CylinderGeneration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h">
@@ -305,6 +308,9 @@
     <ClInclude Include="src\gui\LineRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\apps\CylinderGeneration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
@@ -323,5 +329,8 @@
     <None Include="shaders\uiVertexShader.glsl" />
     <None Include="shaders\lineVertexShader.glsl" />
     <None Include="shaders\lineFragmentShader.glsl" />
+    <None Include="shaders\cylinderFragmentShader.glsl" />
+    <None Include="shaders\cylinderVertexShader.glsl" />
+    <None Include="shaders\cylinderGeometryShader.geom" />
   </ItemGroup>
 </Project>

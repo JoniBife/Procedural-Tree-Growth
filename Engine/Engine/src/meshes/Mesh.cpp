@@ -219,11 +219,11 @@ void Mesh::draw() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	if (!indices.empty()) {
-		GL_CALL(glDrawElements(GL_TRIANGLES, GLsizei(indices.size()), GL_UNSIGNED_BYTE, (GLvoid*)0));
+		GL_CALL(glDrawElements(drawingPrimitive, GLsizei(indices.size()), GL_UNSIGNED_BYTE, (GLvoid*)0));
 	}
 	else
 	{
-		GL_CALL(glDrawArrays(GL_TRIANGLES, 0, GLsizei(vertices.size())));
+		GL_CALL(glDrawArrays(drawingPrimitive, 0, GLsizei(vertices.size())));
 	}
 }
 
@@ -343,4 +343,8 @@ void Mesh::paint(const Vec4& color) {
 			vec = color;
 		}
 	}
+}
+
+void Mesh::setPrimitive(GLenum drawingPrimitive) {
+	this->drawingPrimitive = drawingPrimitive;
 }

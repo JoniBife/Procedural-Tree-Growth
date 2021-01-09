@@ -22,6 +22,7 @@
     <ClCompile Include="src\apps\BoundingSphere.cpp" />
     <ClCompile Include="src\apps\BranchModule.cpp" />
     <ClCompile Include="src\apps\BranchNode.cpp" />
+    <ClCompile Include="src\apps\CylinderGeneration.cpp" />
     <ClCompile Include="src\apps\Equations.cpp" />
     <ClCompile Include="src\apps\GrowthParameters.cpp" />
     <ClCompile Include="src\apps\Morphospace.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="src\apps\BoundingSphere.h" />
     <ClInclude Include="src\apps\BranchModule.h" />
     <ClInclude Include="src\apps\BranchNode.h" />
+    <ClInclude Include="src\apps\CylinderGeneration.h" />
     <ClInclude Include="src\apps\Equations.h" />
     <ClInclude Include="src\apps\GrowthParameters.h" />
     <ClInclude Include="src\apps\Morphospace.h" />
@@ -119,6 +121,9 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\cylinderFragmentShader.glsl" />
+    <None Include="shaders\cylinderGeometryShader.geom" />
+    <None Include="shaders\cylinderVertexShader.glsl" />
     <None Include="shaders\lineFragmentShader.glsl" />
     <None Include="shaders\lineVertexShader.glsl" />
     <None Include="shaders\uiFragmentShader.glsl" />

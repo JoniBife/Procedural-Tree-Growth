@@ -26,6 +26,7 @@ private:
 	Mat4 orthoProj;
 	Mat4 perspectiveProj;
 	Mat4 currProj;
+	bool canControl = true;
 
 public:
 	float movementSpeed;	

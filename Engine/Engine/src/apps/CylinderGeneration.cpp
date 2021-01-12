@@ -3,6 +3,7 @@
 #include "../controllers/FreeCameraController.h"
 #include "../math/MathAux.h"
 #include "../textures/Texture2D.h"
+#include "TreeGrowthUI.h"
 
 static ShaderProgram* sp;
 static Mesh* points;
@@ -13,6 +14,8 @@ static float totalElapsedTime = 0.0f;
 
 static GLint cameraPosL;
 static Vec3 lightPosition(-2.0f, 4.0f, -1.0f);
+
+static TreeGrowthUI* treeGrowthUI;
 
 
 static void setupLight() {
@@ -62,6 +65,14 @@ static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int
 
 void Cylinder::start() {
 
+	treeGrowthUI = new TreeGrowthUI(getGui(), float(getWindowWidth()), float(getWindowHeight()), [=](GrowthParameters gp) {
+		std::cout << "Start" << std::endl;
+	}, [=]() {
+		std::cout << "Pause" << std::endl;
+	}, [=]() {
+		std::cout << "Stop" << std::endl;
+	});
+
 	setupCamera(getCamera(), getWindow(), getWindowWidth(), getWindowHeight());
 
 	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/cylinderVertexShader.glsl");
@@ -106,12 +117,7 @@ void Cylinder::start() {
 }
 
 void Cylinder::update() {
-	++numberOfFrames;
-	totalElapsedTime += getElapsedTime();
-
-
-	std::cout << int(numberOfFrames / totalElapsedTime) << std::endl;
-
+	treeGrowthUI->updateFPSCounter(float(getElapsedTime()));
 	sp->use();
 	sp->setUniform(cameraPosL, cameraController->position);
 	sp->stopUsing();

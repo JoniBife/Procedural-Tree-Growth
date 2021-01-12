@@ -5,7 +5,6 @@
 #include "../gui/TextField.h"
 #include "../utils/ColorRGBA.h"
 
-Text* fpsName;
 Text* fps;
 TextField* pMax = nullptr; // Maximum plant age
 TextField* vRootMax = nullptr; // Maximum plant vigour (The maximum vigour of the root)
@@ -87,7 +86,7 @@ void buildUI(GUI* gui, float windowWidth, float windowHeight) {
 			start->setDepth(1);
 			start->setButtonText("Start", ColorRGBA::BLACK, 4.0f);
 			start->setOnClickListener([=]() {
-
+				std::cout << "Clicked Start!" << std::endl;
 			});
 			gui->addComponent(start);
 		}
@@ -97,7 +96,7 @@ void buildUI(GUI* gui, float windowWidth, float windowHeight) {
 			pause->setDepth(1);
 			pause->setButtonText("Pause", ColorRGBA::BLACK, 4.0f);
 			pause->setOnClickListener([=]() {
-
+				std::cout << "Clicked Pause!" << std::endl;
 			});
 			gui->addComponent(pause);
 		}
@@ -107,7 +106,7 @@ void buildUI(GUI* gui, float windowWidth, float windowHeight) {
 			stop->setDepth(1);
 			stop->setButtonText("Stop", ColorRGBA::BLACK, 4.0f);
 			stop->setOnClickListener([=]() {
-
+				std::cout << "Clicked Stop!" << std::endl;
 			});
 			gui->addComponent(stop);
 		}
@@ -117,24 +116,6 @@ void buildUI(GUI* gui, float windowWidth, float windowHeight) {
 void TextRendering::start() {
 	buildUI(getGui(), getWindowWidth(), getWindowHeight());
 
-	fpsName = new Text("FPS: ", { 0.0f, 0.0f }); 
-	{
-		fpsName->setColor(ColorRGBA::YELLOW);
-		fpsName->setSize(4.0f);
-		fpsName->setDepth(0.5f);
-		getGui()->addComponent(fpsName);
-	}
-	fps = new Text("", { 0.0f, 0.0f });
-	{
-		fps->setColor(ColorRGBA::YELLOW);
-		fps->setSize(4.0f);
-		fps->setDepth(1);
-		getGui()->addComponent(fps);
-	}
-
-	float fpsOffset = 2.0f;
-	fpsName->setPosition({ getWindowWidth() - fpsName->getWidth()  - fpsOffset, getWindowHeight() -  fpsName->getHeight() / 2 });
-	fps->setPosition({ getWindowWidth() - fpsName->getWidth() * 0.3f , getWindowHeight() - fpsName->getHeight() / 2 });
 
 	initialTime = getElapsedTime();
 	currTime = getElapsedTime();

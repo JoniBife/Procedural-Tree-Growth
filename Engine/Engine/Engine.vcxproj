@@ -80,6 +80,7 @@
     <ClInclude Include="src\apps\TextRendering.h" />
     <ClInclude Include="src\apps\Tree.h" />
     <ClInclude Include="src\apps\TreeGrowth.h" />
+    <ClInclude Include="src\apps\TreeGrowthUI.h" />
     <ClInclude Include="src\Configurations.h" />
     <ClInclude Include="src\controllers\ICameraController.h" />
     <ClInclude Include="src\controllers\FreeCameraController.h" />

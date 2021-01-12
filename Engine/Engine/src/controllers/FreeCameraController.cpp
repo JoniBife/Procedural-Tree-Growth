@@ -67,33 +67,46 @@ bool FreeCameraController::processKeyboardInput(const float elapsedTime) {
 
 	bool moved = false;
 
-	// Converting from units per second to units per frameMesh
-	float ms = movementSpeed * elapsedTime;
+	if (canControl) {
+		// Converting from units per second to units per frameMesh
+		float ms = movementSpeed * elapsedTime;
 
-	if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS) {
-		position += (ms) * front;
-		moved = true;
-	}
-	if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		position -= (ms) * front;
-		moved = true;
-	}
-	if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		position -= cross(front, up).normalize() * (ms);
-		moved = true;
-	}
-	if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		position += cross(front, up).normalize() * (ms);
-		moved = true;
-	}		
+		if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS) {
+			position += (ms)*front;
+			moved = true;
+		}
+		if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS) {
+			position -= (ms)*front;
+			moved = true;
+		}
+		if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS) {
+			position -= cross(front, up).normalize() * (ms);
+			moved = true;
+		}
+		if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+			position += cross(front, up).normalize() * (ms);
+			moved = true;
+		}
 
-	static bool isReleased = false;
-	if (glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS && isReleased) {
-		isReleased = false;
-		currProj = (currProj == orthoProj) ? perspectiveProj : orthoProj;
-		moved = true;
-	} else if (glfwGetKey(win, GLFW_KEY_P) == GLFW_RELEASE) {
-		isReleased = true;
+		static bool isReleased = false;
+		if (glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS && isReleased) {
+			isReleased = false;
+			currProj = (currProj == orthoProj) ? perspectiveProj : orthoProj;
+			moved = true;
+		}
+		else if (glfwGetKey(win, GLFW_KEY_P) == GLFW_RELEASE) {
+			isReleased = true;
+		}
+	}
+
+	static bool isReleasedESC = false;
+	if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS && isReleasedESC) {
+		isReleasedESC = false;
+		canControl = !canControl;
+		glfwSetInputMode(win, GLFW_CURSOR, canControl ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+	}
+	else if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_RELEASE) {
+		isReleasedESC = true;
 	}
 	
 	return moved;
@@ -108,37 +121,40 @@ bool firstMove = true;
 */
 bool FreeCameraController::processMouseInput() {
 
-	// Getting mouse position
-	double xpos, ypos;
-	glfwGetCursorPos(win, &xpos, &ypos);
+	if (canControl) {
+		// Getting mouse position
+		double xpos, ypos;
+		glfwGetCursorPos(win, &xpos, &ypos);
 
-	double mouseSensitivity = 0.05;
+		double mouseSensitivity = 0.05;
 
-	double xOffset = xpos - lastXpos;
-	double yOffset = lastYpos - ypos; // Y axis is inverted (increases downward)
-	xOffset *= mouseSensitivity;
-	yOffset *= mouseSensitivity;
+		double xOffset = xpos - lastXpos;
+		double yOffset = lastYpos - ypos; // Y axis is inverted (increases downward)
+		xOffset *= mouseSensitivity;
+		yOffset *= mouseSensitivity;
 
-	lastXpos = xpos;
-	lastYpos = ypos;
+		lastXpos = xpos;
+		lastYpos = ypos;
 
-	if (xOffset == 0.0 && yOffset == 0.0) {
-		return false;
+		if (xOffset == 0.0 && yOffset == 0.0) {
+			return false;
+		}
+
+		yaw += float(xOffset);
+		pitch += float(yOffset);
+
+		if (pitch > 89.0f)
+			pitch = 89.0f;
+		if (pitch < -89.0f)
+			pitch = -89.0f;
+
+		Vec3 direction;
+		direction.x = cosf(degreesToRadians(yaw)) * cosf(degreesToRadians(pitch));
+		direction.y = sinf(degreesToRadians(pitch));
+		direction.z = sinf(degreesToRadians(yaw)) * cosf(degreesToRadians(pitch));
+		front = direction.normalize();
+
+		return true;
 	}
-
-	yaw += float(xOffset);
-	pitch += float(yOffset);
-
-	if (pitch > 89.0f)
-		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;
-
-	Vec3 direction;
-	direction.x = cosf(degreesToRadians(yaw)) * cosf(degreesToRadians(pitch));
-	direction.y = sinf(degreesToRadians(pitch));
-	direction.z = sinf(degreesToRadians(yaw)) * cosf(degreesToRadians(pitch));
-	front = direction.normalize();
-
-	return true;
+	return false;
 }

@@ -1,5 +1,6 @@
 #include "InputManager.h"
 #include <iostream>
+#include <assert.h>
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -26,7 +27,6 @@ void character_callback(GLFWwindow* window, unsigned int codepoint)
 	// We ignore characters outside the first 128 of the ascii table
 	if (im->receivingTextInput && codepoint < 128) {
 		im->textInput.push_back(char(codepoint));
-		
 	}
 }
 
@@ -37,17 +37,24 @@ InputManager::InputManager(GLFWwindow* window) {
 	glfwSetCharCallback(window, character_callback);
 }
 
-void InputManager::startTextInput() {
+void InputManager::startTextInput(int inputReceiverId) {
+	assert(inputReceiverId < currInputReceiverId);
+	this->inputReceiverId = inputReceiverId;
 	receivingTextInput = true;
 	textInput.clear();
 }
-void InputManager::resumeTextInput(const std::string& oldInput) {
+void InputManager::resumeTextInput(int inputReceiverId, const std::string& oldInput) {
+	assert(inputReceiverId < currInputReceiverId);
+	this->inputReceiverId = inputReceiverId;
 	receivingTextInput = true;
 	textInput = oldInput;
 }
-void InputManager::stopTextInput() {
-	receivingTextInput = false;
-	textInput.clear();
+void InputManager::stopTextInput(int inputReceiverId) {
+	assert(inputReceiverId < currInputReceiverId);
+	if (this->inputReceiverId == inputReceiverId) {
+		receivingTextInput = false;
+		textInput.clear();
+	}
 }
 std::string InputManager::getCurrTextInput() const {
 	return textInput;
@@ -59,6 +66,12 @@ bool InputManager::isKeyPressed(int key) {
 	if (receivingTextInput)
 		return false;
 	return keysPressed[key];
+}
+
+int InputManager::generateInputReceiverId() {
+	int id = currInputReceiverId;
+	++currInputReceiverId;
+	return id;
 }
 
 void InputManager::createInstance(GLFWwindow* window) {

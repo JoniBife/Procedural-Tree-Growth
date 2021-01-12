@@ -2,7 +2,6 @@
 
 // INPUT
 in vec4 exPosition;
-in vec4 exColor;
 in vec3 exNormal;
 in vec2 exTextCoord;
 in vec4 fragPos;

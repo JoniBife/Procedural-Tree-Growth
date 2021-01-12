@@ -8,6 +8,35 @@ static ShaderProgram* sp;
 static Mesh* points;
 static FreeCameraController* cameraController;
 static SceneNode* cylinder;
+static float numberOfFrames = 0.0f;
+static float totalElapsedTime = 0.0f;
+
+static GLint cameraPosL;
+static Vec3 lightPosition(-2.0f, 4.0f, -1.0f);
+
+
+static void setupLight() {
+	Vec3 lightColor(1.0f, 1.0f, 1.0f);
+	float ambientStrength = 0.3f;
+
+	float specularStrength = 1.0f;
+	unsigned int shininess = 32;
+
+	GLint lightColorL = sp->getUniformLocation("lightColor");
+	GLint ambientStrenghtL = sp->getUniformLocation("ambientStrength");
+	GLint lightPositionL = sp->getUniformLocation("lightPosition");
+	GLint specularStrengthL = sp->getUniformLocation("specularStrength");
+	GLint shininessL = sp->getUniformLocation("shininess");
+	cameraPosL = sp->getUniformLocation("viewPos");
+
+	sp->use();
+	sp->setUniform(lightColorL, lightColor);
+	sp->setUniform(ambientStrenghtL, ambientStrength);
+	sp->setUniform(lightPositionL, lightPosition);
+	sp->setUniform(specularStrengthL, specularStrength);
+	sp->setUniform(shininessL, shininess);
+	sp->stopUsing();
+}
 
 static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int windowHeight) {
 	// Adding a spherical camera controller
@@ -62,18 +91,30 @@ void Cylinder::start() {
 	points = new Mesh(vertices);
 	points->setPrimitive(GL_LINES);
 
-	GLint textureID = sp->getUniformLocation("wood");
+	cylinder = getSceneGraph()->getRoot()->createChild(points, Mat4::IDENTITY, sp);
 
-	sp->use();
-	sp->setUniform(textureID, 0);
-	sp->stopUsing();
 
-	cylinder = getSceneGraph()->getRoot()->createChild(points, Mat4::rotation(PI/2, Vec3::X), sp);
-	cylinder->addTexture(new Texture2D("../Engine/textures/barkTexture.jpg"));
+	for (int i = 0; i < 150; ++i) {
+		cylinder = getSceneGraph()->getRoot()->createChild(points, Mat4::rotation(degreesToRadians(i*2), Vec3::Y), sp);
+
+	}
+
+
+	//cylinder->addTexture(new Texture2D("../Engine/textures/barkTexture.jpg"));
+
+	setupLight();
 }
 
 void Cylinder::update() {
+	++numberOfFrames;
+	totalElapsedTime += getElapsedTime();
 
+
+	std::cout << int(numberOfFrames / totalElapsedTime) << std::endl;
+
+	sp->use();
+	sp->setUniform(cameraPosL, cameraController->position);
+	sp->stopUsing();
 }
 
 void Cylinder::end() {

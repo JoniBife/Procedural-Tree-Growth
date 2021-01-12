@@ -23,6 +23,8 @@ private:
 
 	Vec2 position;
 
+	int inputReceiverId;
+
 	bool clicked();
 
 public:
@@ -32,6 +34,7 @@ public:
 
 	void draw() override;
 
+	void setInput(const std::string& input);
 	std::string getInput() const;
 };
 

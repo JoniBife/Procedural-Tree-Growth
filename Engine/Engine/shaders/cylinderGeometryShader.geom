@@ -5,6 +5,7 @@ layout (triangle_strip, max_vertices = 132) out;
 
 out vec3 exNormal;
 out vec2 exTextCoord;
+out vec4 fragPos;
 
 uniform mat3 normal;
 uniform mat4 model;
@@ -45,13 +46,16 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
     // Generating the top circle
     for(int i = 0; i <= sectors; ++i)
     {
-        gl_Position = projection *  view * model * (topPosition + vec4(unitCircleVertices[i].x * topRadius, 0 ,unitCircleVertices[i].z * topRadius, 0.0)); 
+        vec4 v = (topPosition + vec4(unitCircleVertices[i].x * topRadius, 0 ,unitCircleVertices[i].z * topRadius, 0.0));
+        gl_Position = projection *  view * model * v; 
         exTextCoord = vec2(unitCircleVertices[i].x * 0.5 + 0.5, -unitCircleVertices[i].z * 0.5 + 0.5);
         exNormal = normal * vec3(0,1,0);
+        fragPos = model * v;
         EmitVertex();
         gl_Position = projection *  view * model * (topPosition);   
         exTextCoord = vec2(0.5, 0.5);
         exNormal = normal * vec3(0,1,0);
+        fragPos = model * topPosition;
         EmitVertex(); 
     }
     EndPrimitive();
@@ -63,26 +67,34 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
     for(int i = 0; i < sectors; ++i)
     {
         u = float(i) / sectors; // u start at 0 increments to 1 as it reaches the last sector
-        gl_Position = projection *  view * model * (bottomPosition + vec4(unitCircleVertices[i].x * bottomRadius, 0 ,unitCircleVertices[i].z * bottomRadius, 0.0));  
+        v1 = (bottomPosition + vec4(unitCircleVertices[i].x * bottomRadius, 0 ,unitCircleVertices[i].z * bottomRadius, 0.0));
+        gl_Position = projection *  view * model * v1;  
         exTextCoord = vec2(u, 0.0);
         exNormal = normal * sideNormals[i];
+        fragPos = model * v1;
         EmitVertex(); 
-        gl_Position = projection *  view * model * (topPosition + vec4(unitCircleVertices[i].x* topRadius, 0 ,unitCircleVertices[i].z* topRadius, 0.0));
+        v1 = (topPosition + vec4(unitCircleVertices[i].x* topRadius, 0 ,unitCircleVertices[i].z* topRadius, 0.0));
+        gl_Position = projection *  view * model * v1;
         exTextCoord = vec2(u, 1.0); 
         exNormal = normal * sideNormals[i];
+        fragPos = model * v1;
         EmitVertex(); 
 
         u = float((i+1)) / sectors;
-        gl_Position = projection *  view * model * (bottomPosition + vec4(unitCircleVertices[i + 1].x * bottomRadius, 0 ,unitCircleVertices[i + 1].z * bottomRadius, 0.0));
+        v1 = (bottomPosition + vec4(unitCircleVertices[i + 1].x * bottomRadius, 0 ,unitCircleVertices[i + 1].z * bottomRadius, 0.0));
+        gl_Position = projection *  view * model * v1;
         exTextCoord = vec2(u, 0.0);
         exNormal = normal * sideNormals[i + 1];
+        fragPos = model * v1;
         EmitVertex(); 
-        gl_Position = projection *  view * model * (topPosition + vec4(unitCircleVertices[i + 1].x* topRadius, 0 ,unitCircleVertices[i + 1].z* topRadius, 0.0));
+        v1 = (topPosition + vec4(unitCircleVertices[i + 1].x* topRadius, 0 ,unitCircleVertices[i + 1].z* topRadius, 0.0));
+        gl_Position = projection *  view * model * v1;
         exTextCoord = vec2(u, 1.0);
         exNormal = normal * sideNormals[i + 1];
+        fragPos = model * v1;
         EmitVertex(); 
-        EndPrimitive();
     }
+    EndPrimitive();
 
     // Generating the bottom circle
     for(int i = 0; i <= sectors; ++i)
@@ -90,10 +102,13 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
         gl_Position = projection *  view * model * (bottomPosition);   
         exTextCoord = vec2(0.5, 0.5);
         exNormal = normal * vec3(0,-1,0);
+        fragPos = model * (bottomPosition);
         EmitVertex();
-        gl_Position = projection *  view * model * (bottomPosition + vec4(unitCircleVertices[i].x * bottomRadius, 0 ,unitCircleVertices[i].z * bottomRadius, 0.0));  
+        v1 = (bottomPosition + vec4(unitCircleVertices[i].x * bottomRadius, 0 ,unitCircleVertices[i].z * bottomRadius, 0.0));
+        gl_Position = projection *  view * model * v1;  
         exTextCoord = vec2(-unitCircleVertices[i].x * 0.5 + 0.5, -unitCircleVertices[i].z * 0.5 + 0.5);
         exNormal = normal * vec3(0,-1,0);
+        fragPos = model * v1;
         EmitVertex(); 
         
     }

@@ -69,7 +69,7 @@ void main(void)
 
 	vec3 result = calculateLight(lightColor, normal, tangFragPos, tangLightPos, tangViewPos);
 
-	fragmentColor = vec4(result * colorTxt, 1.0f);
+	fragmentColor = vec4(result * colorTxt, 1.0);
 }
 
 

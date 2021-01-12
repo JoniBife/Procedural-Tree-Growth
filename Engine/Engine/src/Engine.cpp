@@ -170,8 +170,6 @@ void Engine::run() {
 
 	double lastTime = glfwGetTime();
 
-	InputManager::getInstance()->startTextInput();
-
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{

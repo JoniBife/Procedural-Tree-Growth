@@ -20,6 +20,7 @@ TextField::TextField(Vec2 position, float width, float height) : width(width), h
 	cursorPosition = position;
 	cursorPosition.x += - width / 2 + CURSOR_OFFSET + INPUT_OFFSET;
 	cursor->init();
+	inputReceiverId = InputManager::getInstance()->generateInputReceiverId();
 }
 TextField::~TextField() {
 	delete background;
@@ -37,17 +38,17 @@ void TextField::draw() {
 	bool isClicked = clicked();
 	bool withinTextField = background->isMouseWithinPanel();
 
-	if (isClicked && withinTextField) {
-		std::string currTextFieldInput = inputText->getContent();
+	if (isClicked && withinTextField && !isTextFieldSelected) {
+		std::string currTextFieldInput = input;
 		if (currTextFieldInput.empty())
-			im->startTextInput();
+			im->startTextInput(inputReceiverId);
 		else
-			im->resumeTextInput(currTextFieldInput);
+			im->resumeTextInput(inputReceiverId,currTextFieldInput);
 
 		isTextFieldSelected = true;
 	}
-	else if (isClicked && !withinTextField) {
-		im->stopTextInput();
+	else if (isClicked && !withinTextField && isTextFieldSelected) {
+		im->stopTextInput(inputReceiverId);
 		isTextFieldSelected = false;
 	}
 	
@@ -64,31 +65,7 @@ void TextField::draw() {
 				reachedLimit = false;
 			}
 
-			if (!reachedLimit) {
-				inputText->setContent(input);
-
-				if (inputText->getWidth() > (width - INPUT_OFFSET * 2)) {
-					reachedLimit = true;
-					std::string resizedContent = input;
-					resizedContent.pop_back();
-					inputText->setContent(resizedContent);
-				}
-
-				// We also have to ajust the text position so that it's close to the left border
-				Vec2 textInputPosition = position;
-				textInputPosition.x -= background->getWidth() / 2 - inputText->getWidth() / 2;
-				textInputPosition.x += INPUT_OFFSET;
-
-				inputText->setPosition(textInputPosition);
-
-				// We also have to ajust the cursor
-				cursorPosition = textInputPosition;
-				cursorPosition.x += inputText->getWidth() / 2 + CURSOR_OFFSET;
-
-				float cursorEndPosition = position.x + width / 2 - INPUT_OFFSET + CURSOR_OFFSET;
-				if (cursorPosition.x > cursorEndPosition)
-					cursorPosition.x = cursorEndPosition;
-			}
+			setInput(input);
 		}
 	}
 
@@ -99,6 +76,36 @@ void TextField::draw() {
 	// If Text field is selected so we draw the cursor
 	if (isTextFieldSelected)
 		LineRenderer::getInstance()->renderLine(cursor, cursorPosition);
+}
+
+void TextField::setInput(const std::string& input) {
+	this->input = input;
+
+	if (!reachedLimit) {
+		inputText->setContent(input);
+
+		if (inputText->getWidth() > (width - INPUT_OFFSET * 2)) {
+			reachedLimit = true;
+			std::string resizedContent = input;
+			resizedContent.pop_back();
+			inputText->setContent(resizedContent);
+		}
+
+		// We also have to ajust the text position so that it's close to the left border
+		Vec2 textInputPosition = position;
+		textInputPosition.x -= background->getWidth() / 2 - inputText->getWidth() / 2;
+		textInputPosition.x += INPUT_OFFSET;
+
+		inputText->setPosition(textInputPosition);
+
+		// We also have to ajust the cursor
+		cursorPosition = textInputPosition;
+		cursorPosition.x += inputText->getWidth() / 2 + CURSOR_OFFSET;
+
+		float cursorEndPosition = position.x + width / 2 - INPUT_OFFSET + CURSOR_OFFSET;
+		if (cursorPosition.x > cursorEndPosition)
+			cursorPosition.x = cursorEndPosition;
+	}
 }
 
 std::string TextField::getInput() const {

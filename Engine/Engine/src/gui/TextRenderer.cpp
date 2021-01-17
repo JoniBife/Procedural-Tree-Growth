@@ -50,7 +50,6 @@ TextRenderer::~TextRenderer() {
 	delete textShader;
 }
 
-
 TextRenderer* TextRenderer::getInstance() {
 	if (instance)
 		return instance;

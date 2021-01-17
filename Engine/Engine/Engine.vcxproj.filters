@@ -156,6 +156,9 @@
     <ClCompile Include="src\apps\CylinderGeneration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\textures\CubeMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\Mat2.h">
@@ -314,6 +317,12 @@
     <ClInclude Include="src\apps\TreeGrowthUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\textures\CubeMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\meshes\SkyBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
@@ -335,5 +344,8 @@
     <None Include="shaders\cylinderFragmentShader.glsl" />
     <None Include="shaders\cylinderVertexShader.glsl" />
     <None Include="shaders\cylinderGeometryShader.geom" />
+    <None Include="shaders\cylinderGeometryShaderSM.geom" />
+    <None Include="shaders\skybox\fragmentShaderSkyBox.glsl" />
+    <None Include="shaders\skybox\vertexShaderSkyBox.glsl" />
   </ItemGroup>
 </Project>

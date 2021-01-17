@@ -5,6 +5,7 @@
 #include "../math/Vec2.h"
 #include "MeshLoader.h"
 #include <assert.h>
+#include <vector>
 
 #define VERTICES 0
 #define NORMALS 1
@@ -126,9 +127,15 @@ void Mesh::init() {
 			// Binding the vertices to the first vbo
 			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboId));
 			{
+				// If the user specified a custom size for the vertices buffer then it must be larger or equal to the number of vertices
+				if (verticesBufferSize > -1)
+					assert(vertices.size() <= verticesBufferSize);
+
 				// The spec ensures that vectors store their elements contiguously
 				// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
-				GL_CALL(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vec4), &vertices[0], GL_STATIC_DRAW));
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER,
+					verticesBufferSize == -1 ? vertices.size() * sizeof(Vec4) : verticesBufferSize * sizeof(Vec4),
+					&vertices[0], verticesBufferType));
 				GL_CALL(glEnableVertexAttribArray(VERTICES));
 				GL_CALL(glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
 			}
@@ -347,4 +354,49 @@ void Mesh::paint(const Vec4& color) {
 
 void Mesh::setPrimitive(GLenum drawingPrimitive) {
 	this->drawingPrimitive = drawingPrimitive;
+}
+
+void Mesh::setVerticesBufferType(GLenum bufferType) {
+	this->verticesBufferType = bufferType;
+}
+
+void Mesh::setVerticesBufferSize(int bufferSize) {
+	this->verticesBufferSize = bufferSize;
+}
+
+void Mesh::updateVertices(const std::vector<Vec4>& vertices) {
+
+	GL_CALL(glBindVertexArray(vaoId));
+	{
+		if (vertices.size() <= this->vertices.size() || vertices.size() <= verticesBufferSize) {
+
+			this->vertices = vertices;
+
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboId));
+			{
+				GL_CALL(glBufferSubData(GL_ARRAY_BUFFER, 0, this->vertices.size() * sizeof(Vec4), &this->vertices[0]));
+			}
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		}
+		else {
+
+			this->vertices = vertices;
+
+			// Deleting old buffer
+			GL_CALL(glDeleteBuffers(1, &vboId));
+
+			// Generating a new one
+			GL_CALL(glGenBuffers(1, &vboId));
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboId));
+			{
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER, 
+					verticesBufferSize == -1 ? this->vertices.size() * sizeof(Vec4) : verticesBufferSize * sizeof(Vec4),
+					&this->vertices[0], verticesBufferType));
+				GL_CALL(glEnableVertexAttribArray(VERTICES));
+				GL_CALL(glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
+			}
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		}
+	}
+	GL_CALL(glBindVertexArray(0));
 }

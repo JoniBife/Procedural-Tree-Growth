@@ -49,6 +49,8 @@ private:
 	GLenum drawingPrimitive = GL_TRIANGLES;
 	bool hasBeenInitialized = false;
 	bool hasBeenBound = false;
+	GLenum verticesBufferType = GL_STATIC_DRAW;
+	int verticesBufferSize = -1;
 
 public:
 
@@ -108,6 +110,15 @@ public:
 	void paint(const Vec4& color);
 
 	void setPrimitive(GLenum drawingPrimitive);
+
+	void setVerticesBufferType(GLenum bufferType);
+
+	void setVerticesBufferSize(int bufferSize);
+
+	// Used to update the vertices when a buffer has already been created
+	// If the number of vertices is the same it uses glBufferSubData
+	// otherwise it allocates a new buffer to place the vertices and deletes the old one
+	void updateVertices(const std::vector<Vec4>& vertices);
 };
 
 #endif

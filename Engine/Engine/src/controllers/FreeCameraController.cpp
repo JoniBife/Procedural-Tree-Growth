@@ -103,6 +103,16 @@ bool FreeCameraController::processKeyboardInput(const float elapsedTime) {
 	if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS && isReleasedESC) {
 		isReleasedESC = false;
 		canControl = !canControl;
+
+		// We ensure that the mouse returns to where it was after ESC is pressed
+		if (!canControl) {
+			glfwGetCursorPos(win, &XPosBeforeESC, &YPosBeforeESC);
+			glfwSetCursorPos(win, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+		}
+		else {
+			glfwSetCursorPos(win, XPosBeforeESC, YPosBeforeESC);
+		}
+
 		glfwSetInputMode(win, GLFW_CURSOR, canControl ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 	}
 	else if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_RELEASE) {

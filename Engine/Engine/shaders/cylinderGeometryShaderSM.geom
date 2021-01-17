@@ -3,14 +3,6 @@
 layout (lines) in; // [x,y,z,diameter]
 layout (triangle_strip, max_vertices = 200) out;
 
-out vec4 exPosition;
-out vec3 exNormal;
-out vec2 exTextCoord;
-out vec3 tangFragPos;
-out vec3 tangLightPos;
-out vec3 tangViewPos;
-out vec4 fragPosLightSpace;
-
 // UNIFORMS
 uniform vec3 lightPosition;
 uniform vec3 viewPos;
@@ -35,13 +27,13 @@ mat4 rotationFromDir(vec4 dir) {
 	scale[0][3] = 0.0;
 	
 	scale[1][0] = 0.0;
-	scale[1][1] = 0.5253220;
-	scale[1][2] = 0.8509035;
+	scale[1][1] = -0.4480736;
+	scale[1][2] = 0.8939967;
 	scale[1][3] = 0.0;
 	
 	scale[2][0] = 0.0;
-	scale[2][1] = -0.8509035;
-	scale[2][2] = 0.5253220;
+	scale[2][1] = -0.8939967;
+	scale[2][2] = -0.4480736;
 	scale[2][3] = 0.0;
 	
 	scale[3][0] = 0.0;
@@ -91,6 +83,9 @@ mat4 rotationFromDir(vec4 dir) {
 
 void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius, float topRadius)
 {    
+
+    vec3 exNormal = normal * vec3(0,0,0);
+
     const float PI = acos(-1);
     float sectorStep = (2 * PI / float(sectors));
     float sectorAngle;  // radian
@@ -103,7 +98,7 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
     for(int i = 0; i <= sectors; ++i)
     {
         sectorAngle = i * sectorStep;
-        unitCircleVertices[i] = /*baseRotation*/  vec4(cos(sectorAngle) , 0.0 ,sin(sectorAngle), 0.0);
+        unitCircleVertices[i] = /*baseRotation */ vec4(cos(sectorAngle) , 0.0 ,sin(sectorAngle), 0.0);
     }
 
     float u;
@@ -147,26 +142,10 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
     for(int i = 0; i <= sectors; ++i)
     {
         v1 = (topPosition + vec4(unitCircleVertices[i].x * topRadius, 0 ,unitCircleVertices[i].z * topRadius, 0.0)); 
-        gl_Position = projection *  view * model * v1; 
-        exPosition = v1;
-        exTextCoord = vec2(0.49, 0.485);//vec2(unitCircleVertices[i].x * 0.5 + 0.5, -unitCircleVertices[i].z * 0.5 + 0.5);
-        exNormal = tbn * (normal * n);
-        fragPosition = model * v1;
-        tangFragPos = tbn * fragPosition.xyz;
-	    tangLightPos = tbn * lightPosition.xyz;
-	    tangViewPos = tbn * viewPos;
-        fragPosLightSpace = lightSpaceMatrix * fragPosition;
+        gl_Position = lightSpaceMatrix * model * v1; 
         EmitVertex();
         v2 = topPosition;
-        gl_Position = projection *  view * model * v2; 
-        exPosition = v2;
-        exTextCoord = vec2(0.5, 0.5);
-        exNormal = tbn * (normal * n);
-        fragPosition = model * v2;
-        tangFragPos = tbn * fragPosition.xyz;
-	    tangLightPos = tbn * lightPosition.xyz;
-	    tangViewPos = tbn * viewPos;
-        fragPosLightSpace = lightSpaceMatrix * fragPosition;
+        gl_Position = lightSpaceMatrix  * model * v2; 
         EmitVertex(); 
     }
     EndPrimitive();
@@ -212,48 +191,16 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
         vec3 N = normalize(vec3(model * vec4(n,0.0)));
         mat3 tbn = transpose(mat3(T, B, N)); // Tangent space matrix, converts vertices in world space to tangent space
 
-        gl_Position = projection *  view * model * v1;
-        exPosition = v1;
-        exTextCoord = uv1;
-        exNormal = tbn * (normal * n);
-        fragPosition = model * v1;
-        tangFragPos = tbn * fragPosition.xyz;
-	    tangLightPos = tbn * lightPosition.xyz;
-	    tangViewPos = tbn * viewPos;
-        fragPosLightSpace = lightSpaceMatrix * fragPosition;
+        gl_Position = lightSpaceMatrix  * model * v1;
         EmitVertex(); 
         
-        gl_Position = projection *  view * model * v2;
-        exPosition = v2;
-        exTextCoord = uv2; 
-        exNormal = tbn * (normal * n);
-        fragPosition = model * v2;
-        tangFragPos = tbn * fragPosition.xyz;
-	    tangLightPos = tbn * lightPosition.xyz;
-	    tangViewPos = tbn * viewPos;
-        fragPosLightSpace = lightSpaceMatrix * fragPosition;
+        gl_Position = lightSpaceMatrix  * model * v2;
         EmitVertex(); 
 
-        gl_Position = projection *  view * model * v3;
-        exPosition = v3;
-        exTextCoord = uv3;
-        exNormal = tbn * (normal * n);
-        fragPosition = model * v3;
-        tangFragPos = tbn * fragPosition.xyz;
-	    tangLightPos = tbn * lightPosition.xyz;
-	    tangViewPos = tbn * viewPos;
-        fragPosLightSpace = lightSpaceMatrix * fragPosition;
+        gl_Position = lightSpaceMatrix  * model * v3;
         EmitVertex(); 
         
-        gl_Position = projection *  view * model * v4;
-        exPosition = v4;
-        exTextCoord = uv4;
-        exNormal = tbn * (normal * n);
-        fragPosition = model * v4;
-        tangFragPos = tbn * fragPosition.xyz;
-        tangLightPos = tbn * lightPosition.xyz;
-        tangViewPos = tbn * viewPos;
-        fragPosLightSpace = lightSpaceMatrix * fragPosition;
+        gl_Position = lightSpaceMatrix  * model * v4;
         EmitVertex(); 
     }
     EndPrimitive();
@@ -293,26 +240,10 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
     for(int i = 0; i <= sectors; ++i)
     {
         v1 = bottomPosition; 
-        gl_Position = projection *  view * model * v1;   
-        exPosition = v1;
-        exTextCoord = vec2(0.5, 0.5);
-        exNormal = tbn * (normal * n);
-        fragPosition = model *v1;
-        tangFragPos = tbn * fragPosition.xyz;
-        tangLightPos = tbn * lightPosition.xyz;
-        tangViewPos = tbn * viewPos;
-        fragPosLightSpace = lightSpaceMatrix * fragPosition;
+        gl_Position = lightSpaceMatrix  * model * v1;   
         EmitVertex(); 
         v2 = (bottomPosition + vec4(unitCircleVertices[i].x * bottomRadius, 0 ,unitCircleVertices[i].z * bottomRadius, 0.0));
-        gl_Position = projection *  view * model * v2;
-        exPosition = v2;
-        exTextCoord = vec2(0.49, 0.485);//vec2(unitCircleVertices[i].x * 0.5 + 0.5, -unitCircleVertices[i].z * 0.5 + 0.5);;
-        exNormal = tbn * (normal * n);
-        fragPosition = model * v2;
-        tangFragPos = tbn * fragPosition.xyz;
-        tangLightPos = tbn * lightPosition.xyz;
-        tangViewPos = tbn * viewPos;
-        fragPosLightSpace = lightSpaceMatrix * fragPosition;
+        gl_Position = lightSpaceMatrix  * model * v2;
         EmitVertex();
     }
     EndPrimitive();

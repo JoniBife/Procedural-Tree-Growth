@@ -56,6 +56,7 @@
     <ClCompile Include="src\shaders\Shader.cpp" />
     <ClCompile Include="src\shaders\ShaderProgram.cpp" />
     <ClCompile Include="src\meshes\Mesh.cpp" />
+    <ClCompile Include="src\textures\CubeMap.cpp" />
     <ClCompile Include="src\textures\DepthMap.cpp" />
     <ClCompile Include="src\textures\GlyphTexture.cpp" />
     <ClCompile Include="src\textures\Texture2D.cpp" />
@@ -97,6 +98,8 @@
     <ClInclude Include="src\gui\Text.h" />
     <ClInclude Include="src\gui\TextRenderer.h" />
     <ClInclude Include="src\InputManager.h" />
+    <ClInclude Include="src\meshes\SkyBox.h" />
+    <ClInclude Include="src\textures\CubeMap.h" />
     <ClInclude Include="src\textures\DepthMap.h" />
     <ClInclude Include="src\textures\GlyphTexture.h" />
     <ClInclude Include="src\textures\ITexture.h" />
@@ -124,9 +127,12 @@
   <ItemGroup>
     <None Include="shaders\cylinderFragmentShader.glsl" />
     <None Include="shaders\cylinderGeometryShader.geom" />
+    <None Include="shaders\cylinderGeometryShaderSM.geom" />
     <None Include="shaders\cylinderVertexShader.glsl" />
     <None Include="shaders\lineFragmentShader.glsl" />
     <None Include="shaders\lineVertexShader.glsl" />
+    <None Include="shaders\skybox\fragmentShaderSkyBox.glsl" />
+    <None Include="shaders\skybox\vertexShaderSkyBox.glsl" />
     <None Include="shaders\uiFragmentShader.glsl" />
     <None Include="shaders\uiVertexShader.glsl" />
     <None Include="shaders\fragmentShaderLighting.glsl" />

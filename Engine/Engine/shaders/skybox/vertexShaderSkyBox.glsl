@@ -4,11 +4,13 @@ in vec4 inPosition;
 
 out vec3 exTextCoord;
 
-uniform mat4 projection;
-uniform mat4 view;
+uniform SharedMatrices {
+	mat4 view;
+	mat4 projection;
+};
 
 void main()
 {
     exTextCoord = inPosition.xyz;
-    gl_Position = projection * view * inPosition;
+    gl_Position = projection * mat4(mat3(view)) * inPosition;
 }  

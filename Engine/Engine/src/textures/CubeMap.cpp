@@ -44,10 +44,10 @@ CubeMap::~CubeMap() {
 
 void CubeMap::bind(unsigned int unitNumber) {
     GL_CALL(glActiveTexture(unitNumber));
-    GL_CALL(glBindTexture(GL_TEXTURE_2D, id));
+    GL_CALL(glBindTexture(GL_TEXTURE_CUBE_MAP, id));
 }
 
 void CubeMap::unBind(unsigned int unitNumber) {
     GL_CALL(glActiveTexture(unitNumber));
-    GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
+    GL_CALL(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 }

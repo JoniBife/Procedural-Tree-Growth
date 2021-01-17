@@ -192,6 +192,15 @@ void Cylinder::start() {
 		std::cout << "Stop" << std::endl;
 	});
 
+	setSkyBox({
+		"../Engine/textures/skybox/right.jpg",
+		"../Engine/textures/skybox/left.jpg",
+		"../Engine/textures/skybox/top.jpg",
+		"../Engine/textures/skybox/bottom.jpg",
+		"../Engine/textures/skybox/front.jpg",
+		"../Engine/textures/skybox/back.jpg"
+	});
+
 	setupCamera(getCamera(), getWindow(), getWindowWidth(), getWindowHeight());
 	setupShaders(getSceneGraph(), getCamera());
 	setupTextures();

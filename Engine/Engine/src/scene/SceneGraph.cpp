@@ -134,7 +134,6 @@ void SceneNode::draw() {
 		shaderProgram->stopUsing();
 	}
 
-	
 }
 
 ////////////////////////////////// SCENE GRAPH

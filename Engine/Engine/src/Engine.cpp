@@ -129,6 +129,12 @@ void Engine::freeResources() {
 void Engine::setPreRender(std::function<void(std::function<void()> renderScene)> preRender) {
 	this->preRender = preRender;
 }
+void Engine::setSkyBox(const std::vector<std::string>& facesFilePath) {
+	if (skybox)
+		delete skybox;
+
+	skybox = new SkyBox(facesFilePath, camera);
+}
 
 ////////////////////////////////////////////// GETTERS
 GLFWwindow* Engine::getWindow() {
@@ -200,11 +206,18 @@ void Engine::run() {
 
 			GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
+			if (skybox) {
+				skybox->draw();
+			}
+
 			sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 			sceneGraph->draw((float)elapsedTime); // Drawing only after update
-
 		} else {
 			GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+			if (skybox) {
+				skybox->draw();
+			}
 
 			sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 			sceneGraph->draw((float)elapsedTime); // Drawing only after update

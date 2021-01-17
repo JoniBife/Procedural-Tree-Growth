@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "../textures/CubeMap.h"
 #include "../shaders/ShaderProgram.h"
+#include "../view/Camera.h"
 
 class SkyBox : IDrawable {
 
@@ -12,9 +13,10 @@ private:
 	Mesh* cube;
 	CubeMap* cubemap;
 	ShaderProgram* skyboxShader;
+	GLint skyBoxLocation;
 
 public:
-	SkyBox();
+	SkyBox(const std::vector<std::string>& facesFilePath, Camera* camera);
 	~SkyBox();
 	void init() override;
 	void bind() override;

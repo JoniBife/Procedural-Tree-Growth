@@ -14,13 +14,14 @@
 static ShaderProgram* spBlending;
 static ShaderProgram* spSimple;
 static FreeCameraController* cameraController;
-static Mesh* leaves;
+static Mesh* windowTransparent;
 static Mesh* plane;
-static Texture2D* leavesTexture;
+static Texture2D* windowTexture;
 
 static SceneNode* sceneNodePlane;
-static SceneNode* sceneNodeLeaves;
-static SceneNode* sceneNodeLeaves1;
+static SceneNode* sceneNodeWindows;
+static SceneNode* sceneNodeWindows1;
+static SceneNode* sceneNodeWindows2;
 
 static GLint cameraPosL;
 
@@ -87,7 +88,7 @@ std::vector<Vec2> transparentTextCoords = {
 
 static void setupTextures() {
 	// Loading textures
-	leavesTexture = new Texture2D("../Engine/textures/grass.png");
+	windowTexture = new Texture2D("../Engine/textures/blending_transparent_window.png");
 
 	GLint textureID = spBlending->getUniformLocation("texture1");
 
@@ -96,6 +97,9 @@ static void setupTextures() {
 }
 
 void Blending::start() {
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	setupShaders(getSceneGraph(), getCamera());
 	setupCamera(getCamera(), getWindow(), getWindowWidth(), getWindowHeight());
 	setupTextures();
@@ -106,28 +110,28 @@ void Blending::start() {
 	sceneNodePlane->setModel(Mat4::translation({ 0.0f, -0.5f, 0.0f }));
 	sceneNodePlane->setShaderProgram(spSimple);
 	/**/
-	leaves = new Mesh(transparentVertices, transparentTextCoords);
+	windowTransparent = Mesh::rectangle(1.0f, 1.0f);
 
-	std::vector<Vec3> vegetation;
-	vegetation.push_back(Vec3(0.0f, 0.0f, 0.0f));
-	vegetation.push_back(Vec3(-1.5f, 0.0f, -0.48f));
-	vegetation.push_back(Vec3(1.5f, 0.0f, 0.51f));
-	/*vegetation.push_back(Vec3(0.0f, 0.0f, 0.7f));
-	vegetation.push_back(Vec3(-0.3f, 0.0f, -2.3f));
-	vegetation.push_back(Vec3(0.5f, 0.0f, -0.6f));*/
+	std::vector<Vec3> windows;
+	windows.push_back(Vec3(0.0f, 0.0f, 0.7f));
+	windows.push_back(Vec3(1.5f, 0.0f, 0.51f));
+	windows.push_back(Vec3(-0.5f, 0.0f, -0.48f));
 
+	sceneNodeWindows = getSceneGraph()->getRoot()->createChild(windowTransparent, Mat4::IDENTITY, spBlending);
+	sceneNodeWindows1 = getSceneGraph()->getRoot()->createChild(windowTransparent, Mat4::IDENTITY, spBlending);
+	sceneNodeWindows2 = getSceneGraph()->getRoot()->createChild(windowTransparent, Mat4::IDENTITY, spBlending);
 
-	leaves->paint(ColorRGBA::BLACK);
-	sceneNodeLeaves = getSceneGraph()->getRoot()->createChild(leaves, Mat4::IDENTITY, spSimple);
-	//sceneNodeLeaves->setModel(Mat4::translation(vegetation[0]) * Mat4::rotation(PI/2, (1.0f, 0.0f, 0.0f)));
-	sceneNodeLeaves->setShaderProgram(spSimple);
-	/*/
-	sceneNodeLeaves1 = getSceneGraph()->getRoot()->createChild(leaves, Mat4::IDENTITY, spBlending);
-	sceneNodeLeaves1->setModel(Mat4::translation(vegetation[1]));
+	sceneNodeWindows->setModel(Mat4::translation(windows[0]));
+	sceneNodeWindows1->setModel(Mat4::translation(windows[1]));
+	sceneNodeWindows2->setModel(Mat4::translation(windows[2]));
 
-	sceneNodeLeaves1->addTexture(leavesTexture);
-	/**/
-	//sceneNodeLeaves->addTexture(leavesTexture);
+	sceneNodeWindows->setShaderProgram(spBlending);
+	sceneNodeWindows1->setShaderProgram(spBlending);
+	sceneNodeWindows2->setShaderProgram(spBlending);
+
+	sceneNodeWindows->addTexture(windowTexture);
+	sceneNodeWindows1->addTexture(windowTexture);
+	sceneNodeWindows2->addTexture(windowTexture);
 
 }
 
@@ -138,6 +142,6 @@ void Blending::end() {
 	delete cameraController;
 	delete spBlending;
 	delete spSimple;
-	delete leaves;
+	delete windowTransparent;
 	delete plane;
 }

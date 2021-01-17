@@ -92,7 +92,7 @@ public:
 	static Mesh square(const float width = 0.75f);
 
 	// Creates a black centered in clip space (0,0,0)
-	static Mesh rectangle(const float width = 1.0f, const float height = 0.75f);
+	static Mesh* rectangle(const float width = 1.0f, const float height = 0.75f);
 
 	// Creates a black centered in clip space (0,0,0)
 	static Mesh triangle(const float width = 1.0f, const float height = 1.0f);
@@ -105,6 +105,7 @@ public:
 
 	// Fills the colors list with color
 	void paint(const Vec4& color);
+
 };
 
 #endif

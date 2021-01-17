@@ -276,19 +276,29 @@ Mesh Mesh::square(const float width) {
 }
 
 // Creates a black rectangle centered in clip space (0,0,0)
-Mesh Mesh::rectangle(const float width, const float height) {
-	Mesh rectangle;
+Mesh* Mesh::rectangle(const float width, const float height) {
+	Mesh* rectangle = new Mesh();
 
-		rectangle.vertices = {
-			// first triangle
-			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
-			{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
-			// second triangle
-			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
-			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-			{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
-		};
+	rectangle->vertices = {
+		// first triangle
+		{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+
+		// second triangle
+		{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+		{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
+	};
+
+	rectangle->textCoords = {
+		{0.0f, 0.0f},
+		{0.0f, 1.0f},
+		{1.0f, 1.0f},
+		{0.0f, 0.0f},
+		{1.0f, 1.0f},
+		{1.0f, 0.0f}
+	};
 
 	return rectangle;
 

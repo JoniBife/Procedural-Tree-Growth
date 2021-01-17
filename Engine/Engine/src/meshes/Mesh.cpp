@@ -5,6 +5,7 @@
 #include "../math/Vec2.h"
 #include "MeshLoader.h"
 #include <assert.h>
+#include <vector>
 
 #define VERTICES 0
 #define NORMALS 1
@@ -49,9 +50,12 @@ Mesh::~Mesh() {
 
 	// Bind the the vao so that we can disable the vertex attrib array
 	GL_CALL(glBindVertexArray(vaoId));
-	GL_CALL(glDisableVertexAttribArray(0));
-	GL_CALL(glDisableVertexAttribArray(1));
-	GL_CALL(glDeleteBuffers(1, &vboVerticesId));
+	GL_CALL(glDisableVertexAttribArray(VERTICES));
+	GL_CALL(glDisableVertexAttribArray(NORMALS));
+	GL_CALL(glDisableVertexAttribArray(COLORS));
+	GL_CALL(glDisableVertexAttribArray(TEXTCOORDS));
+	GL_CALL(glDisableVertexAttribArray(TANGENTS));
+	GL_CALL(glDeleteBuffers(1, &vboId));
 	if (!normals.empty())
 		GL_CALL(glDeleteBuffers(1, &vboNormalsId));
 	if (!colors.empty())
@@ -119,13 +123,19 @@ void Mesh::init() {
 			// Generating all buffers at once, its better than generating each of them separately 
 			GL_CALL(glGenBuffers(numberOfBuffers, bufferIds));
 
-			vboVerticesId = bufferIds[0];
+			vboId = bufferIds[0];
 			// Binding the vertices to the first vbo
-			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboVerticesId));
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboId));
 			{
+				// If the user specified a custom size for the vertices buffer then it must be larger or equal to the number of vertices
+				if (verticesBufferSize > -1)
+					assert(vertices.size() <= verticesBufferSize);
+
 				// The spec ensures that vectors store their elements contiguously
 				// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
-				GL_CALL(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vec4), &vertices[0], GL_STATIC_DRAW));
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER,
+					verticesBufferSize == -1 ? vertices.size() * sizeof(Vec4) : verticesBufferSize * sizeof(Vec4),
+					&vertices[0], verticesBufferType));
 				GL_CALL(glEnableVertexAttribArray(VERTICES));
 				GL_CALL(glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
 			}
@@ -216,11 +226,11 @@ void Mesh::draw() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	if (!indices.empty()) {
-		GL_CALL(glDrawElements(GL_TRIANGLES, GLsizei(indices.size()), GL_UNSIGNED_BYTE, (GLvoid*)0));
+		GL_CALL(glDrawElements(drawingPrimitive, GLsizei(indices.size()), GL_UNSIGNED_BYTE, (GLvoid*)0));
 	}
 	else
 	{
-		GL_CALL(glDrawArrays(GL_TRIANGLES, 0, GLsizei(vertices.size())));
+		GL_CALL(glDrawArrays(drawingPrimitive, 0, GLsizei(vertices.size())));
 	}
 }
 
@@ -276,29 +286,19 @@ Mesh Mesh::square(const float width) {
 }
 
 // Creates a black rectangle centered in clip space (0,0,0)
-Mesh* Mesh::rectangle(const float width, const float height) {
-	Mesh* rectangle = new Mesh();
+Mesh Mesh::rectangle(const float width, const float height) {
+	Mesh rectangle;
 
-	rectangle->vertices = {
-		// first triangle
-		{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
-		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
-
-		// second triangle
-		{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
-		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
-		{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
-	};
-
-	rectangle->textCoords = {
-		{0.0f, 0.0f},
-		{0.0f, 1.0f},
-		{1.0f, 1.0f},
-		{0.0f, 0.0f},
-		{1.0f, 1.0f},
-		{1.0f, 0.0f}
-	};
+		rectangle.vertices = {
+			// first triangle
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+			{width / 2, height / 2, 0.0f, 1.0f}, // top right vertex
+			// second triangle
+			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+			{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
+		};
 
 	return rectangle;
 

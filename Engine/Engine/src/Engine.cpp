@@ -4,6 +4,7 @@
 #include "utils/OpenGLUtils.h"
 #include "Configurations.h"
 #include "view/Transformations.h"
+#include "InputManager.h"
 
 ///////////////////////////////////////////////////////////////////// CALLBACKS
 void window_size_callback(GLFWwindow* win, int winx, int winy)
@@ -111,12 +112,17 @@ void Engine::setupScene() {
 	);
 
 	sceneGraph = new SceneGraph(camera);
+
+	gui = new GUI(window);
+
+	InputManager::createInstance(window);
 }
 
 ////////////////////////////////////////////// RESOURCES
 void Engine::freeResources() {
 	delete sceneGraph;
 	delete camera;
+	delete gui;
 }
 
 ////////////////////////////////////////////// SETTERS
@@ -134,6 +140,9 @@ SceneGraph* Engine::getSceneGraph() {
 Camera* Engine::getCamera() {
 	return camera;
 }
+GUI* Engine::getGui() {
+	return gui;
+}
 
 int Engine::getWindowWidth() {
 	return windowWidth;
@@ -146,15 +155,16 @@ double Engine::getElapsedTime() {
 }
 
 
+
 ////////////////////////////////////////////// MAIN LOOP
 void Engine::run() {
 
-	// Setup 
-	setupGLFW();
-	setupGLEW();
+	// Setup (DO NOT CHANGE ORDER OF SETUP)
+	setupGLFW(); 
+	setupGLEW();  
 	setupOpenGL();
-
 	setupScene();
+
 	start();
 	sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 
@@ -192,6 +202,7 @@ void Engine::run() {
 
 			sceneGraph->init(); // Init scene graph after start has been called where the scene setup was made
 			sceneGraph->draw((float)elapsedTime); // Drawing only after update
+
 		} else {
 			GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -199,11 +210,12 @@ void Engine::run() {
 			sceneGraph->draw((float)elapsedTime); // Drawing only after update
 		}
 
+		gui->drawUI();// After everything from the scene is rendered, we render the UI;
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		checkForOpenGLErrors("ERROR: MAIN LOOP"); //TODO Prob not necessary
 	}
-
 	freeResources();
 	end(); //Has to be called before glfwTerminate()
 

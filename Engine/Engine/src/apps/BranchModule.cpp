@@ -13,21 +13,25 @@ BranchModule::~BranchModule() {
 void BranchModule::updateModule(float elapsedTime) {
 
 	if (!reachedMaturity) {
-
 		GrowthParameters* growthParameters = GrowthParameters::instance;
 
 		// Firstly we update the growth rate from the vigour which we previously calculated
 		growthRate = eqt::growthRate(vigour, growthParameters->vMin, growthParameters->vMax, growthParameters->gP);
 
 		// Secondly we update the module physiological age
-		physiologicalAge += eqt::ageVariation(elapsedTime, growthRate);
+		float ageVariation = eqt::ageVariation(elapsedTime, growthRate);
+		physiologicalAge += ageVariation;
 
-		// Then we update the diameter and the length of each of the segments of the module
-		root->children[0]->updateNode(physiologicalAge);
+	}
+
+	// Then we update the diameter and the length of each of the segments of the module
+	root->children[0]->updateNode(physiologicalAge);
 
 
+	if (!reachedMaturity) {
+		adapt();
+	
 		calculateCenterOfGeometry();
-
 		reachedMaturity = reachedMatureAge(root);
 	}
 
@@ -37,17 +41,18 @@ void BranchModule::updateModule(float elapsedTime) {
 	}
 
 	// We are not orienting the modules so until next delivery we don't attach any
-	/*if (reachedMaturity && !tips.empty()) {
+	if (reachedMaturity && !tips.empty()) {
 
 		distributeLightAndVigor();
 
 		float vMin = GrowthParameters::instance->vMin;
 
 		for (BranchNode* tip : tips) {
-			if (tip->vigour > vMin)
+			if (tip->vigour > vMin && tip->children.size() == 0) {
 				attachModule(tip);
+			}
 		}
-	}*/
+	}
 }
 
 void BranchModule::adapt() { root->adapt(); }
@@ -83,15 +88,10 @@ void BranchModule::attachModule(BranchNode* root) {
 	module->parent = this;
 	module->tree = tree;
 	module->calculateCenterOfGeometry();
-	module->physiologicalAge = physiologicalAge;
+	module->physiologicalAge = 0.0f;
+	module->setOrientation(root->rotation); // We set the module orientation to the orientation of the segment where it is attached
 	children.push_back(module);
 	tree->modules.push_back(module);
-
-	//module->root = root;
-	//module->orientation = orientation;
-	//module->parent = this;
-	//module->main = this->main;
-	//module->tree = tree;
 }
 
 void BranchModule::calculateCenterOfGeometryRecurs(BranchNode* node, Vec3 position, std::vector<Vec3>& currentTips) {
@@ -222,6 +222,24 @@ void BranchModule::distributeLightAndVigor() {
 	// Finally we do an acropetal (base-to-tip) pass calculating vigor fluxes at each node intersection
 	calculateVigorFluxes(root);
 }
+
+void BranchModule::setOrientation(Mat4& orientation) {
+	setOrientationRecurs(orientation, root->children[0]);
+}
+
+void BranchModule::setOrientationRecurs(Mat4& orientation, BranchNode* curr) {
+
+	curr->moduleOrientation = orientation;
+
+	if (curr->isTip) {
+		return;
+	}
+	for (BranchNode* child : curr->children)
+	{
+		setOrientationRecurs(orientation, child);
+	}
+}
+
 
 
 

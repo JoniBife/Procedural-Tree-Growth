@@ -117,9 +117,9 @@ static void setupTree(SceneGraph* sceneGraph) {
 
 	GrowthParameters* growthParameters = new GrowthParameters();
 	growthParameters->gP = 0.12f;
-	growthParameters->scalingCoefficient = 1.29f;
+	growthParameters->scalingCoefficient = 12.0f;
 	growthParameters->vRootMax = 900;
-	growthParameters->thickeningFactor = 0.5f; // original 1.41
+	growthParameters->thickeningFactor = 0.1f; // original 1.41
 	growthParameters->pMax = 950;
 	growthParameters->vMin = 0.0f;
 	growthParameters->vMax = (float)growthParameters->vRootMax;
@@ -129,7 +129,7 @@ static void setupTree(SceneGraph* sceneGraph) {
 	growthParameters->w1 = 0.14f;
 	growthParameters->w2 = 0.14f;
 	growthParameters->g1 = 0.2f; 
-	growthParameters->g2 = 0.2f;
+	growthParameters->g2 = 3.0f;
 	GrowthParameters::instance = growthParameters;
 
 	float scaleLength = 1.5f;

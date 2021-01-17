@@ -26,6 +26,7 @@ private:
 	Mat4 orthoProj;
 	Mat4 perspectiveProj;
 	Mat4 currProj;
+	bool canControl = true;
 
 public:
 	float movementSpeed;	
@@ -36,6 +37,8 @@ public:
 	float pitch;
 	double lastXpos;
 	double lastYpos;
+	double XPosBeforeESC;
+	double YPosBeforeESC;
 
 public: 
 	FreeCameraController(const float movementSpeed, const Vec3& position, const Vec3& front, const Vec3& up,

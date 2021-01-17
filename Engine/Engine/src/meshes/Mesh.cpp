@@ -31,14 +31,14 @@ Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors) :
 Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec4>& colors, const std::vector<GLubyte>& indices) :
 	vertices(vertices), colors(colors), indices(indices) {}
 
-Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec3>& normals, const std::vector<Vec2>& textCoords) 
+Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec3>& normals, const std::vector<Vec2>& textCoords)
 	: vertices(vertices), normals(normals), textCoords(textCoords) {}
 
-Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec3>& normals) 
+Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec3>& normals)
 	: vertices(vertices), normals(normals) {
 }
 
-Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec2>& textCoords) 
+Mesh::Mesh(const std::vector<Vec4>& vertices, const std::vector<Vec2>& textCoords)
 	: vertices(vertices), textCoords(textCoords) {}
 
 // Deletes all the vbos, vaos and disables the vertex array atributes
@@ -119,7 +119,7 @@ void Mesh::init() {
 
 			// Allocated on the heap because the numberOfBuffers is only known on run-time
 			GLuint* bufferIds = new GLuint[numberOfBuffers];
-			
+
 			// Generating all buffers at once, its better than generating each of them separately 
 			GL_CALL(glGenBuffers(numberOfBuffers, bufferIds));
 
@@ -150,7 +150,7 @@ void Mesh::init() {
 					GL_CALL(glVertexAttribPointer(NORMALS, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), 0));
 				}
 			}
-			
+
 
 			if (!colors.empty()) {
 				vboColorsId = bufferIds[idxColors];
@@ -264,23 +264,23 @@ void Mesh::calculateTangents() {
 		tangents.push_back(tangent);
 		tangents.push_back(tangent);
 	}
-	
+
 }
 
 // Creates a black square centered in clip space (0,0,0)
 Mesh* Mesh::square(const float width) {
 	Mesh* square = new Mesh();
 
-		square->vertices = {
-			// first triangle
-			{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
-			{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
-			{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
-			// second triangle
-			{-width / 2, width / 2, 0.0f, 1.0f}, // top left vertex
-			{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
-			{width / 2, width / 2, 0.0f, 1.0f} // top right vertex
-		};
+	square->vertices = {
+		// first triangle
+		{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
+		{width / 2, -width / 2, 0.0f, 1.0f}, // bottom right vertex
+		{width / 2, width / 2, 0.0f, 1.0f}, // top right vertex
+		// second triangle
+		{-width / 2, width / 2, 0.0f, 1.0f}, // top left vertex
+		{-width / 2, -width / 2, 0.0f, 1.0f}, // bottom left vertex
+		{width / 2, width / 2, 0.0f, 1.0f} // top right vertex
+	};
 
 	return square;
 }
@@ -289,26 +289,26 @@ Mesh* Mesh::square(const float width) {
 Mesh* Mesh::rectangle(const float width, const float height) {
 	Mesh* rectangle = new Mesh();
 
-		rectangle->vertices = {
-			// first triangle
-			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
-			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+	rectangle->vertices = {
+		// first triangle
+		{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
 
-			// second triangle
-			{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
-			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
-			{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
-		};
+		// second triangle
+		{-width / 2, height / 2, 0.0f, 1.0f}, // top left vertex
+		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+		{width / 2, height / 2, 0.0f, 1.0f} // top right vertex
+	};
 
-		rectangle->textCoords = {
-			{0.0f, 0.0f},
-			{0.0f, 1.0f},
-			{1.0f, 1.0f},
-			{0.0f, 0.0f},
-			{1.0f, 1.0f},
-			{1.0f, 0.0f}
-		};
+	rectangle->textCoords = {
+		{0.0f, 0.0f},
+		{0.0f, 1.0f},
+		{1.0f, 1.0f},
+		{0.0f, 0.0f},
+		{1.0f, 1.0f},
+		{1.0f, 0.0f}
+	};
 
 	return rectangle;
 
@@ -318,11 +318,11 @@ Mesh* Mesh::rectangle(const float width, const float height) {
 Mesh* Mesh::triangle(const float width, const float height) {
 	Mesh* triangle = new Mesh();
 
-		triangle->vertices = {
-			{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
-			{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
-			{0, height / 2, 0.0f, 1.0f} // top center vertex		
-		};
+	triangle->vertices = {
+		{-width / 2, -height / 2, 0.0f, 1.0f}, // bottom left vertex
+		{width / 2, -height / 2, 0.0f, 1.0f}, // bottom right vertex
+		{0, height / 2, 0.0f, 1.0f} // top center vertex		
+	};
 
 	return triangle;
 }
@@ -389,7 +389,7 @@ void Mesh::updateVertices(const std::vector<Vec4>& vertices) {
 			GL_CALL(glGenBuffers(1, &vboId));
 			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboId));
 			{
-				GL_CALL(glBufferData(GL_ARRAY_BUFFER, 
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER,
 					verticesBufferSize == -1 ? this->vertices.size() * sizeof(Vec4) : verticesBufferSize * sizeof(Vec4),
 					&this->vertices[0], verticesBufferType));
 				GL_CALL(glEnableVertexAttribArray(VERTICES));

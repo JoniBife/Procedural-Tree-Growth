@@ -28,31 +28,10 @@ const int sectors = 16;
 
 mat4 rotationFromDir(vec4 dir) {
 
-    /*mat4 scale;
-    scale[0][0] = 0.8535534;
-	scale[0][1] = 0.1464466;
-	scale[0][2] = -0.5;
-	scale[0][3] = 0.0;
-	
-	scale[1][0] = 0.1464466;
-	scale[1][1] = 0.8535534;
-	scale[1][2] = 0.5;
-	scale[1][3] = 0.0;
-	
-	scale[2][0] = 0.5;
-	scale[2][1] = -0.5;
-	scale[2][2] = 0.7071068;
-	scale[2][3] = 0.0;
-	
-	scale[3][0] = 0.0;
-	scale[3][1] = 0.0;
-	scale[3][2] = 0.0;
-	scale[3][3] = 1.0;
-    return scale;*/
+    vec3 normalizedDir = normalize(dir.xyz);
 
-    
-    vec3 axis = cross(dir.xyz, vec3(0.0,1.0,0.0));
-	float t = 1 + dot(dir.xyz, vec3(0.0,1.0,0.0));
+    vec3 axis = cross(normalizedDir, vec3(0.0,1.0,0.0));
+	float t = 1 + dot(normalizedDir, vec3(0.0,1.0,0.0));
 	vec4 qtrn = normalize(vec4(t, -axis.x, axis.y, -axis.z));
 
     float xt = qtrn.y * qtrn.x;
@@ -98,7 +77,7 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
 
     vec4 unitCircleVertices[sectors + 1]; 
 
-    mat4 baseRotation = rotationFromDir(normalize(topPosition - bottomPosition));
+    mat4 baseRotation = rotationFromDir(topPosition - bottomPosition);
     
     // Calculating the vertices of a circle centered in (0,0,0)
     for(int i = 0; i <= sectors; ++i)
@@ -147,7 +126,7 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
     // Generating the top circle
     for(int i = 0; i <= sectors; ++i)
     {
-        v1 = (topPosition + vec4(unitCircleVertices[i].x * topRadius, unitCircleVertices[i].y * topRadius ,unitCircleVertices[i].z * topRadius, 0.0)); 
+        v1 = (topPosition + vec4(unitCircleVertices[i].x * topRadius, unitCircleVertices[i].y * topRadius,unitCircleVertices[i].z * topRadius, 0.0)); 
         gl_Position = projection *  view * model * v1; 
         exPosition = v1;
         exTextCoord = vec2(0.49, 0.485);//vec2(unitCircleVertices[i].x * 0.5 + 0.5, -unitCircleVertices[i].z * 0.5 + 0.5);
@@ -324,8 +303,8 @@ void main(void)
     vec4 bottomPosition = vec4(gl_in[0].gl_Position.xyz, 1.0);
     vec4 topPosition = vec4(gl_in[1].gl_Position.xyz, 1.0);
     
-    float bottomRadius = gl_in[0].gl_Position.w * 0.5;
-    float topRadius = gl_in[1].gl_Position.w * 0.5;
+    float bottomRadius = gl_in[0].gl_Position.w;
+    float topRadius = gl_in[1].gl_Position.w;
     
 	generateCylinder(bottomPosition, topPosition, bottomRadius, topRadius);
 }

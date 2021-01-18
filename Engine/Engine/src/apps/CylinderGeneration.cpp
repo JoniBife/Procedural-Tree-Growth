@@ -5,6 +5,10 @@
 #include "../textures/Texture2D.h"
 #include "TreeGrowthUI.h"
 #include "../textures/DepthMap.h"
+#include "../math/Qtrn.h"
+#include "BranchNode.h"
+#include "BranchModule.h"
+#include "Morphospace.h"
 
 static ShaderProgram* spCylinder; // Used with the cylinders
 static ShaderProgram* spDepthMapCylinder; // Used with the cylinders to generate the depth map
@@ -18,9 +22,11 @@ static SceneNode* sceneNodePlane;
 static float numberOfFrames = 0.0f;
 static float totalElapsedTime = 0.0f;
 
+static BranchModule* root;
+
 static GLint cameraPosLsp;
 static GLint cameraPosLspShadows;
-static Vec3 lightPosition(5.0f, 10.0f, 10.0f);
+static Vec3 lightPosition(4.0f, 30.0f, 20.0f);
 
 static Texture2D* woodTexture;
 static Texture2D* woodTextureNormalMap;
@@ -30,11 +36,6 @@ static TreeGrowthUI* treeGrowthUI;
 
 static GLint normalMappingL;
 static GLint normalMapping = GL_TRUE;
-
-std::vector<Vec4> dynamicVertices = {
-		{0.0f, -2.0f, 0.0f , 1.5f},
-		{0.0f, 2.0f, 0.0f , 0.5f}
-};
 
 static void setupShaders(SceneGraph* sceneGraph, Camera* camera) {
 
@@ -97,7 +98,7 @@ static void setupTextures() {
 
 static void setupLightAndShadows() {
 
-	Mat4 lightProj = ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 70.5f);
+	Mat4 lightProj = ortho(-100.0f, 100.0f, -10.0f, 100.0f, 1.0f, 70.5f);
 
 	Vec3 lightTarget(0.0f, 0.0f, 0.0f); // center
 	Vec3 lightUp(0.0f, 1.0f, 0.0f); // up
@@ -163,24 +164,70 @@ static void setupLightAndShadows() {
 
 static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int windowHeight) {
 	// Adding a spherical camera controller
-	float cameraMovementSpeed = 5.0f;
+	float cameraMovementSpeed = 30.0f;
 	// Since we are looking at the -z axis in our initial orientation, yaw has to be set -90 degress otherwise we would look at +x axis
 	float initialYaw = -90.0f;
 	float initialPitch = 0.0f;
 
-	Vec3 cameraPos(0.0f, 0.0f, 3.0f); // eye
+	Vec3 cameraPos(0.0f, 0.0f, 50.0f); // eye
 	Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
 	Vec3 cameraFront = cameraTarget - cameraPos;
-	Vec3 cameraUp(0.0f, 1.0f, 0.0f); // up
+	Vec3 cameraUp(0.0f, 50.0f, 0.0f); // up
 
 	Mat4 orthographicProj = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 0.001f, 1000.0f);
 	Mat4 perspectiveProj = perspective(PI / 2.0f, float(windowWidth / windowHeight), 0.001f, 1000.0f);
 
+	//cameraController = new OrbitCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow());
 	cameraController = new FreeCameraController(cameraMovementSpeed, cameraPos, cameraFront, cameraUp, initialYaw, initialPitch, orthographicProj, perspectiveProj, window);
 
+	//cameraController = new SphericalCameraController({ 0,0,0 }, Qtrn(1, 0, 0, 0), this->getWindow(), -5.0f);
 	camera->addCameraController(cameraController);
 	camera->setView(lookAt(cameraPos, cameraPos + cameraFront, cameraUp));
 	camera->setProjection(perspectiveProj);
+}
+
+static void setupTree(SceneGraph* sceneGraph) {
+	GrowthParameters* growthParameters = new GrowthParameters();
+	growthParameters->gP = 0.12f;
+	growthParameters->scalingCoefficient = 1.29f;
+	growthParameters->vRootMax = 900;
+	growthParameters->thickeningFactor = 0.1f; // original 1.41
+	growthParameters->pMax = 950;
+	growthParameters->vMin = 0.0f;
+	growthParameters->vMax = (float)growthParameters->vRootMax;
+	growthParameters->determinacy = 0.93f;
+	growthParameters->apicalControl = 0.87f;
+	growthParameters->tropismAngle = 0.66f;
+	growthParameters->w1 = 0.14f;
+	growthParameters->w2 = 0.14f;
+	growthParameters->g1 = 0.2f;
+	growthParameters->g2 = 3.0f;
+	GrowthParameters::instance = growthParameters;
+
+	float scaleLength = 1.5f;
+	Morphospace::instance = new Morphospace(scaleLength);
+
+	BranchNode* rootNode = new BranchNode();
+	rootNode->relativePosition = {0.0f, 0.0f, 0.0f};
+	rootNode->vigour = (float)GrowthParameters::instance->vRootMax;
+
+	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
+	root->vigour = (float)GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
+
+	std::vector<Vec4> initialVertices = {
+		{0.0f, 0.0f ,0.0f ,1.0f},
+		{0.0f, 0.0f ,0.0f ,1.0f}
+	};
+
+	points = new Mesh(initialVertices);
+	points->setPrimitive(GL_LINES);
+	points->setVerticesBufferType(GL_STREAM_DRAW);
+	points->setVerticesBufferSize(1000);
+
+	root->sceneNode = sceneGraph->getRoot()->createChild(points, Mat4::IDENTITY, spCylinder);
+	root->sceneNode->addTexture(woodTexture);
+	root->sceneNode->addTexture(woodTextureNormalMap);
+	root->sceneNode->addTexture(depthMap);
 }
 
 void Cylinder::start() {
@@ -206,56 +253,26 @@ void Cylinder::start() {
 	setupTextures();
 	setupLightAndShadows();
 
+	// Must be done after the rest of the setups
+	setupTree(getSceneGraph());
+
 	plane = Mesh::loadFromFile("../Engine/objs/plane.obj");
 	plane->paint(ColorRGBA::ORANGE);
 	sceneNodePlane = getSceneGraph()->getRoot()->createChild(plane, Mat4::IDENTITY, spShadows);
-	sceneNodePlane->setModel(Mat4::translation({ 0.0f, -2.0f, 0.0f }) * Mat4::scaling(0.5f));
+	//sceneNodePlane->setModel(Mat4::translation({ 0.0f, 0.0f, 0.0f }) * Mat4::scaling(0.5f));
 	sceneNodePlane->addTexture(depthMap);
-
-	std::vector<Vec4> vertices = {
-		{0.0f, -2.0f, 0.0f , 0.8f},
-		{0.0f, 2.0f, 0.0f , 0.5f},
-		{0.0f, 2.0f, 0.0f , 0.5f},
-		{1.5f, 4.0f, 0.0f , 0.3f},
-		{0.0f, 2.0f, 0.0f , 0.5f},
-		{-1.5f, 4.0f, 0.0f , 0.3f},
-		{1.5f, 4.0f, 0.0f , 0.3f},
-		{2.5f, 6.0f, 0.0f , 0.2f},
-		{1.5f, 4.0f, 0.0f , 0.3f},
-		{0.5f, 6.0f, 0.0f , 0.2f},
-		{-1.5f, 4.0f, 0.0f , 0.3f},
-		{-2.5f, 6.0f, 2.0f , 0.2f},
-		{-1.5f, 4.0f, 0.0f , 0.3f},
-		{-0.5f, 6.0f, -3.0f , 0.2f}
-	};
-
-	points = new Mesh(vertices);
-	points->setPrimitive(GL_LINES);
-	points->setVerticesBufferType(GL_STREAM_DRAW);
-	//points->setVerticesBufferSize(1000);
-
-	cylinder = getSceneGraph()->getRoot()->createChild(points, Mat4::IDENTITY, spCylinder);
-
-	float currOffset = 0.1f;
-
-	/*for (int i = 0; i < 1000; ++i) {
-		currOffset += 0.1f;
-		cylinder = getSceneGraph()->getRoot()->createChild(points, Mat4::translation({currOffset, 0.0f, 0.0f}), spCylinder);
-	}*/
-
-	cylinder->addTexture(woodTexture);
-	cylinder->addTexture(woodTextureNormalMap);
-	cylinder->addTexture(depthMap);
 
 	depthMap->setOnRenderToDepthMap(this, [&]() {
 
 		// First we render to the depth map using the depth shaders
-		cylinder->setShaderProgram(spDepthMapCylinder);
+		//cylinder->setShaderProgram(spDepthMapCylinder);
+		root->sceneNode->setShaderProgram(spDepthMapCylinder);
 		sceneNodePlane->setShaderProgram(spDepthMap);
 	}, [&]() {
 
 		// Then return to the regular shaders
-		cylinder->setShaderProgram(spCylinder);
+		//cylinder->setShaderProgram(spCylinder);
+		root->sceneNode->setShaderProgram(spCylinder);
 		sceneNodePlane->setShaderProgram(spShadows);
 	});
 }
@@ -264,6 +281,9 @@ float currOffset = 0.01f;
 int i = 0;
 
 void Cylinder::update() {
+
+	root->updateModule(getElapsedTime());
+
 	treeGrowthUI->updateFPSCounter(float(getElapsedTime()));
 
 	spCylinder->use();
@@ -285,18 +305,7 @@ void Cylinder::update() {
 	spShadows->setUniform(cameraPosLspShadows, cameraController->position);
 	spShadows->stopUsing();
 
-	//dynamicVertices[1].y += currOffset;
-
 	//points->updateVertices(dynamicVertices);
-
-	/*if (i < 1000) {
-		currOffset += 0.1f;
-		dynamicVertices.push_back({ currOffset, -2.0f, 0.0f , 1.5f });
-		dynamicVertices.push_back({ currOffset, 2.0f, 0.0f , 0.5f });
-
-		points->updateVertices(dynamicVertices);
-		++i;
-	}*/
 
 }
 

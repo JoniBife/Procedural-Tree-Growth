@@ -15,6 +15,8 @@
 */
 struct BranchNode {
 
+	Vec4 positionWithDiameter;
+
 	Vec3 relativePosition; // The position of the node relative to its parent
 	Vec3 adaptationOffset = { 0.0f, 0.0f, 0.0f }; // An offset that is added to the branch node position to simulate the adaptation of the module
 	Vec3 currRelativePosition;
@@ -32,8 +34,6 @@ struct BranchNode {
 
 	bool isTip;
 	bool main = false;
-
-	SceneNode* sceneGraphNode; // Contains the mesh that is the cylinder that extends from the parent's position to this position
 	
 	BranchNode* parent;
 	std::vector<BranchNode*> children;
@@ -42,7 +42,7 @@ struct BranchNode {
 
 	~BranchNode();
 
-	void updateNode(float modulePhysiologicalAge);
+	void updateNode(float modulePhysiologicalAge, std::vector<Vec4>& vertices, Vec4& parentPosition, bool isRoot);
 
 	// When we adapt a node, we also have to adapt its children
 	void adapt();
@@ -57,8 +57,6 @@ struct BranchNode {
 
 	// Equation 8 of the paper
 	float segmentDiameter(const BranchNode* branchNode, float thickeningFactor);
-
-	void calculateRotation();
 };
 
 #endif

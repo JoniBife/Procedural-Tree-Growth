@@ -25,10 +25,14 @@ void BranchModule::updateModule(float elapsedTime) {
 	}
 
 	// Then we update the diameter and the length of each of the segments of the module
-	root->children[0]->updateNode(physiologicalAge);
+	std::vector<Vec4> vertices;
+	Vec4 zeroVec(0.0f, 0.0f, 0.0f, 0.0f);
+	root->updateNode(physiologicalAge, vertices, zeroVec, true);
 
+	// After obtaining the vertices we update the data in the buffer
+	sceneNode->getMesh()->updateVertices(vertices);
 
-	if (!reachedMaturity) {
+	/*if (!reachedMaturity) {
 		adapt();
 	
 		calculateCenterOfGeometry();
@@ -52,7 +56,7 @@ void BranchModule::updateModule(float elapsedTime) {
 				attachModule(tip);
 			}
 		}
-	}
+	}*/
 }
 
 void BranchModule::adapt() { root->adapt(); }
@@ -86,12 +90,12 @@ void BranchModule::attachModule(BranchNode* root) {
 	BranchModule* module = morphospace->selectModule(growthParameters->apicalControl, determinacyMS, root);
 	module->root = root;
 	module->parent = this;
-	module->tree = tree;
+	//module->tree = tree;
 	module->calculateCenterOfGeometry();
 	module->physiologicalAge = 0.0f;
 	module->setOrientation(root->rotation); // We set the module orientation to the orientation of the segment where it is attached
 	children.push_back(module);
-	tree->modules.push_back(module);
+	//tree->modules.push_back(module);
 }
 
 void BranchModule::calculateCenterOfGeometryRecurs(BranchNode* node, Vec3 position, std::vector<Vec3>& currentTips) {

@@ -8,7 +8,7 @@
 #include "Equations.h"
 #include <numeric>
 
-class Tree;
+//class Tree;
 
 struct BranchModule {
 
@@ -26,9 +26,11 @@ public:
 	BranchModule* parent;
 	std::vector<BranchModule*> children;
 
+	SceneNode* sceneNode;
+
 	BoundingSphere boundingSphere;
 
-	Tree* tree;
+	//Tree* tree;
 
 	BranchNode* root;
 	std::vector<BranchNode*> tips;
@@ -63,7 +65,7 @@ private:
 
 };
 
-#include "Tree.h"
+//#include "Tree.h"
 
 #endif
 

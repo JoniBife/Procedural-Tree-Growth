@@ -15,6 +15,6 @@
 
 #define FULLSCREEN true
 
-#define BACKGROUND_COLOR 0.0f, 0.0f, 0.0f, 1.0f
+#define BACKGROUND_COLOR 0.0f, 1.0f, 1.0f, 1.0f
 
 #endif

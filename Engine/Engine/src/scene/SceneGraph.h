@@ -7,6 +7,7 @@
 #include "../meshes/Mesh.h"
 #include "../math/Mat4.h"
 #include "../textures/ITexture.h"
+#include <list>;
 
 class SceneNode {
 
@@ -17,7 +18,7 @@ private:
 	GLint normalUniformLocation = GLint(-1);
 	ShaderProgram* shaderProgram = nullptr;
 	std::vector<ITexture*> textures;
-	std::vector<SceneNode*> children;
+	std::list<SceneNode*> children;
 	std::function<void(ShaderProgram*)> beforeDraw;
 	std::function<void()> afterDraw;
 
@@ -36,6 +37,8 @@ public:
 	SceneNode* createChild(Mesh* mesh, const Mat4& model);
 	SceneNode* createChild(Mesh* mesh, const Mat4& model, ShaderProgram* shaderProgram);
 
+	void deleteSceneNode();
+
 	void setModel(const Mat4& model);
 	void setShaderProgram(ShaderProgram* shaderProgram);
 	void addTexture(ITexture* texture);
@@ -45,7 +48,7 @@ public:
 	Mat4 getModel() const;
 	Mesh* getMesh() const;
 	ShaderProgram* getShaderProgram() const;
-	std::vector<SceneNode*> getChildren() const;
+	std::list<SceneNode*> getChildren() const;
 	std::vector<ITexture*> getTextures() const;
 
 	void init();

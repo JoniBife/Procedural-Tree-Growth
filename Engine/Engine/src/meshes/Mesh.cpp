@@ -89,123 +89,121 @@ void Mesh::init() {
 		return;
 	}
 
-	if (!vertices.empty()) {
-		GL_CALL(glGenVertexArrays(1, &vaoId));
-		GL_CALL(glBindVertexArray(vaoId));
-		{
-			// Obtaining the number of buffers that need to be created
-			GLsizei numberOfBuffers = 1;
-			int idxNormals, idxColors, idxTextCoords, idxIndices, idxTangents;
-			if (!normals.empty()) {
-				idxNormals = numberOfBuffers;
-				++numberOfBuffers;
-			}
-			if (!colors.empty()) {
-				idxColors = numberOfBuffers;
-				++numberOfBuffers;
-			}
-			if (!textCoords.empty()) {
-				idxTextCoords = numberOfBuffers;
-				++numberOfBuffers;
-			}
-			if (!indices.empty()) {
-				idxIndices = numberOfBuffers;
-				++numberOfBuffers;
-			}
-			if (!tangents.empty()) {
-				idxTangents = numberOfBuffers;
-				++numberOfBuffers;
-			}
-
-			// Allocated on the heap because the numberOfBuffers is only known on run-time
-			GLuint* bufferIds = new GLuint[numberOfBuffers];
-
-			// Generating all buffers at once, its better than generating each of them separately 
-			GL_CALL(glGenBuffers(numberOfBuffers, bufferIds));
-
-			vboId = bufferIds[0];
-			// Binding the vertices to the first vbo
-			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboId));
-			{
-				// If the user specified a custom size for the vertices buffer then it must be larger or equal to the number of vertices
-				if (verticesBufferSize > -1)
-					assert(vertices.size() <= verticesBufferSize);
-
-				// The spec ensures that vectors store their elements contiguously
-				// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
-				GL_CALL(glBufferData(GL_ARRAY_BUFFER,
-					verticesBufferSize == -1 ? vertices.size() * sizeof(Vec4) : verticesBufferSize * sizeof(Vec4),
-					&vertices[0], verticesBufferType));
-				GL_CALL(glEnableVertexAttribArray(VERTICES));
-				GL_CALL(glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
-			}
-
-			if (!normals.empty()) {
-				vboNormalsId = bufferIds[idxNormals];
-				// Binding the colors to the second vbo
-				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboNormalsId));
-				{
-					GL_CALL(glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(Vec3), &normals[0], GL_STATIC_DRAW));
-					GL_CALL(glEnableVertexAttribArray(NORMALS));
-					GL_CALL(glVertexAttribPointer(NORMALS, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), 0));
-				}
-			}
-
-
-			if (!colors.empty()) {
-				vboColorsId = bufferIds[idxColors];
-				// Binding the colors to the second vbo
-				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboColorsId));
-				{
-					GL_CALL(glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(Vec4), &colors[0], GL_STATIC_DRAW));
-					GL_CALL(glEnableVertexAttribArray(COLORS));
-					GL_CALL(glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
-				}
-			}
-
-			if (!textCoords.empty()) {
-				vboTextCoordsId = bufferIds[idxTextCoords];
-				// Binding the colors to the second vbo
-				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboTextCoordsId));
-				{
-					GL_CALL(glBufferData(GL_ARRAY_BUFFER, textCoords.size() * sizeof(Vec2), &textCoords[0], GL_STATIC_DRAW));
-					GL_CALL(glEnableVertexAttribArray(TEXTCOORDS));
-					GL_CALL(glVertexAttribPointer(TEXTCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), 0));
-				}
-			}
-
-			// If this mesh was created with indices then they will be placed in an element array buffer
-			if (!indices.empty()) {
-				eboIndicesId = bufferIds[idxIndices];
-				GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIndicesId));
-				{
-					GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLubyte), &indices[0], GL_STATIC_DRAW));
-				}
-			}
-
-			if (!tangents.empty()) {
-				vboTangentsId = bufferIds[idxTangents];
-
-				GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboTangentsId));
-				{
-					GL_CALL(glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(Vec3), &tangents[0], GL_STATIC_DRAW));
-					GL_CALL(glEnableVertexAttribArray(TANGENTS));
-					GL_CALL(glVertexAttribPointer(TANGENTS, 2, GL_FLOAT, GL_FALSE, sizeof(Vec3), 0));
-				}
-			}
-
-			// BufferIds was allocated on the heap therefore we delete it because we no longer need it
-			delete[] bufferIds;
+	GL_CALL(glGenVertexArrays(1, &vaoId));
+	GL_CALL(glBindVertexArray(vaoId));
+	{
+		// Obtaining the number of buffers that need to be created
+		GLsizei numberOfBuffers = 1;
+		int idxNormals, idxColors, idxTextCoords, idxIndices, idxTangents;
+		if (!normals.empty()) {
+			idxNormals = numberOfBuffers;
+			++numberOfBuffers;
 		}
-		GL_CALL(glBindVertexArray(0));
-		GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
-
+		if (!colors.empty()) {
+			idxColors = numberOfBuffers;
+			++numberOfBuffers;
+		}
+		if (!textCoords.empty()) {
+			idxTextCoords = numberOfBuffers;
+			++numberOfBuffers;
+		}
 		if (!indices.empty()) {
-			GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+			idxIndices = numberOfBuffers;
+			++numberOfBuffers;
+		}
+		if (!tangents.empty()) {
+			idxTangents = numberOfBuffers;
+			++numberOfBuffers;
 		}
 
-		hasBeenInitialized = true;
+		// Allocated on the heap because the numberOfBuffers is only known on run-time
+		GLuint* bufferIds = new GLuint[numberOfBuffers];
+
+		// Generating all buffers at once, its better than generating each of them separately 
+		GL_CALL(glGenBuffers(numberOfBuffers, bufferIds));
+
+		vboId = bufferIds[0];
+		// Binding the vertices to the first vbo
+		GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboId));
+		{
+			// If the user specified a custom size for the vertices buffer then it must be larger or equal to the number of vertices
+			if (verticesBufferSize > -1)
+				assert(vertices.size() <= verticesBufferSize);
+
+			// The spec ensures that vectors store their elements contiguously
+			// https://stackoverflow.com/questions/2923272/how-to-convert-vector-to-array
+			GL_CALL(glBufferData(GL_ARRAY_BUFFER,
+				verticesBufferSize == -1 ? vertices.size() * sizeof(Vec4) : verticesBufferSize * sizeof(Vec4),
+				vertices.size() == 0 ? NULL : &vertices[0], verticesBufferType));
+			GL_CALL(glEnableVertexAttribArray(VERTICES));
+			GL_CALL(glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
+		}
+
+		if (!normals.empty()) {
+			vboNormalsId = bufferIds[idxNormals];
+			// Binding the colors to the second vbo
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboNormalsId));
+			{
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(Vec3), &normals[0], GL_STATIC_DRAW));
+				GL_CALL(glEnableVertexAttribArray(NORMALS));
+				GL_CALL(glVertexAttribPointer(NORMALS, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), 0));
+			}
+		}
+
+
+		if (!colors.empty()) {
+			vboColorsId = bufferIds[idxColors];
+			// Binding the colors to the second vbo
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboColorsId));
+			{
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(Vec4), &colors[0], GL_STATIC_DRAW));
+				GL_CALL(glEnableVertexAttribArray(COLORS));
+				GL_CALL(glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), 0));
+			}
+		}
+
+		if (!textCoords.empty()) {
+			vboTextCoordsId = bufferIds[idxTextCoords];
+			// Binding the colors to the second vbo
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboTextCoordsId));
+			{
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER, textCoords.size() * sizeof(Vec2), &textCoords[0], GL_STATIC_DRAW));
+				GL_CALL(glEnableVertexAttribArray(TEXTCOORDS));
+				GL_CALL(glVertexAttribPointer(TEXTCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), 0));
+			}
+		}
+
+		// If this mesh was created with indices then they will be placed in an element array buffer
+		if (!indices.empty()) {
+			eboIndicesId = bufferIds[idxIndices];
+			GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIndicesId));
+			{
+				GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLubyte), &indices[0], GL_STATIC_DRAW));
+			}
+		}
+
+		if (!tangents.empty()) {
+			vboTangentsId = bufferIds[idxTangents];
+
+			GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vboTangentsId));
+			{
+				GL_CALL(glBufferData(GL_ARRAY_BUFFER, tangents.size() * sizeof(Vec3), &tangents[0], GL_STATIC_DRAW));
+				GL_CALL(glEnableVertexAttribArray(TANGENTS));
+				GL_CALL(glVertexAttribPointer(TANGENTS, 2, GL_FLOAT, GL_FALSE, sizeof(Vec3), 0));
+			}
+		}
+
+		// BufferIds was allocated on the heap therefore we delete it because we no longer need it
+		delete[] bufferIds;
 	}
+	GL_CALL(glBindVertexArray(0));
+	GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+	if (!indices.empty()) {
+		GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+	}
+
+	hasBeenInitialized = true;
 }
 
 // Binds the vertex array object with glBindArray

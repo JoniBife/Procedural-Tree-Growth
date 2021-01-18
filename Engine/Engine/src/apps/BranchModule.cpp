@@ -130,7 +130,7 @@ void BranchModule::calculateCenterOfGeometryRecurs(BranchNode* node, Vec3 positi
 void BranchModule::calculateCenterOfGeometry() {
 
 	std::vector<Vec3> currentTips;
-	Vec3 rootPosition = root->calculatePosition();
+	Vec3 rootPosition = Vec3(root->positionWithDiameter.x, root->positionWithDiameter.y, root->positionWithDiameter.z);
 	currentTips.push_back(rootPosition);
 
 	if (rootPosition.x > maxPos.x)

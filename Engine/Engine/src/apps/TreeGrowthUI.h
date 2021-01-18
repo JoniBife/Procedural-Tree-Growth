@@ -61,7 +61,7 @@ private:
 		fps->setPosition({ windowWidth - fpsName->getWidth() * 0.3f , windowHeight - fpsName->getHeight() / 2 });
 	}
 
-	float buildTitleTextFieldPair(GUI* gui, float windowWidth, float windowHeight, const std::string& title, float yStart, TextField* builtTextField) {
+	float buildTitleTextFieldPair(GUI* gui, float windowWidth, float windowHeight, const std::string& title, float yStart, TextField*& builtTextField) {
 
 		const float textFieldHeight = 25.0f;
 
@@ -76,7 +76,6 @@ private:
 		Vec2 textFieldPosition = { (width * 0.9f) / 2 + padding, yStart - (textFieldHeight * 0.5f) - offSetTextField - padding - (textFieldName->getHeight() * 0.5f) };
 		builtTextField = new TextField(textFieldPosition, width * 0.9f, textFieldHeight);
 		{
-			builtTextField->setInput("0.0");
 			builtTextField->setDepth(1);
 			gui->addComponent(builtTextField);
 		}
@@ -98,18 +97,32 @@ private:
 				gui->addComponent(panelTitle);
 			}
 
+			GrowthParameters* growthParameters = GrowthParameters::instance;
+
 			float startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Max Plant Age", windowHeight - 25, pMax);
+			pMax->setInput(growthParameters ? std::to_string(growthParameters->pMax) : "0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Max Root Vigour", startY, vRootMax);
+			vRootMax->setInput(growthParameters ? std::to_string(growthParameters->vRootMax) : "0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Growth Rate", startY, gP);
+			gP->setInput(growthParameters ? std::to_string(growthParameters->gP) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Apical Control", startY, apicalControl);
+			apicalControl->setInput(growthParameters ? std::to_string(growthParameters->apicalControl) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Determinacy", startY, determinacy);
+			determinacy->setInput(growthParameters ? std::to_string(growthParameters->determinacy) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Tropism Angle", startY, tropismAngle);
+			tropismAngle->setInput(growthParameters ? std::to_string(growthParameters->tropismAngle) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Tropism Decrease", startY, g1);
+			g1->setInput(growthParameters ? std::to_string(growthParameters->g1) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Tropism Strength", startY, g2);
+			g2->setInput(growthParameters ? std::to_string(growthParameters->g2) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Thickening Factor", startY, thickeningFactor);
+			thickeningFactor->setInput(growthParameters ? std::to_string(growthParameters->thickeningFactor) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Scaling coeficient", startY, scalingCoefficient);
+			scalingCoefficient->setInput(growthParameters ? std::to_string(growthParameters->scalingCoefficient) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Max Vigour", startY, vMax);
+			vMax->setInput(growthParameters ? std::to_string(growthParameters->vMax) : "0.0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Min Vigour", startY, vMin);
+			vMin->setInput(growthParameters ? std::to_string(growthParameters->vMin) : "0.0");
 
 			Button* start = new Button({ windowWidth * 0.5f - 90.0f - padding, windowHeight - 30.0f * 0.5f - padding });
 			{
@@ -129,7 +142,7 @@ private:
 					growthParameters.scalingCoefficient = std::stof(scalingCoefficient->getInput());
 					growthParameters.vMax = std::stof(vMax->getInput());
 					growthParameters.vMin = std::stof(vMin->getInput());
-
+					
 					onStart(growthParameters);
 				});
 				gui->addComponent(start);

@@ -96,7 +96,7 @@ static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int
 	float initialYaw = -90.0f;
 	float initialPitch = 0.0f;
 
-	Vec3 cameraPos(0.0f, 0.0f, 50.0f); // eye
+	Vec3 cameraPos(0.0f, 30.0f, 50.0f); // eye
 	Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
 	Vec3 cameraFront = cameraTarget - cameraPos;
 	Vec3 cameraUp(0.0f, 50.0f, 0.0f); // up

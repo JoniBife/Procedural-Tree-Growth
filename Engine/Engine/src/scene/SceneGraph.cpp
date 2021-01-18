@@ -43,6 +43,11 @@ SceneNode* SceneNode::createChild(Mesh* mesh, const Mat4& model, ShaderProgram* 
 	return child;
 }
 
+void SceneNode::deleteSceneNode() {
+	parent->children.remove(this);
+	delete this;
+}
+
 void SceneNode::setModel(const Mat4& model) {
 	this->model = model;
 }
@@ -72,7 +77,7 @@ Mesh* SceneNode::getMesh() const{
 ShaderProgram* SceneNode::getShaderProgram() const{
 	return shaderProgram;
 }
-std::vector<SceneNode*> SceneNode::getChildren() const {
+std::list<SceneNode*> SceneNode::getChildren() const {
 	return children;
 }
 

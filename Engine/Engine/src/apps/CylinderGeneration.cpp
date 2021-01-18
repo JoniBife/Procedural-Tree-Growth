@@ -37,6 +37,8 @@ static TreeGrowthUI* treeGrowthUI;
 static GLint normalMappingL;
 static GLint normalMapping = GL_TRUE;
 
+static bool paused = true;
+
 static void setupShaders(SceneGraph* sceneGraph, Camera* camera) {
 
 	//////////// CYLINDER SHADERS /////////////////////////
@@ -187,6 +189,30 @@ static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int
 }
 
 static void setupTree(SceneGraph* sceneGraph) {
+
+	float scaleLength = 1.5f;
+	Morphospace::instance = new Morphospace(scaleLength);
+
+	BranchNode* rootNode = new BranchNode();
+	rootNode->relativePosition = {0.0f, 0.0f, 0.0f};
+	rootNode->vigour = (float)GrowthParameters::instance->vRootMax;
+
+	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
+	root->vigour = (float)GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
+
+	points = new Mesh();
+	points->setPrimitive(GL_LINES);
+	points->setVerticesBufferType(GL_STREAM_DRAW);
+	points->setVerticesBufferSize(1000);
+	points->init();
+
+	root->sceneNode = sceneGraph->getRoot()->createChild(points, Mat4::IDENTITY, spCylinder);
+	root->sceneNode->addTexture(woodTexture);
+	root->sceneNode->addTexture(woodTextureNormalMap);
+	root->sceneNode->addTexture(depthMap);
+}
+
+static void setDefaultGrowthParameters() {
 	GrowthParameters* growthParameters = new GrowthParameters();
 	growthParameters->gP = 0.12f;
 	growthParameters->scalingCoefficient = 1.29f;
@@ -203,58 +229,44 @@ static void setupTree(SceneGraph* sceneGraph) {
 	growthParameters->g1 = 0.2f;
 	growthParameters->g2 = 3.0f;
 	GrowthParameters::instance = growthParameters;
-
-	float scaleLength = 1.5f;
-	Morphospace::instance = new Morphospace(scaleLength);
-
-	BranchNode* rootNode = new BranchNode();
-	rootNode->relativePosition = {0.0f, 0.0f, 0.0f};
-	rootNode->vigour = (float)GrowthParameters::instance->vRootMax;
-
-	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
-	root->vigour = (float)GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
-
-	std::vector<Vec4> initialVertices = {
-		{0.0f, 0.0f ,0.0f ,1.0f},
-		{0.0f, 0.0f ,0.0f ,1.0f}
-	};
-
-	points = new Mesh(initialVertices);
-	points->setPrimitive(GL_LINES);
-	points->setVerticesBufferType(GL_STREAM_DRAW);
-	points->setVerticesBufferSize(1000);
-
-	root->sceneNode = sceneGraph->getRoot()->createChild(points, Mat4::IDENTITY, spCylinder);
-	root->sceneNode->addTexture(woodTexture);
-	root->sceneNode->addTexture(woodTextureNormalMap);
-	root->sceneNode->addTexture(depthMap);
 }
 
 void Cylinder::start() {
-	treeGrowthUI = new TreeGrowthUI(getGui(), float(getWindowWidth()), float(getWindowHeight()), [=](GrowthParameters gp) {
-		std::cout << "Start" << std::endl;
+
+	setDefaultGrowthParameters();
+
+	treeGrowthUI = new TreeGrowthUI(getGui(), float(getWindowWidth()), float(getWindowHeight()), [&](GrowthParameters gp) {
+		if (root) {
+			root->sceneNode->deleteSceneNode();
+			delete root;
+		}
+		// When the user presses start we setup the tree again 
+		GrowthParameters::instance = new GrowthParameters(gp);
+		setupTree(getSceneGraph());
+		paused = false;
+	}, [&]() {
+		paused = !paused;
 	}, [=]() {
-		std::cout << "Pause" << std::endl;
-	}, [=]() {
-		std::cout << "Stop" << std::endl;
+		/*paused = true;
+		if (root) {
+			root->sceneNode->deleteSceneNode();
+			delete root;
+		}*/
 	});
 
 	setSkyBox({
-		"../Engine/textures/skybox/right.jpg",
-		"../Engine/textures/skybox/left.jpg",
-		"../Engine/textures/skybox/top.jpg",
-		"../Engine/textures/skybox/bottom.jpg",
-		"../Engine/textures/skybox/front.jpg",
-		"../Engine/textures/skybox/back.jpg"
+		"../Engine/textures/skybox/right.png",
+		"../Engine/textures/skybox/left.png",
+		"../Engine/textures/skybox/top.png",
+		"../Engine/textures/skybox/bottom.png",
+		"../Engine/textures/skybox/front.png",
+		"../Engine/textures/skybox/back.png"
 	});
 
 	setupCamera(getCamera(), getWindow(), getWindowWidth(), getWindowHeight());
 	setupShaders(getSceneGraph(), getCamera());
 	setupTextures();
 	setupLightAndShadows();
-
-	// Must be done after the rest of the setups
-	setupTree(getSceneGraph());
 
 	plane = Mesh::loadFromFile("../Engine/objs/plane.obj");
 	plane->paint(ColorRGBA::ORANGE);
@@ -263,18 +275,18 @@ void Cylinder::start() {
 	sceneNodePlane->addTexture(depthMap);
 
 	depthMap->setOnRenderToDepthMap(this, [&]() {
-
 		// First we render to the depth map using the depth shaders
 		//cylinder->setShaderProgram(spDepthMapCylinder);
-		root->sceneNode->setShaderProgram(spDepthMapCylinder);
+		if (root) root->sceneNode->setShaderProgram(spDepthMapCylinder);
 		sceneNodePlane->setShaderProgram(spDepthMap);
 	}, [&]() {
 
 		// Then return to the regular shaders
 		//cylinder->setShaderProgram(spCylinder);
-		root->sceneNode->setShaderProgram(spCylinder);
+		if (root) root->sceneNode->setShaderProgram(spCylinder);
 		sceneNodePlane->setShaderProgram(spShadows);
 	});
+
 }
 
 float currOffset = 0.01f;
@@ -282,7 +294,8 @@ int i = 0;
 
 void Cylinder::update() {
 
-	root->updateModule(getElapsedTime());
+	if (!paused && root)
+		root->updateModule(getElapsedTime());
 
 	treeGrowthUI->updateFPSCounter(float(getElapsedTime()));
 

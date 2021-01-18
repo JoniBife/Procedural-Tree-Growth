@@ -31,5 +31,5 @@ float eqt::segmentLength(float maxLength, float physiologicalAge, float scalingC
 
 // Equation 10 of the paper 
 Vec3 eqt::tropismOffset(float physiologicalAge, float g1, float g2, const Vec3& gravityDir) {
-	return (g1 * gravityDir * g2) / (g1);
+	return (g1 * gravityDir * g2) / (physiologicalAge + g1);
 }

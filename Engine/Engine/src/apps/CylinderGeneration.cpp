@@ -9,15 +9,19 @@
 #include "BranchNode.h"
 #include "BranchModule.h"
 #include "Morphospace.h"
+#include "../utils/OpenGLUtils.h"
+#include "Leaves.h"
 
 static ShaderProgram* spCylinder; // Used with the cylinders
 static ShaderProgram* spDepthMapCylinder; // Used with the cylinders to generate the depth map
 static ShaderProgram* spShadows; // Used with any other object
 static ShaderProgram* spDepthMap; // Used with any other object to generate the depth map
+static ShaderProgram* spSimple;
 static Mesh* points;
 static Mesh* plane;
 static FreeCameraController* cameraController;
 static SceneNode* cylinder;
+static SceneNode* sceneNodeSphere;
 static SceneNode* sceneNodePlane;
 static float numberOfFrames = 0.0f;
 static float totalElapsedTime = 0.0f;
@@ -36,6 +40,10 @@ static TreeGrowthUI* treeGrowthUI;
 
 static GLint normalMappingL;
 static GLint normalMapping = GL_TRUE;
+
+static Mesh* sphere;
+
+static Leaves* leaves;
 
 static bool paused = true;
 
@@ -74,6 +82,14 @@ static void setupShaders(SceneGraph* sceneGraph, Camera* camera) {
 	// Associating the shared matrix index with the binding point of the camera (0)
 	sharedMatricesIndex = spDepthMapCylinder->getUniformBlockIndex("SharedMatrices");
 	spDepthMapCylinder->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
+
+	// Loading the shaders and creating the shader program
+	Shader vs4(GL_VERTEX_SHADER, "../Engine/shaders/simpleVertexShader.glsl");
+	Shader fs4(GL_FRAGMENT_SHADER, "../Engine/shaders/simpleFragmentShader.glsl");
+	spSimple = new ShaderProgram(vs4, fs4);
+	// Associating the shared matrix index with the binding point of the camera (0)
+	sharedMatricesIndex = spSimple->getUniformBlockIndex("SharedMatrices");
+	spSimple->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
 }
 
 static void setupTextures() {
@@ -171,7 +187,7 @@ static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int
 	float initialYaw = -90.0f;
 	float initialPitch = 0.0f;
 
-	Vec3 cameraPos(0.0f, 0.0f, 50.0f); // eye
+	Vec3 cameraPos(0.0f, 30.0f, 50.0f); // eye
 	Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
 	Vec3 cameraFront = cameraTarget - cameraPos;
 	Vec3 cameraUp(0.0f, 50.0f, 0.0f); // up
@@ -190,7 +206,7 @@ static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int
 
 static void setupTree(SceneGraph* sceneGraph) {
 
-	float scaleLength = 1.5f;
+	float scaleLength = 0.5f;
 	Morphospace::instance = new Morphospace(scaleLength);
 
 	BranchNode* rootNode = new BranchNode();
@@ -217,7 +233,7 @@ static void setDefaultGrowthParameters() {
 	growthParameters->gP = 0.12f;
 	growthParameters->scalingCoefficient = 1.29f;
 	growthParameters->vRootMax = 900;
-	growthParameters->thickeningFactor = 0.1f; // original 1.41
+	growthParameters->thickeningFactor = 0.01f; // original 1.41
 	growthParameters->pMax = 950;
 	growthParameters->vMin = 0.0f;
 	growthParameters->vMax = (float)growthParameters->vRootMax;
@@ -246,7 +262,8 @@ void Cylinder::start() {
 		paused = false;
 	}, [&]() {
 		paused = !paused;
-	}, [=]() {
+	}, [&]() {
+		GrowthParameters::instance = new GrowthParameters(treeGrowthUI->getGrowthParameters());
 		/*paused = true;
 		if (root) {
 			root->sceneNode->deleteSceneNode();
@@ -268,10 +285,13 @@ void Cylinder::start() {
 	setupTextures();
 	setupLightAndShadows();
 
-	plane = Mesh::loadFromFile("../Engine/objs/plane.obj");
-	plane->paint(ColorRGBA::ORANGE);
+	// Setup leaves
+	leaves = new Leaves();
+
+	plane = Mesh::loadFromFile("../Engine/objs/cylinder32.obj");
+	plane->paint(ColorRGBA::GREEN);
 	sceneNodePlane = getSceneGraph()->getRoot()->createChild(plane, Mat4::IDENTITY, spShadows);
-	//sceneNodePlane->setModel(Mat4::translation({ 0.0f, 0.0f, 0.0f }) * Mat4::scaling(0.5f));
+	sceneNodePlane->setModel(Mat4::scaling({200.0f, 0.1f, 200.0f}));
 	sceneNodePlane->addTexture(depthMap);
 
 	depthMap->setOnRenderToDepthMap(this, [&]() {
@@ -287,15 +307,44 @@ void Cylinder::start() {
 		sceneNodePlane->setShaderProgram(spShadows);
 	});
 
+	// Bounding sphere
+	sphere = Mesh::loadFromFile("../Engine/objs/sphere.obj");
+	sphere->paint(ColorRGBA::RED);
+
+	sceneNodeSphere = getSceneGraph()->getRoot()->createChild(sphere, Mat4::IDENTITY, spSimple);
+	sceneNodeSphere->setBeforeDrawFunction([=](ShaderProgram* sp) {
+		GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+	});
+	sceneNodeSphere->setAfterDrawFunction([]() {
+		GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
+	});
+
 }
 
 float currOffset = 0.01f;
 int i = 0;
+bool drawSphere = true;
+bool hasLeaves = false;
 
 void Cylinder::update() {
 
-	if (!paused && root)
+	static bool isBReleased = false;
+	if (glfwGetKey(getWindow(), GLFW_KEY_B) == GLFW_PRESS && isBReleased) {
+		isBReleased = false;
+		drawSphere = !drawSphere;
+	}
+	else if (glfwGetKey(getWindow(), GLFW_KEY_B) == GLFW_RELEASE) {
+		isBReleased = true;
+	}
+
+	if (!paused && root) {
 		root->updateModule(getElapsedTime());
+
+		if (drawSphere)
+			sceneNodeSphere->setModel(Mat4::translation(root->boundingSphere.center) * Mat4::scaling(root->boundingSphere.radius * 2));
+		else
+			sceneNodeSphere->setModel(Mat4::ZERO);
+	}
 
 	treeGrowthUI->updateFPSCounter(float(getElapsedTime()));
 
@@ -317,6 +366,22 @@ void Cylinder::update() {
 	spShadows->use();
 	spShadows->setUniform(cameraPosLspShadows, cameraController->position);
 	spShadows->stopUsing();
+
+
+	static bool isLReleased = false;
+	if (glfwGetKey(getWindow(), GLFW_KEY_L) == GLFW_PRESS && isLReleased) {
+		isLReleased = false;
+
+		hasLeaves = !hasLeaves;
+
+		if (!hasLeaves)
+			root->generateLeaves(getSceneGraph(), leaves);
+		else
+			leaves->removeLeaves();
+	}
+	else if (glfwGetKey(getWindow(), GLFW_KEY_L) == GLFW_RELEASE) {
+		isLReleased = true;
+	}
 
 	//points->updateVertices(dynamicVertices);
 

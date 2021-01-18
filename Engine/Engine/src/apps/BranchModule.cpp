@@ -1,5 +1,6 @@
 #include "BranchModule.h"
 #include "Morphospace.h"
+#include "../utils/OpenGLUtils.h"
 
 
 BranchModule::BranchModule(BranchNode* root) : root(root) {}
@@ -12,7 +13,7 @@ BranchModule::~BranchModule() {
 
 void BranchModule::updateModule(float elapsedTime) {
 
-	if (!reachedMaturity) {
+	//if (!reachedMaturity) {
 		GrowthParameters* growthParameters = GrowthParameters::instance;
 
 		// Firstly we update the growth rate from the vigour which we previously calculated
@@ -22,7 +23,7 @@ void BranchModule::updateModule(float elapsedTime) {
 		float ageVariation = eqt::ageVariation(elapsedTime, growthRate);
 		physiologicalAge += ageVariation;
 
-	}
+	//}
 
 	// Then we update the diameter and the length of each of the segments of the module
 	std::vector<Vec4> vertices;
@@ -32,34 +33,32 @@ void BranchModule::updateModule(float elapsedTime) {
 	// After obtaining the vertices we update the data in the buffer
 	sceneNode->getMesh()->updateVertices(vertices);
 
-	/*if (!reachedMaturity) {
-		adapt();
-	
+	if (!reachedMaturity) {
 		calculateCenterOfGeometry();
 		reachedMaturity = reachedMatureAge(root);
 	}
 
-
+	/*
 	for (BranchModule* child : children) {
 		child->updateModule(elapsedTime);
-	}
+	}*/
 
 	// We are not orienting the modules so until next delivery we don't attach any
 	if (reachedMaturity && !tips.empty()) {
 
-		distributeLightAndVigor();
+		//distributeLightAndVigor();
 
 		float vMin = GrowthParameters::instance->vMin;
 
-		for (BranchNode* tip : tips) {
-			if (tip->vigour > vMin && tip->children.size() == 0) {
+		for (BranchNode*& tip : tips) {
+			//if (tip->vigour > vMin && tip->children.size() == 0) {
 				attachModule(tip);
-			}
+			//}
 		}
-	}*/
-}
 
-void BranchModule::adapt() { root->adapt(); }
+		tips.clear();
+	}
+}
 
 bool BranchModule::reachedMatureAge(BranchNode* branch) {
 
@@ -78,7 +77,7 @@ bool BranchModule::reachedMatureAge(BranchNode* branch) {
 	return childrenReachedMaturity;
 }
 
-void BranchModule::attachModule(BranchNode* root) {
+void BranchModule::attachModule(BranchNode*& root) {
 
 	Morphospace* morphospace = Morphospace::instance;
 	GrowthParameters* growthParameters = GrowthParameters::instance;
@@ -88,13 +87,23 @@ void BranchModule::attachModule(BranchNode* root) {
 
 	// Selecting new module from morphospace
 	BranchModule* module = morphospace->selectModule(growthParameters->apicalControl, determinacyMS, root);
-	module->root = root;
+
+	Mat4 orientation = Qtrn::fromDir(root->relativePosition.normalize()).toRotationMatrix() * Mat4::rotation(randomFloat(0.0f, PI * 2), Vec3::Y);
+
+	module->setOrientation(orientation);
+
 	module->parent = this;
-	//module->tree = tree;
+	module->physiologicalAge = 0.0f;
 	module->calculateCenterOfGeometry();
+	children.push_back(module);
+
+	/*module->root = root;
+	
+	//module->tree = tree;
+	
 	module->physiologicalAge = 0.0f;
 	module->setOrientation(root->rotation); // We set the module orientation to the orientation of the segment where it is attached
-	children.push_back(module);
+	children.push_back(module);*/
 	//tree->modules.push_back(module);
 }
 
@@ -233,7 +242,11 @@ void BranchModule::setOrientation(Mat4& orientation) {
 
 void BranchModule::setOrientationRecurs(Mat4& orientation, BranchNode* curr) {
 
-	curr->moduleOrientation = orientation;
+	Vec4 relativePosition = curr->relativePosition.toVec4();
+	relativePosition.w = 1.0f;
+	relativePosition = orientation * relativePosition;
+
+	curr->relativePosition = Vec3(relativePosition.x, relativePosition.y, relativePosition.z);
 
 	if (curr->isTip) {
 		return;
@@ -241,6 +254,39 @@ void BranchModule::setOrientationRecurs(Mat4& orientation, BranchNode* curr) {
 	for (BranchNode* child : curr->children)
 	{
 		setOrientationRecurs(orientation, child);
+	}
+}
+
+void BranchModule::generateLeaves(SceneGraph* sceneGraph, Leaves* leaves) {
+	leaves->removeLeaves();
+	generateLeavesRecursively(sceneGraph, leaves, root);
+}
+void BranchModule::generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* leaves, BranchNode* curr) {
+	
+	// If we are in a tip we create the leaves scene node
+	if (curr->children.size() == 0) {
+
+		Vec3 translation = Vec3(curr->positionWithDiameter.x, curr->positionWithDiameter.y, curr->positionWithDiameter.z);
+		Mat4 orientation = Mat4::translation(translation) 
+			* Qtrn::fromDir(curr->relativePosition.normalize()).toRotationMatrix() 
+			* Mat4::rotation(randomFloat(0.0f, 2 * PI), Vec3::Y);
+		SceneNode* sceneNodeLeaves = sceneGraph->getRoot()->createChild(leaves->quad, orientation,leaves->shader);
+		sceneNodeLeaves->setBeforeDrawFunction([=](ShaderProgram* sp) {
+			GL_CALL(glEnable(GL_BLEND));
+			GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+			GL_CALL(glDisable(GL_CULL_FACE));
+		});
+		sceneNodeLeaves->setAfterDrawFunction([=]() {
+			GL_CALL(glEnable(GL_CULL_FACE));
+			GL_CALL(glDisable(GL_BLEND));
+		});
+		sceneNodeLeaves->addTexture(leaves->texture);
+		leaves->sceneNodes.push_back(sceneNodeLeaves);
+		return;
+	}
+
+	for (BranchNode* child : curr->children) {
+		generateLeavesRecursively(sceneGraph, leaves, curr);
 	}
 }
 

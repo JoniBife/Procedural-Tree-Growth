@@ -8,12 +8,12 @@
 #define OPEN_GL_MAJOR 4
 #define OPEN_GL_MINOR 0
 
-#define SCREEN_WIDTH  1080
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH  1600
+#define SCREEN_HEIGHT 900
 
 #define VSYNC false
 
-#define FULLSCREEN false
+#define FULLSCREEN true
 
 #define BACKGROUND_COLOR 0.0f, 0.0f, 0.0f, 1.0f
 

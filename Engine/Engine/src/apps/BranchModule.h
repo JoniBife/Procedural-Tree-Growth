@@ -7,6 +7,7 @@
 #include "../apps/BoundingSphere.h"
 #include "Equations.h"
 #include <numeric>
+#include "Leaves.h"
 
 //class Tree;
 
@@ -41,11 +42,9 @@ public:
 
 	void updateModule(float elapsedTime);
 
-	void adapt();
-
 	bool reachedMatureAge(BranchNode* branch);
 
-	void attachModule(BranchNode* root);
+	void attachModule(BranchNode*& root);
 
 	Vec3 maxPos = { FLT_MIN, FLT_MIN, FLT_MIN };
 	Vec3 minPos = { FLT_MAX, FLT_MAX, FLT_MAX };
@@ -60,7 +59,12 @@ public:
 
 	void setOrientation(Mat4& orientation);
 
+	void generateLeaves(SceneGraph* sceneGraph, Leaves* leaves);
+
 private:
+
+	void generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* leaves, BranchNode* curr);
+
 	void setOrientationRecurs(Mat4& orientation, BranchNode* curr);
 
 };

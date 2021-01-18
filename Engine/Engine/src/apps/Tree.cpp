@@ -5,9 +5,6 @@
 
 Tree::Tree(const Vec3& positionRoot, SceneGraph* sceneGraph, Texture2D* woodTexture, Texture2D* woodNormalMap) {
 
-	cylinder = Mesh::loadFromFile("../Engine/objs/cylinder32.obj");
-	cylinder->calculateTangents();
-
 	BranchNode* rootNode = new BranchNode();
 	rootNode->relativePosition = positionRoot;
 	//rootNode->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
@@ -104,7 +101,7 @@ void Tree::distributeLightAndVigor() {
 			if (moduleA == moduleB)
 				continue;
 
-			fCollisions += moduleA->boundingSphere.intersectVolume(moduleB->boundingSphere)/1000;
+			fCollisions += moduleA->boundingSphere.intersectVolume(moduleB->boundingSphere);
 		}
 		moduleA->lightExposure = expf(-fCollisions);
 	}

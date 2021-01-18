@@ -26,6 +26,7 @@
     <ClCompile Include="src\apps\CylinderGeneration.cpp" />
     <ClCompile Include="src\apps\Equations.cpp" />
     <ClCompile Include="src\apps\GrowthParameters.cpp" />
+    <ClCompile Include="src\apps\Leaves.cpp" />
     <ClCompile Include="src\apps\Morphospace.cpp" />
     <ClCompile Include="src\apps\ShadowMapping.cpp" />
     <ClCompile Include="src\apps\Singleton.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="src\apps\Equations.h" />
     <ClInclude Include="src\apps\GrowthParameters.h" />
     <ClInclude Include="src\apps\Blending.h" />
+    <ClInclude Include="src\apps\Leaves.h" />
     <ClInclude Include="src\apps\Morphospace.h" />
     <ClInclude Include="src\apps\ShadowMapping.h" />
     <ClInclude Include="src\apps\Singleton.h" />
@@ -129,9 +131,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragmentShaderBlending.glsl" />
-
-
-
     <None Include="shaders\cylinderFragmentShader.glsl" />
     <None Include="shaders\cylinderGeometryShader.geom" />
     <None Include="shaders\cylinderGeometryShaderSM.geom" />
@@ -150,7 +149,6 @@
     <None Include="shaders\simpleFragmentShader.glsl" />
     <None Include="shaders\simpleVertexShader.glsl" />
     <None Include="shaders\vertexShaderBlending.glsl" />
-
     <None Include="shaders\textFragmentShader.glsl" />
     <None Include="shaders\textVertexShader.glsl" />
     <None Include="shaders\vertexShaderNM.glsl" />

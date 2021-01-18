@@ -187,6 +187,23 @@ public:
 		fps->setContent(std::to_string(int(cn / (currTime - initialTime))));
 	}
 
+	GrowthParameters getGrowthParameters() {
+		GrowthParameters growthParameters;
+		growthParameters.pMax = unsigned int(std::stoul(pMax->getInput()));
+		growthParameters.vRootMax = unsigned int(std::stoul(vRootMax->getInput()));
+		growthParameters.gP = std::stof(gP->getInput());
+		growthParameters.apicalControl = std::stof(apicalControl->getInput());
+		growthParameters.determinacy = std::stof(determinacy->getInput());
+		growthParameters.tropismAngle = std::stof(tropismAngle->getInput());
+		growthParameters.g1 = std::stof(g1->getInput());
+		growthParameters.g2 = std::stof(g2->getInput());
+		growthParameters.thickeningFactor = std::stof(thickeningFactor->getInput());
+		growthParameters.scalingCoefficient = std::stof(scalingCoefficient->getInput());
+		growthParameters.vMax = std::stof(vMax->getInput());
+		growthParameters.vMin = std::stof(vMin->getInput());
+		return growthParameters;
+	}
+
 };
 
 #endif

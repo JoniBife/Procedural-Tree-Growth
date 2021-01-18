@@ -704,7 +704,7 @@ Morphospace::Morphospace(float scaleLength): scaleLength(scaleLength) {
 	};
 }
 
-BranchModule* Morphospace::selectModule(float apicalControl, float determinacy, BranchNode* root) {
+BranchModule* Morphospace::selectModule(float apicalControl, float determinacy, BranchNode*& root) {
 	/*
 	Apical control and determinacy are always between 0 and 1 so to 
 	obtain the module in the morphospace we multiply apical control and determinacy by 3 and round the result up and subtract 1 which 

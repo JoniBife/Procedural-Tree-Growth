@@ -18,7 +18,7 @@ struct BranchNode {
 	Vec4 positionWithDiameter;
 
 	Vec3 relativePosition; // The position of the node relative to its parent
-	Vec3 adaptationOffset = { 0.0f, 0.0f, 0.0f }; // An offset that is added to the branch node position to simulate the adaptation of the module
+	Vec3 adaptationOffset = { 0.0f, 5.0f, 0.0f }; // An offset that is added to the branch node position to simulate the adaptation of the module
 	Vec3 currRelativePosition;
 	float physiologicalAge = 0.0f;
 	float branchLength = 0.0f;
@@ -43,9 +43,6 @@ struct BranchNode {
 	~BranchNode();
 
 	void updateNode(float modulePhysiologicalAge, std::vector<Vec4>& vertices, Vec4& parentPosition, bool isRoot);
-
-	// When we adapt a node, we also have to adapt its children
-	void adapt();
 
 	// We calculate the position of this node relative to the position of the parents
 	// So until it reaches the root, all the positions are relatives positions to each other.

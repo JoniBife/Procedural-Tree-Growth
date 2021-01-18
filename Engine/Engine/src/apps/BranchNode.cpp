@@ -11,10 +11,11 @@ void BranchNode::updateNode(float modulePhysiologicalAge, std::vector<Vec4>& ver
 	if (physiologicalAge > modulePhysiologicalAge)
 		return;
 
-	// We calculate the diameter first because all nodes need to calculate the diameter including the root
-	branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor/*,branchLength/maxBranchLength*/);
-
 	if (!isRoot) {
+
+		// We calculate the diameter first because all nodes need to calculate the diameter including the root
+		branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor, branchLength / maxBranchLength);
+
 		// We calculate the segment physiological age to be used in the branch length
 		float branchSegmentAge = eqt::segmentPhysiologicalAge(modulePhysiologicalAge, parent->physiologicalAge);
 
@@ -25,7 +26,11 @@ void BranchNode::updateNode(float modulePhysiologicalAge, std::vector<Vec4>& ver
 
 		Vec3 parentPosition = Vec3(parentPositionWithDiameter.x, parentPositionWithDiameter.y, parentPositionWithDiameter.z);
 		// We calculate the position of this node from the parents position and scale it with the length
-		Vec3 nodePosition = (relativePosition * (branchLength / maxBranchLength)) + parentPosition;
+	
+		Vec3 gravityDir = Vec3(0,-1,0).normalize();
+		adaptationOffset = eqt::tropismOffset(modulePhysiologicalAge, GrowthParameters::instance->g1, GrowthParameters::instance->g2, gravityDir);
+		Vec3 nodePosition = (adaptationOffset + relativePosition).normalize() * branchLength + parentPosition;
+
 		// We then add the diameter to the W component for the geometry shader to generate the cylinders
 		positionWithDiameter = Vec4(nodePosition.x, nodePosition.y, nodePosition.z, branchDiameter);
 
@@ -39,11 +44,10 @@ void BranchNode::updateNode(float modulePhysiologicalAge, std::vector<Vec4>& ver
 			reachedMax = true;
 			physiologicalAge = modulePhysiologicalAge;
 		}
-
-		if (isTip)
-			return;
 	}
 	else {
+		branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor, 1.0f, false);
+
 		positionWithDiameter = parentPositionWithDiameter;
 		// if its the root we only update the diameter
 		positionWithDiameter.w = branchDiameter;
@@ -55,26 +59,6 @@ void BranchNode::updateNode(float modulePhysiologicalAge, std::vector<Vec4>& ver
 			child->updateNode(modulePhysiologicalAge, vertices, positionWithDiameter, false);
 		}
 	}
-}
-
-void BranchNode::adapt() {
-
-	if (parent) {
-
-		Vec3 gravityDir = -1 * Vec3::Y;
-
-		adaptationOffset = eqt::tropismOffset(physiologicalAge, GrowthParameters::instance->g1, GrowthParameters::instance->g2, gravityDir);
-
-		if (isTip)
-			return;
-	}
-
-	for (BranchNode* child : children)
-	{
-		if (!child->main)
-			child->adapt();
-	}
-	
 }
 
 Vec3 BranchNode::calculatePosition() {
@@ -96,15 +80,17 @@ BranchNode* BranchNode::createChild(const Vec3& relativePosition, float scaleLen
 float BranchNode::segmentDiameter(const BranchNode* branchNode, float thickeningFactor, float lerpFactor, bool first) {
 
 	if (branchNode->children.size() == 0) {
-		if (first)
-			return lerp(0, thickeningFactor, lerpFactor);
-		return thickeningFactor;
+		return lerp(0, thickeningFactor, lerpFactor);
 	}
 
-	float branchSegmentDiameter = thickeningFactor;
+	float branchSegmentDiameter = 0.0f;
 	for (BranchNode* child : branchNode->children) {
 		float childSegmentDiameter = segmentDiameter(child, thickeningFactor, child->branchLength / child->maxBranchLength, false);
 		branchSegmentDiameter += SQR(childSegmentDiameter);
+	}
+
+	if (branchSegmentDiameter < thickeningFactor) {
+		branchSegmentDiameter = thickeningFactor;
 	}
 
 	return lerp(0, sqrtf(branchSegmentDiameter), lerpFactor);

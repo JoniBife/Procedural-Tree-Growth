@@ -20,7 +20,7 @@ public:
 	static Morphospace* instance; // TODO Use proper singleton
 
 	Morphospace(float scaleLength);
-	BranchModule* selectModule(float apicalControl, float determinacy, BranchNode* root);
+	BranchModule* selectModule(float apicalControl, float determinacy, BranchNode*& root);
 };
 
 #endif

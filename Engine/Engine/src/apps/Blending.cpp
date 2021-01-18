@@ -88,7 +88,7 @@ std::vector<Vec2> transparentTextCoords = {
 
 static void setupTextures() {
 	// Loading textures
-	windowTexture = new Texture2D("../Engine/textures/blending_transparent_window.png");
+	windowTexture = new Texture2D("../Engine/textures/leaves2.png");
 
 	GLint textureID = spBlending->getUniformLocation("texture1");
 
@@ -100,6 +100,10 @@ void Blending::start() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_CULL_FACE);
+	glCullFace(GL_FRONT_AND_BACK);
+
 	setupShaders(getSceneGraph(), getCamera());
 	setupCamera(getCamera(), getWindow(), getWindowWidth(), getWindowHeight());
 	setupTextures();
@@ -113,25 +117,24 @@ void Blending::start() {
 	windowTransparent = Mesh::rectangle(1.0f, 1.0f);
 
 	std::vector<Vec3> windows;
-	windows.push_back(Vec3(0.0f, 0.0f, 0.7f));
+	windows.push_back(Vec3(0.0f, 0.0f, 0.0f));
 	windows.push_back(Vec3(1.5f, 0.0f, 0.51f));
 	windows.push_back(Vec3(-0.5f, 0.0f, -0.48f));
 
 	sceneNodeWindows = getSceneGraph()->getRoot()->createChild(windowTransparent, Mat4::IDENTITY, spBlending);
 	sceneNodeWindows1 = getSceneGraph()->getRoot()->createChild(windowTransparent, Mat4::IDENTITY, spBlending);
-	sceneNodeWindows2 = getSceneGraph()->getRoot()->createChild(windowTransparent, Mat4::IDENTITY, spBlending);
+	//sceneNodeWindows2 = getSceneGraph()->getRoot()->createChild(windowTransparent, Mat4::IDENTITY, spBlending);
 
-	sceneNodeWindows->setModel(Mat4::translation(windows[0]));
-	sceneNodeWindows1->setModel(Mat4::translation(windows[1]));
-	sceneNodeWindows2->setModel(Mat4::translation(windows[2]));
+	sceneNodeWindows->setModel(Mat4::rotation(PI / 3, { 1.0f, 0.0f, 0.0f }) * Mat4::translation({ 0.0f, 0.5f, 0.0f }));
+	sceneNodeWindows1->setModel(Mat4::rotation( 2* PI / 3, { 1.0f, 0.0f, 0.0f }) * Mat4::translation({ 0.0f, 0.5f, 0.0f }));
 
 	sceneNodeWindows->setShaderProgram(spBlending);
 	sceneNodeWindows1->setShaderProgram(spBlending);
-	sceneNodeWindows2->setShaderProgram(spBlending);
+	//sceneNodeWindows2->setShaderProgram(spBlending);
 
 	sceneNodeWindows->addTexture(windowTexture);
 	sceneNodeWindows1->addTexture(windowTexture);
-	sceneNodeWindows2->addTexture(windowTexture);
+	//sceneNodeWindows2->addTexture(windowTexture);
 
 }
 

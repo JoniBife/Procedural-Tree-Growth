@@ -10,23 +10,18 @@
 class Tree {
 
 public:
-	GrowthParameters* growthParameters;
-	BranchModule* root; 
-	float currTime;
+	BranchModule* root;
+	float plantAge;
 	//std::map<int, float> intersections; // map that contains all the intersections volumes between spheres
 	std::vector<BranchModule*> modules;
 	std::vector<BranchModule*> tips;
-	Mesh* cylinder;
+	SceneNode* sceneNode;
 	
-	Tree(const Vec3& positionRoot, SceneGraph* sceneGraph, Texture2D* woodTexture, Texture2D* woodNormalMap);
+	Tree(BranchModule* root);
 
 	~Tree();
 
 public:
-	void startGrowth(GrowthParameters* growthParameters);
-	void pauseGrowth();
-	void resumeGrowth();
-
 	void grow(float elapsedTime);
 
 private:

@@ -135,7 +135,7 @@ static void setupTree(SceneGraph* sceneGraph) {
 	float scaleLength = 1.5f;
 	Morphospace::instance = new Morphospace(scaleLength);
 
-	tree = new Tree({ 0.0f, -10.0f, 0.0f }, sceneGraph, woodTexture, woodTextureNormalMap);
+	//tree = new Tree({ 0.0f, -10.0f, 0.0f }, sceneGraph, woodTexture, woodTextureNormalMap);
 }
 
 void TreeGrowth::start() {

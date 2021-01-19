@@ -11,9 +11,9 @@ BranchModule::~BranchModule() {
 	}
 }
 
-void BranchModule::updateModule(float elapsedTime) {
+void BranchModule::updateModule(float elapsedTime, std::vector<Vec4>& vertices) {
 
-	//if (!reachedMaturity) {
+	if (!reachedMaturity) {
 		GrowthParameters* growthParameters = GrowthParameters::instance;
 
 		// Firstly we update the growth rate from the vigour which we previously calculated
@@ -23,40 +23,35 @@ void BranchModule::updateModule(float elapsedTime) {
 		float ageVariation = eqt::ageVariation(elapsedTime, growthRate);
 		physiologicalAge += ageVariation;
 
-	//}
+	}
 
 	// Then we update the diameter and the length of each of the segments of the module
-	std::vector<Vec4> vertices;
 	Vec4 zeroVec(0.0f, 0.0f, 0.0f, 0.0f);
 	root->updateNode(physiologicalAge, vertices, zeroVec, true);
-
-	// After obtaining the vertices we update the data in the buffer
-	sceneNode->getMesh()->updateVertices(vertices);
 
 	if (!reachedMaturity) {
 		calculateCenterOfGeometry();
 		reachedMaturity = reachedMatureAge(root);
-	}
+	} else {
+		if (!tips.empty()) {
+			//distributeLightAndVigor();
+			
+			float vMin = GrowthParameters::instance->vMin;
 
-	/*
-	for (BranchModule* child : children) {
-		child->updateModule(elapsedTime);
-	}*/
-
-	// We are not orienting the modules so until next delivery we don't attach any
-	if (reachedMaturity && !tips.empty()) {
-
-		//distributeLightAndVigor();
-
-		float vMin = GrowthParameters::instance->vMin;
-
-		for (BranchNode*& tip : tips) {
-			//if (tip->vigour > vMin && tip->children.size() == 0) {
+			for (BranchNode*& tip : tips) {
+				if (tree->modules.size() == GrowthParameters::instance->maxModules) {
+					break;
+				}
+				//if (tip->vigour > vMin && tip->children.size() == 0) {
 				attachModule(tip);
-			//}
+				//}
+			}
+			tips.clear();
 		}
 
-		tips.clear();
+		for (BranchModule* child : children) {
+			child->updateModule(elapsedTime, vertices);
+		}
 	}
 }
 
@@ -92,14 +87,14 @@ void BranchModule::attachModule(BranchNode*& root) {
 
 	module->setOrientation(orientation);
 
+	module->vigour = vigour;
 	module->parent = this;
 	module->physiologicalAge = 0.0f;
 	module->calculateCenterOfGeometry();
+	module->tree = tree;
 	children.push_back(module);
-
+	tree->modules.push_back(module);
 	/*module->root = root;
-	
-	//module->tree = tree;
 	
 	module->physiologicalAge = 0.0f;
 	module->setOrientation(root->rotation); // We set the module orientation to the orientation of the segment where it is attached
@@ -261,13 +256,14 @@ void BranchModule::generateLeaves(SceneGraph* sceneGraph, Leaves* leaves) {
 	leaves->removeLeaves();
 	generateLeavesRecursively(sceneGraph, leaves, root, true);
 }
+
 void BranchModule::generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* leaves, BranchNode* curr, bool isRoot) {
 	
 	// If we are in a tip we create the leaves scene node
 	if (!isRoot && (curr->children.size() == 0 || !curr->reachedMax)) {
 
 		for (int i = 0; i < 2; ++i) {
-			float randomScale = randomFloat(3.0f, 10.0f);
+			float randomScale = randomFloat(1.0f, 5.0f);
 
 			Vec3 translation = Vec3(curr->positionWithDiameter.x, curr->positionWithDiameter.y, curr->positionWithDiameter.z);
 			Mat4 orientation = Mat4::translation(translation)

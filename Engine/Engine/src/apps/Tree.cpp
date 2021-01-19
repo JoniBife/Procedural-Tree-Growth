@@ -3,44 +3,18 @@
 #include "Equations.h"
 #include "Morphospace.h"
 
-Tree::Tree(const Vec3& positionRoot, SceneGraph* sceneGraph, Texture2D* woodTexture, Texture2D* woodNormalMap) {
-
-	BranchNode* rootNode = new BranchNode();
-	rootNode->relativePosition = positionRoot;
-	//rootNode->sceneGraphNode = sceneGraph->getRoot()->createChild(cylinder, Mat4::ZERO);
-	//rootNode->sceneGraphNode->addTexture(woodTexture);
-	//rootNode->sceneGraphNode->addTexture(woodNormalMap);
-	rootNode->vigour =  (float)GrowthParameters::instance->vRootMax;
-
-	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
-	root->vigour = (float)GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
-	//root->tree = this;
-	root->setOrientation(Mat4::IDENTITY);
+Tree::Tree(BranchModule* root) : root(root){
 	modules.push_back(root);
 }
 
 Tree::~Tree() {
-	delete cylinder;
 	delete root->root; // First we delete the graph of BranchNodes
 	delete root; // Then we delete the graph of BranchModules
 }
 
 
-void Tree::startGrowth(GrowthParameters* growthParameters) {
-	this->growthParameters = growthParameters;
-	currTime = 0.0f;
-}
-
-void Tree::pauseGrowth() {
-	// TODO
-}
-
-void Tree::resumeGrowth() {
-	// TODO
-}
-
 void Tree::grow(float elapsedTime) {
-	distributeLightAndVigor();
+	//distributeLightAndVigor();
 	developModules(elapsedTime);
 }
 
@@ -117,5 +91,7 @@ void Tree::distributeLightAndVigor() {
 
 
 void Tree::developModules(float elapsedTime) {
-	root->updateModule(elapsedTime);
+	std::vector<Vec4> vertices;
+	root->updateModule(elapsedTime, vertices);
+	sceneNode->getMesh()->updateVertices(vertices);
 }

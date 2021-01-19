@@ -11,6 +11,7 @@
 #include "Morphospace.h"
 #include "../utils/OpenGLUtils.h"
 #include "Leaves.h"
+#include "Tree.h"
 
 static ShaderProgram* spCylinder; // Used with the cylinders
 static ShaderProgram* spDepthMapCylinder; // Used with the cylinders to generate the depth map
@@ -29,7 +30,7 @@ static SceneNode* sceneNodePlane;
 static float numberOfFrames = 0.0f;
 static float totalElapsedTime = 0.0f;
 
-static BranchModule* root;
+static Tree* tree;
 
 static GLint cameraPosLsp;
 static GLint cameraPosLspShadows;
@@ -286,19 +287,24 @@ static void setupTree(SceneGraph* sceneGraph) {
 	rootNode->relativePosition = {0.0f, 0.0f, 0.0f};
 	rootNode->vigour = (float)GrowthParameters::instance->vRootMax;
 
-	root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
+	BranchModule* root = Morphospace::instance->selectModule(GrowthParameters::instance->apicalControl, GrowthParameters::instance->determinacy, rootNode);
 	root->vigour = (float)GrowthParameters::instance->vRootMax; // The vigour in the root module of the tree is vRootMax
 
 	points = new Mesh();
 	points->setPrimitive(GL_LINES);
 	points->setVerticesBufferType(GL_STREAM_DRAW);
-	points->setVerticesBufferSize(1000);
+	points->setVerticesBufferSize(10000);
 	points->init();
 
-	root->sceneNode = sceneGraph->getRoot()->createChild(points, Mat4::IDENTITY, spCylinder);
-	root->sceneNode->addTexture(woodTexture);
-	root->sceneNode->addTexture(woodTextureNormalMap);
-	root->sceneNode->addTexture(depthMap);
+	tree = new Tree(root);
+
+	tree->sceneNode = sceneGraph->getRoot()->createChild(points, Mat4::IDENTITY, spCylinder);
+	tree->sceneNode->addTexture(woodTexture);
+	tree->sceneNode->addTexture(woodTextureNormalMap);
+	tree->sceneNode->addTexture(depthMap);
+	tree->modules.push_back(root);
+
+	root->tree = tree;
 }
 
 static void setDefaultGrowthParameters() {
@@ -318,6 +324,8 @@ static void setDefaultGrowthParameters() {
 	growthParameters->g1 = 0.2f;
 	growthParameters->g2 = 3.0f;
 	growthParameters->leavesPerTip = 2;
+	growthParameters->maxModules = 10;
+	growthParameters->gravityDir = Vec3(0.0f, -1.0f, 0.0f);
 	GrowthParameters::instance = growthParameters;
 }
 
@@ -326,9 +334,9 @@ void Cylinder::start() {
 	setDefaultGrowthParameters();
 
 	treeGrowthUI = new TreeGrowthUI(getGui(), float(getWindowWidth()), float(getWindowHeight()), [&](GrowthParameters gp) {
-		if (root) {
-			root->sceneNode->deleteSceneNode();
-			delete root;
+		if (tree) {
+			tree->sceneNode->deleteSceneNode();
+			delete tree;
 		}
 		// When the user presses start we setup the tree again 
 		GrowthParameters::instance = new GrowthParameters(gp);
@@ -373,7 +381,7 @@ void Cylinder::start() {
 		for (SceneNode* leave : leaves->sceneNodes) {
 			leave->setShaderProgram(spLeavesDepthMap);
 		}
-		if (root) root->sceneNode->setShaderProgram(spDepthMapCylinder);
+		if (tree) tree->sceneNode->setShaderProgram(spDepthMapCylinder);
 		sceneNodePlane->setShaderProgram(spDepthMap);
 	}, [&]() {
 
@@ -381,12 +389,12 @@ void Cylinder::start() {
 		for (SceneNode* leave : leaves->sceneNodes) {
 			leave->setShaderProgram(spLeaves);
 		}
-		if (root) root->sceneNode->setShaderProgram(spCylinder);
+		if (tree) tree->sceneNode->setShaderProgram(spCylinder);
 		sceneNodePlane->setShaderProgram(spShadows);
 	});
 
 	// Bounding sphere
-	sphere = Mesh::loadFromFile("../Engine/objs/sphere.obj");
+	/*sphere = Mesh::loadFromFile("../Engine/objs/sphere.obj");
 	sphere->paint(ColorRGBA::RED);
 
 	sceneNodeSphere = getSceneGraph()->getRoot()->createChild(sphere, Mat4::IDENTITY, spSimple);
@@ -395,7 +403,7 @@ void Cylinder::start() {
 	});
 	sceneNodeSphere->setAfterDrawFunction([]() {
 		GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
-	});
+	});*/
 }
 
 float currOffset = 0.01f;
@@ -414,8 +422,8 @@ void Cylinder::update() {
 		isBReleased = true;
 	}*/
 
-	if (!paused && root) {
-		root->updateModule(getElapsedTime());
+	if (!paused && tree) {
+		tree->grow(getElapsedTime());
 
 		/*if (drawSphere)
 			sceneNodeSphere->setModel(Mat4::translation(root->boundingSphere.center) * Mat4::scaling(root->boundingSphere.radius * 2));
@@ -449,7 +457,7 @@ void Cylinder::update() {
 			hasLeaves = !hasLeaves;
 
 			if (hasLeaves)
-				root->generateLeaves(getSceneGraph(), leaves);
+				tree->root->generateLeaves(getSceneGraph(), leaves);
 			else
 				leaves->removeLeaves();
 		}

@@ -8,13 +8,10 @@ BranchNode::~BranchNode() {
 
 void BranchNode::updateNode(float modulePhysiologicalAge, std::vector<Vec4>& vertices, Vec4& parentPositionWithDiameter, bool isRoot) {
 
-	if (physiologicalAge > modulePhysiologicalAge)
-		return;
+	/*if (physiologicalAge > modulePhysiologicalAge)
+		return;*/
 
 	if (!isRoot) {
-
-		// We calculate the diameter first because all nodes need to calculate the diameter including the root
-		branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor, branchLength / maxBranchLength);
 
 		// We calculate the segment physiological age to be used in the branch length
 		float branchSegmentAge = eqt::segmentPhysiologicalAge(modulePhysiologicalAge, parent->physiologicalAge);
@@ -24,11 +21,13 @@ void BranchNode::updateNode(float modulePhysiologicalAge, std::vector<Vec4>& ver
 		lightExposure = 0.0f;
 		vigour = 0.0f;
 
+		// We calculate the diameter first because all nodes need to calculate the diameter including the root
+		branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor, branchLength / maxBranchLength);
+
 		Vec3 parentPosition = Vec3(parentPositionWithDiameter.x, parentPositionWithDiameter.y, parentPositionWithDiameter.z);
 		// We calculate the position of this node from the parents position and scale it with the length
-	
-		Vec3 gravityDir = Vec3(0,-1,0).normalize();
-		adaptationOffset = eqt::tropismOffset(modulePhysiologicalAge, GrowthParameters::instance->g1, GrowthParameters::instance->g2, gravityDir);
+
+		adaptationOffset = eqt::tropismOffset(branchSegmentAge, GrowthParameters::instance->g1, GrowthParameters::instance->g2, GrowthParameters::instance->gravityDir);
 		Vec3 nodePosition = (adaptationOffset + relativePosition).normalize() * branchLength + parentPosition;
 
 		// We then add the diameter to the W component for the geometry shader to generate the cylinders
@@ -44,13 +43,19 @@ void BranchNode::updateNode(float modulePhysiologicalAge, std::vector<Vec4>& ver
 			reachedMax = true;
 			physiologicalAge = modulePhysiologicalAge;
 		}
+
+		if (isTip) {
+			return;
+		}
 	}
 	else {
-		branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor, 1.0f, false);
+		if (!reachedMax) { // We don't grow the node which are the root of attached modules, because they were already grown on the previous module
+			branchDiameter = segmentDiameter(this, GrowthParameters::instance->thickeningFactor, 1.0f, false);
 
-		positionWithDiameter = parentPositionWithDiameter;
-		// if its the root we only update the diameter
-		positionWithDiameter.w = branchDiameter;
+			positionWithDiameter = parentPositionWithDiameter;
+			// if its the root we only update the diameter
+			positionWithDiameter.w = branchDiameter;
+		}
 	}
 
 	// We only update the children once this node is fully grown

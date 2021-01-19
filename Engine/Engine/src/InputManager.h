@@ -9,7 +9,7 @@
 class InputManager {
 
 private:
-	int currInputReceiverId;
+	int currInputReceiverId = -1;
 
 public:
 	std::map<int, bool> keysPressed;

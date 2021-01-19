@@ -11,12 +11,10 @@
 class Tree {
 
 public:
-	BranchModule* root;
-	float plantAge;
-	//std::map<int, float> intersections; // map that contains all the intersections volumes between spheres
+	BranchModule* root = nullptr;
 	std::vector<BranchModule*> modules;
 	std::list<BranchModule*> tips;
-	SceneNode* sceneNode;
+	SceneNode* sceneNode = nullptr;
 	
 	Tree(BranchModule* root);
 

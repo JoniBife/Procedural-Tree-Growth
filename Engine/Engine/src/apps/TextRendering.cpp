@@ -114,7 +114,7 @@ void buildUI(GUI* gui, float windowWidth, float windowHeight) {
 }
 
 void TextRendering::start() {
-	buildUI(getGui(), getWindowWidth(), getWindowHeight());
+	buildUI(getGui(), float(getWindowWidth()), float(getWindowHeight()));
 
 
 	initialTime = getElapsedTime();

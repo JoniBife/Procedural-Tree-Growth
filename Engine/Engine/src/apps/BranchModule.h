@@ -32,9 +32,9 @@ public:
 
 	BoundingSphere boundingSphere;
 
-	Tree* tree;
+	Tree* tree = nullptr;
 
-	BranchNode* root;
+	BranchNode* root = nullptr;
 	std::list<BranchNode*> tips;
 
 	BranchModule(BranchNode* root);

@@ -14,8 +14,8 @@ private:
 	GLFWwindow* window = nullptr;
 	SceneGraph* sceneGraph = nullptr;
 	Camera* camera = nullptr;
-	GUI* gui;
-	SkyBox* skybox;
+	GUI* gui = nullptr;
+	SkyBox* skybox = nullptr;
 	int windowWidth = 0;
 	int windowHeight = 0;
 	double elapsedTime = 0.0;

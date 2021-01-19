@@ -66,7 +66,7 @@ void generateCylinder(vec4 bottomPosition, vec4 topPosition, float bottomRadius,
 
     vec3 exNormal = normal * vec3(0,0,0);
 
-    const float PI = acos(-1);
+    const float PI = acos(-1.0);
     float sectorStep = (2 * PI / float(sectors));
     float sectorAngle;  // radian
 

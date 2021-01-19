@@ -228,12 +228,14 @@ static void setupLightAndShadows() {
 	cameraPosLspShadows = spShadows->getUniformLocation("viewPos");
 	uniformLSM = spShadows->getUniformLocation("lightSpaceMatrix");
 
+	unsigned int shininessPlane = 4;
+
 	spShadows->use();
 	spShadows->setUniform(lightColorL, lightColor);
 	spShadows->setUniform(ambientStrenghtL, 0.3f);
 	spShadows->setUniform(lightPositionL, lightPosition);
 	spShadows->setUniform(specularStrengthL, 0.1f);
-	spShadows->setUniform(shininessL, shininess);
+	spShadows->setUniform(shininessL, shininessPlane);
 	spShadows->setUniform(uniformLSM, LSM);
 	spShadows->stopUsing();
 
@@ -365,7 +367,7 @@ void TreeGrowth::start() {
 	leaves = new Leaves(depthMap, spLeaves, spLeavesDepthMap);
 
 	plane = Mesh::loadFromFile("../Engine/objs/cylinder32.obj");
-	//plane->paint(ColorRGBA::GREEN);
+	plane->paint(ColorRGBA::WHITE);
 	sceneNodePlane = getSceneGraph()->getRoot()->createChild(plane, Mat4::IDENTITY, spShadows);
 	sceneNodePlane->setModel(Mat4::scaling({100.0f, 0.1f, 100.0f}));
 	sceneNodePlane->addTexture(planeTexture);
@@ -397,7 +399,7 @@ bool hasLeaves = false;
 void TreeGrowth::update() {
 
 	if (!paused && tree) {
-		tree->grow(getElapsedTime());
+		tree->grow(float(getElapsedTime()));
 
 		leaves->removeLeaves();
 	}

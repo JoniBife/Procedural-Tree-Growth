@@ -7,7 +7,7 @@
 #include "../meshes/Mesh.h"
 #include "../math/Mat4.h"
 #include "../textures/ITexture.h"
-#include <list>;
+#include <list>
 
 class SceneNode {
 

@@ -9,7 +9,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	if (width > 0 && height > 0) {
-		Mat4 projection = ortho(0.0f, width, 0.0f, height);
+		Mat4 projection = ortho(0.0f, float(width), 0.0f, float(height));
 
 		TextRenderer::getInstance()->updateProjection(projection);
 		UIRenderer::getInstance()->updateProjection(projection);

@@ -52,7 +52,7 @@ private:
 		{
 			fpsName->setColor(ColorRGBA::RED);
 			fpsName->setSize(4.0f);
-			fpsName->setDepth(0.5f);
+			fpsName->setDepth(1);
 			gui->addComponent(fpsName);
 		}
 		fps = new Text("", { 0.0f, 0.0f });

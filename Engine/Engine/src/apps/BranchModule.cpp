@@ -267,14 +267,14 @@ void BranchModule::generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* lea
 	if (!isRoot && (curr->children.size() == 0 || !curr->reachedMax)) {
 
 		for (int i = 0; i < 2; ++i) {
-			float randomScale = randomFloat(0.2f, 3.0f);
+			float randomScale = randomFloat(3.0f, 10.0f);
 
 			Vec3 translation = Vec3(curr->positionWithDiameter.x, curr->positionWithDiameter.y, curr->positionWithDiameter.z);
 			Mat4 orientation = Mat4::translation(translation)
 				* Qtrn::fromDir(curr->relativePosition.normalize()).toRotationMatrix()
 				* Mat4::rotation(randomFloat(0.0f, 2 * PI), Vec3::Y)
 				* Mat4::rotation(-PI / 2, Vec3::X)
-				* Mat4::scaling({ 0.1f * randomScale, 0.0f, 0.1f * randomScale});
+				* Mat4::scaling({ randomScale, 0.0f, randomScale});
 			SceneNode* sceneNodeLeaves = sceneGraph->getRoot()->createChild(leaves->quad, orientation, leaves->shader);
 			sceneNodeLeaves->setBeforeDrawFunction([=](ShaderProgram* sp) {
 				GL_CALL(glEnable(GL_BLEND));

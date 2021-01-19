@@ -84,7 +84,7 @@ vec3 calculateLight(vec3 color, vec3 surfaceNormal, vec3 fragPos, vec3 lightPos,
 	float shadow = calculateShadows(fragPosLightSpace, surfaceNormal, lightDir);
 
 	// Combining all four components
-	return ambient + (1 - shadow) * (diffuse + specular);
+	return ambient + diffuse + specular;
 }
 
 void main(void)

@@ -273,8 +273,9 @@ void BranchModule::generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* lea
 				* Mat4::scaling({ randomScale, 0.0f, randomScale});
 			SceneNode* sceneNodeLeaves = sceneGraph->getRoot()->createChild(leaves->quad, orientation, leaves->shader);
 			sceneNodeLeaves->setBeforeDrawFunction([=](ShaderProgram* sp) {
-				GL_CALL(glEnable(GL_BLEND));
-				GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+				glEnable(GL_BLEND);
+				glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+				glBlendEquation(GL_FUNC_ADD);
 				GL_CALL(glDisable(GL_CULL_FACE));
 			});
 			sceneNodeLeaves->setAfterDrawFunction([=]() {

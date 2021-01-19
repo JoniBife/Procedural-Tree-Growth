@@ -99,22 +99,3 @@ void main(void)
 		fragmentColor = vec4(result * texColor.rgb, 1.0);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

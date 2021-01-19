@@ -40,6 +40,7 @@ static Vec3 lightPosition(4.0f, 30.0f, 20.0f);
 static Texture2D* woodTexture;
 static Texture2D* woodTextureNormalMap;
 static Texture2D* leavesTexture;
+static Texture2D* planeTexture;
 static DepthMap* depthMap;
 
 static TreeGrowthUI* treeGrowthUI;
@@ -116,8 +117,9 @@ static void setupShaders(SceneGraph* sceneGraph, Camera* camera) {
 
 static void setupTextures() {
 	// Loading textures
-	woodTexture = new Texture2D("../Engine/textures/barkTexture.jpg");
-	woodTextureNormalMap = new Texture2D("../Engine/textures/barkNormalMap.jpg");
+	woodTexture = new Texture2D("../Engine/textures/tree/barkTexture.jpg");
+	woodTextureNormalMap = new Texture2D("../Engine/textures/tree/barkNormalMap.jpg");
+	planeTexture = new Texture2D("../Engine/textures/tree/grass.png");
 	depthMap = new DepthMap(2048, 2048);
 
 	GLint textureID = spCylinder->getUniformLocation("diffuseMap");
@@ -129,9 +131,11 @@ static void setupTextures() {
 	spCylinder->setUniform(shadowMapID, 2);
 	spCylinder->stopUsing();
 
+	textureID = spShadows->getUniformLocation("diffuseMap");
 	shadowMapID = spShadows->getUniformLocation("shadowMap");
 	spShadows->use();
-	spShadows->setUniform(shadowMapID, 0);
+	spShadows->setUniform(textureID, 0);
+	spShadows->setUniform(shadowMapID, 1);
 	spShadows->stopUsing();
 
 	textureID = spLeaves->getUniformLocation("diffuseMap");
@@ -159,9 +163,9 @@ static void setupLightAndShadows() {
 	Mat4 LSM = lightProj * lightView;
 
 	Vec3 lightColor(1.0f, 1.0f, 1.0f);
-	float ambientStrength = 0.3f;
+	float ambientStrength = 0.1f;
 
-	float specularStrength = 1.0f;
+	float specularStrength = 0.7f;
 	unsigned int shininess = 32;
 
 	/////////////////// CYLINDER ///////////////////////
@@ -201,7 +205,7 @@ static void setupLightAndShadows() {
 
 	spLeaves->use();
 	spLeaves->setUniform(lightColorL, lightColor);
-	spLeaves->setUniform(ambientStrenghtL, ambientStrength);
+	spLeaves->setUniform(ambientStrenghtL, 0.3f);
 	spLeaves->setUniform(lightPositionL, lightPosition);
 	spLeaves->setUniform(specularStrengthL, specularStrength);
 	spLeaves->setUniform(shininessL, shininess);
@@ -226,7 +230,7 @@ static void setupLightAndShadows() {
 
 	spShadows->use();
 	spShadows->setUniform(lightColorL, lightColor);
-	spShadows->setUniform(ambientStrenghtL, ambientStrength);
+	spShadows->setUniform(ambientStrenghtL, 0.3f);
 	spShadows->setUniform(lightPositionL, lightPosition);
 	spShadows->setUniform(specularStrengthL, 0.1f);
 	spShadows->setUniform(shininessL, shininess);
@@ -261,7 +265,7 @@ static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int
 	float initialYaw = -90.0f;
 	float initialPitch = 0.0f;
 
-	Vec3 cameraPos(0.0f, 30.0f, 50.0f); // eye
+	Vec3 cameraPos(0.0f, 15.0f, 20.0f); // eye
 	Vec3 cameraTarget(0.0f, 0.0f, 0.0f); // center
 	Vec3 cameraFront = cameraTarget - cameraPos;
 	Vec3 cameraUp(0.0f, 50.0f, 0.0f); // up
@@ -308,18 +312,14 @@ static void setupTree(SceneGraph* sceneGraph) {
 
 static void setDefaultGrowthParameters() {
 	GrowthParameters* growthParameters = new GrowthParameters();
-	growthParameters->gP = 5.0f;
-	growthParameters->scalingCoefficient = 1.29f;
-	growthParameters->vRootMax = 900;
-	growthParameters->thickeningFactor = 0.01f; // original 1.41
-	growthParameters->pMax = 950;
-	growthParameters->vMin = 0.0f;
-	growthParameters->vMax = (float)growthParameters->vRootMax;
+	growthParameters->gP = 1.29f;
+	growthParameters->scalingCoefficient = 100.0f;
+	growthParameters->vRootMax = 300;
+	growthParameters->thickeningFactor = 0.005f; // original 1.41
+	growthParameters->vMin = 100.0f;
+	growthParameters->vMax = 900;
 	growthParameters->determinacy = 0.93f;
 	growthParameters->apicalControl = 0.87f;
-	growthParameters->tropismAngle = 0.66f;
-	growthParameters->w1 = 0.14f;
-	growthParameters->w2 = 0.14f;
 	growthParameters->g1 = 0.2f;
 	growthParameters->g2 = 3.0f;
 	growthParameters->leavesPerTip = 2;
@@ -365,9 +365,10 @@ void TreeGrowth::start() {
 	leaves = new Leaves(depthMap, spLeaves, spLeavesDepthMap);
 
 	plane = Mesh::loadFromFile("../Engine/objs/cylinder32.obj");
-	plane->paint(ColorRGBA::GREEN);
+	//plane->paint(ColorRGBA::GREEN);
 	sceneNodePlane = getSceneGraph()->getRoot()->createChild(plane, Mat4::IDENTITY, spShadows);
-	sceneNodePlane->setModel(Mat4::scaling({200.0f, 0.1f, 200.0f}));
+	sceneNodePlane->setModel(Mat4::scaling({100.0f, 0.1f, 100.0f}));
+	sceneNodePlane->addTexture(planeTexture);
 	sceneNodePlane->addTexture(depthMap);
 
 	depthMap->setOnRenderToDepthMap(this, [&]() {

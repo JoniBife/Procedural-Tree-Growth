@@ -88,7 +88,6 @@ void BranchModule::attachModule(BranchNode*& root) {
 		main = true;
 	}
 
-	// TODO For now we assume 
 	float determinacyMS = eqt::determinacyMS(vigour, growthParameters->determinacy, (float)growthParameters->vMax);
 
 	// Selecting new module from morphospace
@@ -98,8 +97,6 @@ void BranchModule::attachModule(BranchNode*& root) {
 	Mat4 orientation = Qtrn::fromDir(root->relativePosition.normalize()).toRotationMatrix() * Mat4::rotation(randomFloat(0.0f, PI * 2), Vec3::Y);
 
 	module->setOrientation(orientation);
-
-
 
 	module->vigour = vigour;
 	module->parent = this;

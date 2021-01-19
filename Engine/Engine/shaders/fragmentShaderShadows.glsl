@@ -22,6 +22,7 @@ uniform float ambientStrength;
 uniform float specularStrength;
 uniform uint shininess;
 
+uniform sampler2D diffuseMap;
 uniform sampler2D shadowMap;
 
 float calculateShadows(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
@@ -88,9 +89,11 @@ vec3 calculateLight(vec3 color, vec3 surfaceNormal, vec3 fragPos, vec3 lightPos,
 
 void main(void)
 {
+	vec3 texColor = texture(diffuseMap, exTextCoord * 2).rgb;
+
 	vec3 result = calculateLight(lightColor, exNormal, vec3(fragPos), lightPosition, viewPos);
 
-	fragmentColor = vec4(result * vec3(exColor), 1.0f);
+	fragmentColor = vec4(result * texColor, 1.0f);
 }
 
 

@@ -91,11 +91,28 @@ void main(void)
 {
 	vec4 texColor = texture(diffuseMap, exTextCoord);
 
-    if(texColor.a < 0.1)
-        discard;
+	if (texColor.a < 0.1)
+		discard;
 	else {
 		vec3 result = calculateLight(lightColor, exNormal, vec3(fragPos), lightPosition, viewPos);
 
-		fragmentColor = vec4(result * texColor.rgb, 1.0);
+		fragmentColor = vec4(result * texColor.rgb, 1.0f);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

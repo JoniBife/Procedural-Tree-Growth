@@ -27,6 +27,8 @@ public:
 
 	Texture2D(const std::string& textureFilePath);
 
+	Texture2D(const std::string& textureFilePath, GLint param);
+
 	~Texture2D();
 
 	void bind(unsigned int unitNumber) override;

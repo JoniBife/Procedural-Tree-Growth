@@ -46,6 +46,7 @@ void Engine::setupGLFW() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPEN_GL_MAJOR);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPEN_GL_MINOR);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	if (MSAA > 0)
 		glfwWindowHint(GLFW_SAMPLES, MSAA);
 

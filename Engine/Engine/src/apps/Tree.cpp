@@ -77,7 +77,7 @@ void Tree::distributeLightAndVigor() {
 			if (moduleA == moduleB)
 				continue;
 
-			fCollisions += moduleA->boundingSphere.intersectVolume(moduleB->boundingSphere) / 100000;
+			fCollisions += moduleA->boundingSphere.intersectVolume(moduleB->boundingSphere) / 10000;
 		}
 		moduleA->lightExposure = expf(-fCollisions);
 	}

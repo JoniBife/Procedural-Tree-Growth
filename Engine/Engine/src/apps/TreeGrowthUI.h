@@ -12,7 +12,6 @@ class TreeGrowthUI {
 
 private:
 	Text* fps;
-	TextField* pMax = nullptr; // Maximum plant age
 	TextField* vRootMax = nullptr; // Maximum plant vigour (The maximum vigour of the root)
 	TextField* gP = nullptr; // Growth rate of the whole plant
 	TextField* apicalControl = nullptr; // Lambda in the paper, represents the growth suppression of an existing subdominant branch by a higher dominanting shoot thta functions to maintain crown dominance by a central stem
@@ -34,9 +33,9 @@ private:
 	double initialTime;
 	double currTime;
 
-	const float height = 530.0f;
+	const float height = 484.0f;
 	const float width = 200.0f;
-	const float heightPanel2 = 300.0f;
+	const float heightPanel2 = 285.0f;
 	const float widthPanel2 = 210.0f;
 
 	const float padding = 10.0f;
@@ -51,14 +50,14 @@ private:
 	void buildFPSCounter(GUI* gui, float windowWidth, float windowHeight) {
 		Text* fpsName = new Text("FPS: ", { 0.0f, 0.0f });
 		{
-			fpsName->setColor(ColorRGBA::YELLOW);
+			fpsName->setColor(ColorRGBA::RED);
 			fpsName->setSize(4.0f);
 			fpsName->setDepth(0.5f);
 			gui->addComponent(fpsName);
 		}
 		fps = new Text("", { 0.0f, 0.0f });
 		{
-			fps->setColor(ColorRGBA::YELLOW);
+			fps->setColor(ColorRGBA::RED);
 			fps->setSize(4.0f);
 			fps->setDepth(1);
 			gui->addComponent(fps);
@@ -158,9 +157,7 @@ private:
 
 			GrowthParameters* growthParameters = GrowthParameters::instance;
 
-			float startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Max Plant Age", windowHeight - 25, pMax);
-			pMax->setInput(growthParameters ? std::to_string(growthParameters->pMax) : "0");
-			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Max Root Vigour", startY, vRootMax);
+			float startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Max Root Vigour", windowHeight - 25, vRootMax);
 			vRootMax->setInput(growthParameters ? std::to_string(growthParameters->vRootMax) : "0");
 			startY = buildTitleTextFieldPair(gui, windowWidth, windowHeight, "Growth Rate", startY, gP);
 			gP->setInput(growthParameters ? std::to_string(growthParameters->gP) : "0.0");
@@ -247,7 +244,6 @@ public:
 
 	GrowthParameters getGrowthParameters() {
 		GrowthParameters growthParameters;
-		growthParameters.pMax = unsigned int(std::stoul(pMax->getInput()));
 		growthParameters.vRootMax = unsigned int(std::stoul(vRootMax->getInput()));
 		growthParameters.gP = std::stof(gP->getInput());
 		growthParameters.apicalControl = std::stof(apicalControl->getInput());

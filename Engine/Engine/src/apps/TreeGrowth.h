@@ -1,19 +1,17 @@
-#ifndef TREE_GROWTH_H
-#define TREE_GROWTH_H
+#ifndef CYLINDER_GENERATION_H
+#define CTLINDER_GENERATION_H
 
 #include "../Engine.h"
 
 class TreeGrowth : public Engine {
-
-public:
-	TreeGrowth() {}
 
 	void start() override;
 
 	void update() override;
 
 	void end() override;
-
+	
 };
+
 
 #endif

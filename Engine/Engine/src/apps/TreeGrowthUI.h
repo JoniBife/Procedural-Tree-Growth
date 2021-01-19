@@ -204,27 +204,12 @@ private:
 				start->setDepth(1);
 				start->setButtonText("Start", ColorRGBA::BLACK, 4.0f);
 				start->setOnClickListener([=]() {
-					GrowthParameters growthParameters;
-					growthParameters.pMax = unsigned int(std::stoul(pMax->getInput()));
-					growthParameters.vRootMax = unsigned int(std::stoul(vRootMax->getInput()));
-					growthParameters.gP = std::stof(gP->getInput());
-					growthParameters.apicalControl = std::stof(apicalControl->getInput());
-					growthParameters.determinacy = std::stof(determinacy->getInput());
-					growthParameters.gravityDir = Vec3(std::stof(gravityDirX->getInput()), std::stof(gravityDirY->getInput()), std::stof(gravityDirZ->getInput()));
-					growthParameters.g1 = std::stof(g1->getInput());
-					growthParameters.g2 = std::stof(g2->getInput());
-					growthParameters.thickeningFactor = std::stof(thickeningFactor->getInput());
-					growthParameters.scalingCoefficient = std::stof(scalingCoefficient->getInput());
-					growthParameters.vMax = std::stof(vMax->getInput());
-					growthParameters.vMin = std::stof(vMin->getInput());
-					growthParameters.maxModules = unsigned int(std::stoul(maxModules->getInput()));
-
 					if (paused) {
 						pause->setButtonText("Pause", ColorRGBA::BLACK, 4.0f);
 						paused = false;
 					}
 					
-					onStart(growthParameters);
+					onStart(getGrowthParameters());
 				});
 				gui->addComponent(start);
 			}
@@ -267,12 +252,14 @@ public:
 		growthParameters.gP = std::stof(gP->getInput());
 		growthParameters.apicalControl = std::stof(apicalControl->getInput());
 		growthParameters.determinacy = std::stof(determinacy->getInput());
+		growthParameters.gravityDir = Vec3(std::stof(gravityDirX->getInput()), std::stof(gravityDirY->getInput()), std::stof(gravityDirZ->getInput()));
 		growthParameters.g1 = std::stof(g1->getInput());
 		growthParameters.g2 = std::stof(g2->getInput());
 		growthParameters.thickeningFactor = std::stof(thickeningFactor->getInput());
 		growthParameters.scalingCoefficient = std::stof(scalingCoefficient->getInput());
 		growthParameters.vMax = std::stof(vMax->getInput());
 		growthParameters.vMin = std::stof(vMin->getInput());
+		growthParameters.maxModules = unsigned int(std::stoul(maxModules->getInput()));
 		return growthParameters;
 	}
 

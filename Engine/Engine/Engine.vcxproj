@@ -23,7 +23,7 @@
     <ClCompile Include="src\apps\BoundingSphere.cpp" />
     <ClCompile Include="src\apps\BranchModule.cpp" />
     <ClCompile Include="src\apps\BranchNode.cpp" />
-    <ClCompile Include="src\apps\CylinderGeneration.cpp" />
+    <ClCompile Include="src\apps\TreeGrowth.cpp" />
     <ClCompile Include="src\apps\Equations.cpp" />
     <ClCompile Include="src\apps\GrowthParameters.cpp" />
     <ClCompile Include="src\apps\Leaves.cpp" />
@@ -32,7 +32,6 @@
     <ClCompile Include="src\apps\Singleton.cpp" />
     <ClCompile Include="src\apps\TextRendering.cpp" />
     <ClCompile Include="src\apps\Tree.cpp" />
-    <ClCompile Include="src\apps\TreeGrowth.cpp" />
     <ClCompile Include="src\controllers\FreeCameraController.cpp" />
     <ClCompile Include="src\controllers\SphericalCameraController.cpp" />
     <ClCompile Include="src\gui\Button.cpp" />
@@ -75,7 +74,7 @@
     <ClInclude Include="src\apps\BoundingSphere.h" />
     <ClInclude Include="src\apps\BranchModule.h" />
     <ClInclude Include="src\apps\BranchNode.h" />
-    <ClInclude Include="src\apps\CylinderGeneration.h" />
+    <ClInclude Include="src\apps\TreeGrowth.h" />
     <ClInclude Include="src\apps\Equations.h" />
     <ClInclude Include="src\apps\GrowthParameters.h" />
     <ClInclude Include="src\apps\Blending.h" />
@@ -85,7 +84,6 @@
     <ClInclude Include="src\apps\Singleton.h" />
     <ClInclude Include="src\apps\TextRendering.h" />
     <ClInclude Include="src\apps\Tree.h" />
-    <ClInclude Include="src\apps\TreeGrowth.h" />
     <ClInclude Include="src\apps\TreeGrowthUI.h" />
     <ClInclude Include="src\Configurations.h" />
     <ClInclude Include="src\controllers\ICameraController.h" />

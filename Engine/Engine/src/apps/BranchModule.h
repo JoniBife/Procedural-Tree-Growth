@@ -8,6 +8,7 @@
 #include "Equations.h"
 #include <numeric>
 #include "Leaves.h"
+#include <list>
 
 class Tree;
 
@@ -19,12 +20,14 @@ public:
 	float growthRate = 0.0f; // Upsilon in the paper
 	float physiologicalAge = 0.0f;
 
+	bool isTip = true;
+
 	bool main = false;
 	bool reachedMaturity = false;
 
 	Vec3 orientation; // Orientation is represented using Euler Angles (yaw, pitch, roll)
 
-	BranchModule* parent;
+	BranchModule* parent = nullptr;
 	std::vector<BranchModule*> children;
 
 	BoundingSphere boundingSphere;
@@ -32,7 +35,7 @@ public:
 	Tree* tree;
 
 	BranchNode* root;
-	std::vector<BranchNode*> tips;
+	std::list<BranchNode*> tips;
 
 	BranchModule(BranchNode* root);
 

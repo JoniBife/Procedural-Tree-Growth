@@ -34,19 +34,25 @@ void BranchModule::updateModule(float elapsedTime, std::vector<Vec4>& vertices) 
 		reachedMaturity = reachedMatureAge(root);
 	} else {
 		if (!tips.empty()) {
-			//distributeLightAndVigor();
+			distributeLightAndVigor();
 			
 			float vMin = GrowthParameters::instance->vMin;
+
+			std::vector<BranchNode*> toRemove;
 
 			for (BranchNode*& tip : tips) {
 				if (tree->modules.size() == GrowthParameters::instance->maxModules) {
 					break;
 				}
-				//if (tip->vigour > vMin && tip->children.size() == 0) {
-				attachModule(tip);
-				//}
+				if (tip->vigour > vMin) {
+					attachModule(tip);
+					toRemove.push_back(tip);
+				}
 			}
-			tips.clear();
+
+			for (BranchNode*& tip : toRemove) {
+				tips.remove(tip);
+			}
 		}
 
 		for (BranchModule* child : children) {
@@ -77,29 +83,38 @@ void BranchModule::attachModule(BranchNode*& root) {
 	Morphospace* morphospace = Morphospace::instance;
 	GrowthParameters* growthParameters = GrowthParameters::instance;
 
+	bool main = false;
+	if (root->main) {
+		main = true;
+	}
+
 	// TODO For now we assume 
-	float determinacyMS = eqt::determinacyMS(vigour, growthParameters->determinacy, (float)growthParameters->vRootMax);
+	float determinacyMS = eqt::determinacyMS(vigour, growthParameters->determinacy, (float)growthParameters->vMax);
 
 	// Selecting new module from morphospace
-	BranchModule* module = morphospace->selectModule(growthParameters->apicalControl, determinacyMS, root);
+	BranchModule* module = morphospace->selectModule(growthParameters->apicalControl, determinacyMS, root, true);
+	module->main = main;
 
 	Mat4 orientation = Qtrn::fromDir(root->relativePosition.normalize()).toRotationMatrix() * Mat4::rotation(randomFloat(0.0f, PI * 2), Vec3::Y);
 
 	module->setOrientation(orientation);
 
+
+
 	module->vigour = vigour;
 	module->parent = this;
-	module->physiologicalAge = 0.0f;
+	module->physiologicalAge = root->physiologicalAge;
 	module->calculateCenterOfGeometry();
 	module->tree = tree;
 	children.push_back(module);
 	tree->modules.push_back(module);
-	/*module->root = root;
-	
-	module->physiologicalAge = 0.0f;
-	module->setOrientation(root->rotation); // We set the module orientation to the orientation of the segment where it is attached
-	children.push_back(module);*/
-	//tree->modules.push_back(module);
+	tree->tips.push_back(module);
+
+	// This module is no longer a tip so we remove it from the list
+	if (isTip) {
+		tree->tips.remove(this);
+		isTip = false;
+	}
 }
 
 void BranchModule::calculateCenterOfGeometryRecurs(BranchNode* node, Vec3 position, std::vector<Vec3>& currentTips) {
@@ -182,7 +197,7 @@ void BranchModule::accumulateNodeLightExposure(BranchNode* node) {
 }
 
 void BranchModule::calculateVigorFluxes(BranchNode* root) {
-	if (root->children.size() == 0 || root->isTip)
+	if (root->children.size() == 0 || (root->isTip && root != this->root))
 		return;
 
 	float sumLateralLightExposure = 0.0f;
@@ -232,7 +247,12 @@ void BranchModule::distributeLightAndVigor() {
 }
 
 void BranchModule::setOrientation(Mat4& orientation) {
-	setOrientationRecurs(orientation, root->children[0]);
+
+	for (BranchNode* child : root->children)
+	{
+		setOrientationRecurs(orientation, child);
+	}
+	//setOrientationRecurs(orientation, root->children[0]);
 }
 
 void BranchModule::setOrientationRecurs(Mat4& orientation, BranchNode* curr) {

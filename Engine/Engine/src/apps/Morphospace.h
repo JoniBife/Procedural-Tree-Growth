@@ -13,14 +13,14 @@ class Morphospace {
 
 private:
 	// A bidimentional array with Branch Module creation functions
-	std::function<BranchModule*(BranchModule*)> modulePrototypeFunctions[3][3];
+	std::function<BranchModule*(BranchModule*, bool removeFirst)> modulePrototypeFunctions[3][3];
 	float scaleLength; // Streches the module, so that the branches look thinner, while maintaining the same scale
 
 public:
 	static Morphospace* instance; // TODO Use proper singleton
 
 	Morphospace(float scaleLength);
-	BranchModule* selectModule(float apicalControl, float determinacy, BranchNode*& root);
+	BranchModule* selectModule(float apicalControl, float determinacy, BranchNode*& root, bool removeFirst = false);
 };
 
 #endif

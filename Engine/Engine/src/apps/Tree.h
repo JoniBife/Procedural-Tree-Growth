@@ -6,6 +6,7 @@
 #include "BranchModule.h"
 #include "../meshes/Mesh.h"
 #include "../textures/Texture2D.h"
+#include <list>
 
 class Tree {
 
@@ -14,7 +15,7 @@ public:
 	float plantAge;
 	//std::map<int, float> intersections; // map that contains all the intersections volumes between spheres
 	std::vector<BranchModule*> modules;
-	std::vector<BranchModule*> tips;
+	std::list<BranchModule*> tips;
 	SceneNode* sceneNode;
 	
 	Tree(BranchModule* root);

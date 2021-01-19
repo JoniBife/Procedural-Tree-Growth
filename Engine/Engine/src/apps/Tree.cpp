@@ -5,6 +5,7 @@
 
 Tree::Tree(BranchModule* root) : root(root){
 	modules.push_back(root);
+	tips.push_back(root);
 }
 
 Tree::~Tree() {
@@ -14,13 +15,14 @@ Tree::~Tree() {
 
 
 void Tree::grow(float elapsedTime) {
-	//distributeLightAndVigor();
+	distributeLightAndVigor();
 	developModules(elapsedTime);
 }
 
 void Tree::accumulateModuleLightExposure(BranchModule* module) {
-	if (!module->parent)
+	if (!module->parent) {
 		return;
+	}
 
 	module->parent->lightExposure += module->lightExposure;
 	accumulateModuleLightExposure(module->parent);
@@ -36,7 +38,7 @@ void Tree::calculateVigorFluxes(BranchModule* module) {
 	float mainLightExposure = 0.0f;
 
 	// First we calculate the sum of lateral modules light exposure and the main light exposure
-	for (BranchModule* child : root->children) {
+	for (BranchModule* child : module->children) {
 
 		// Is child a lateral branch
 		if (!child->main)
@@ -50,7 +52,7 @@ void Tree::calculateVigorFluxes(BranchModule* module) {
 	float vigorLateral = module->vigour - vigorMain;
 
 	// Finally we distribute the lateral vigor correctly using the porportional amount of light exposure they provided to equation 2
-	for (BranchModule* child : root->children) {
+	for (BranchModule* child : module->children) {
 		// Is child a lateral branch
 		if (!child->main) {
 			// Each lateral module takes a percentage of the lateral vigor
@@ -75,7 +77,7 @@ void Tree::distributeLightAndVigor() {
 			if (moduleA == moduleB)
 				continue;
 
-			fCollisions += moduleA->boundingSphere.intersectVolume(moduleB->boundingSphere);
+			fCollisions += moduleA->boundingSphere.intersectVolume(moduleB->boundingSphere) / 100000;
 		}
 		moduleA->lightExposure = expf(-fCollisions);
 	}

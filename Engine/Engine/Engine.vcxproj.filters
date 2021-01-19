@@ -75,9 +75,6 @@
     <ClCompile Include="src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\apps\TreeGrowth.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\textures\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -156,9 +153,6 @@
     <ClCompile Include="src\gui\LineRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\apps\CylinderGeneration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\textures\CubeMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -166,6 +160,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\apps\Leaves.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\apps\TreeGrowth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -234,9 +231,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controllers\ICameraController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\apps\TreeGrowth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\textures\stb_image.h">
@@ -323,9 +317,6 @@
     <ClInclude Include="src\gui\LineRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\apps\CylinderGeneration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\apps\TreeGrowthUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -336,6 +327,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\apps\Leaves.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\apps\TreeGrowth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

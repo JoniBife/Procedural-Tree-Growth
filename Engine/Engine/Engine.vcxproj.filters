@@ -342,7 +342,6 @@
   <ItemGroup>
     <None Include="shaders\fragmentShaderNM.glsl" />
     <None Include="shaders\vertexShaderNM.glsl" />
-    <None Include="shaders\geometryShaderNM.glsl" />
     <None Include="shaders\simpleFragmentShader.glsl" />
     <None Include="shaders\simpleVertexShader.glsl" />
     <None Include="shaders\fragmentShaderSM.glsl" />
@@ -350,19 +349,21 @@
     <None Include="shaders\fragmentShaderShadows.glsl" />
     <None Include="shaders\vertexShaderShadows.glsl" />
     <None Include="shaders\fragmentShaderLighting.glsl" />
-    <None Include="shaders\fragmentShaderBlending.glsl" />
-    <None Include="shaders\vertexShaderBlending.glsl" />
     <None Include="shaders\textFragmentShader.glsl" />
     <None Include="shaders\textVertexShader.glsl" />
     <None Include="shaders\uiFragmentShader.glsl" />
     <None Include="shaders\uiVertexShader.glsl" />
     <None Include="shaders\lineVertexShader.glsl" />
     <None Include="shaders\lineFragmentShader.glsl" />
-    <None Include="shaders\cylinderFragmentShader.glsl" />
-    <None Include="shaders\cylinderVertexShader.glsl" />
-    <None Include="shaders\cylinderGeometryShader.geom" />
-    <None Include="shaders\cylinderGeometryShaderSM.geom" />
     <None Include="shaders\skybox\fragmentShaderSkyBox.glsl" />
     <None Include="shaders\skybox\vertexShaderSkyBox.glsl" />
+    <None Include="shaders\leaves\fragmentShaderBlending.glsl" />
+    <None Include="shaders\cylinder\cylinderFragmentShader.glsl" />
+    <None Include="shaders\cylinder\cylinderGeometryShader.geom" />
+    <None Include="shaders\cylinder\cylinderGeometryShaderSM.geom" />
+    <None Include="shaders\cylinder\cylinderVertexShader.glsl" />
+    <None Include="shaders\leaves\vertexShaderBlending.glsl" />
+    <None Include="shaders\leaves\fragmentShaderBlendingSM.glsl" />
+    <None Include="shaders\leaves\vertexShaderBlendingSM.glsl" />
   </ItemGroup>
 </Project>

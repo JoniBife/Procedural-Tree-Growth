@@ -63,7 +63,7 @@ public:
 
 private:
 
-	void generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* leaves, BranchNode* curr);
+	void generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* leaves, BranchNode* curr, bool isRoot = false);
 
 	void setOrientationRecurs(Mat4& orientation, BranchNode* curr);
 

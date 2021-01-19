@@ -1,15 +1,16 @@
 #include "Leaves.h"
 
-Leaves::Leaves()
+Leaves::Leaves(DepthMap* depthMap, ShaderProgram* shader, ShaderProgram* shaderSM) : depthMap(depthMap), shader(shader), shaderSM(shaderSM)
 {
 	quad = Mesh::loadFromFile("../Engine/objs/quad.obj");
-
 	texture = new Texture2D("../Engine/textures/tree/leaves.png");
+}
 
-	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/vertexShaderBlending.glsl");
-	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderBlending.glsl");
-
-	shader = new ShaderProgram(vs, fs);
+Leaves::~Leaves() {
+	delete quad;
+	delete texture;
+	delete shader;
+	delete shaderSM;
 }
 
 void Leaves::removeLeaves()

@@ -130,11 +130,13 @@
     <ClInclude Include="src\view\Transformations.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragmentShaderBlending.glsl" />
-    <None Include="shaders\cylinderFragmentShader.glsl" />
-    <None Include="shaders\cylinderGeometryShader.geom" />
-    <None Include="shaders\cylinderGeometryShaderSM.geom" />
-    <None Include="shaders\cylinderVertexShader.glsl" />
+    <None Include="shaders\leaves\fragmentShaderBlending.glsl" />
+    <None Include="shaders\cylinder\cylinderFragmentShader.glsl" />
+    <None Include="shaders\cylinder\cylinderGeometryShader.geom" />
+    <None Include="shaders\cylinder\cylinderGeometryShaderSM.geom" />
+    <None Include="shaders\cylinder\cylinderVertexShader.glsl" />
+    <None Include="shaders\leaves\fragmentShaderBlendingSM.glsl" />
+    <None Include="shaders\leaves\vertexShaderBlendingSM.glsl" />
     <None Include="shaders\lineFragmentShader.glsl" />
     <None Include="shaders\lineVertexShader.glsl" />
     <None Include="shaders\skybox\fragmentShaderSkyBox.glsl" />
@@ -145,10 +147,9 @@
     <None Include="shaders\fragmentShaderNM.glsl" />
     <None Include="shaders\fragmentShaderShadows.glsl" />
     <None Include="shaders\fragmentShaderSM.glsl" />
-    <None Include="shaders\geometryShaderNM.glsl" />
     <None Include="shaders\simpleFragmentShader.glsl" />
     <None Include="shaders\simpleVertexShader.glsl" />
-    <None Include="shaders\vertexShaderBlending.glsl" />
+    <None Include="shaders\leaves\vertexShaderBlending.glsl" />
     <None Include="shaders\textFragmentShader.glsl" />
     <None Include="shaders\textVertexShader.glsl" />
     <None Include="shaders\vertexShaderNM.glsl" />

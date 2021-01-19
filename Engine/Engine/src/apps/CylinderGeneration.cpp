@@ -17,6 +17,9 @@ static ShaderProgram* spDepthMapCylinder; // Used with the cylinders to generate
 static ShaderProgram* spShadows; // Used with any other object
 static ShaderProgram* spDepthMap; // Used with any other object to generate the depth map
 static ShaderProgram* spSimple;
+static ShaderProgram* spLeaves;
+static ShaderProgram* spLeavesDepthMap;
+
 static Mesh* points;
 static Mesh* plane;
 static FreeCameraController* cameraController;
@@ -30,10 +33,12 @@ static BranchModule* root;
 
 static GLint cameraPosLsp;
 static GLint cameraPosLspShadows;
+static GLint cameraPosLspLeaves;
 static Vec3 lightPosition(4.0f, 30.0f, 20.0f);
 
 static Texture2D* woodTexture;
 static Texture2D* woodTextureNormalMap;
+static Texture2D* leavesTexture;
 static DepthMap* depthMap;
 
 static TreeGrowthUI* treeGrowthUI;
@@ -50,9 +55,9 @@ static bool paused = true;
 static void setupShaders(SceneGraph* sceneGraph, Camera* camera) {
 
 	//////////// CYLINDER SHADERS /////////////////////////
-	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/cylinderVertexShader.glsl");
-	Shader gs(GL_GEOMETRY_SHADER, "../Engine/shaders/cylinderGeometryShader.geom");
-	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/cylinderFragmentShader.glsl");
+	Shader vs(GL_VERTEX_SHADER, "../Engine/shaders/cylinder/cylinderVertexShader.glsl");
+	Shader gs(GL_GEOMETRY_SHADER, "../Engine/shaders/cylinder/cylinderGeometryShader.geom");
+	Shader fs(GL_FRAGMENT_SHADER, "../Engine/shaders/cylinder/cylinderFragmentShader.glsl");
 	spCylinder = new ShaderProgram(vs, gs, fs);
 	// Associating the shared matrix index with the binding point of the camera (0)
 	GLuint sharedMatricesIndex = spCylinder->getUniformBlockIndex("SharedMatrices");
@@ -75,18 +80,34 @@ static void setupShaders(SceneGraph* sceneGraph, Camera* camera) {
 	spShadows->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
 
 	//////////// DEPTH MAP CYLINDER SHADERS /////////////////////////
-	Shader vs3(GL_VERTEX_SHADER, "../Engine/shaders/cylinderVertexShader.glsl");
-	Shader gs3(GL_GEOMETRY_SHADER, "../Engine/shaders/cylinderGeometryShaderSM.geom");
+	Shader vs3(GL_VERTEX_SHADER, "../Engine/shaders/cylinder/cylinderVertexShader.glsl");
+	Shader gs3(GL_GEOMETRY_SHADER, "../Engine/shaders/cylinder/cylinderGeometryShaderSM.geom");
 	Shader fs3(GL_FRAGMENT_SHADER, "../Engine/shaders/fragmentShaderSM.glsl");
 	spDepthMapCylinder = new ShaderProgram(vs3, gs3,fs3);
 	// Associating the shared matrix index with the binding point of the camera (0)
 	sharedMatricesIndex = spDepthMapCylinder->getUniformBlockIndex("SharedMatrices");
 	spDepthMapCylinder->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
 
+	//////////// LEAVES SHADERS /////////////////////////
+	Shader vs4(GL_VERTEX_SHADER, "../Engine/shaders/leaves/vertexShaderBlending.glsl");
+	Shader fs4(GL_FRAGMENT_SHADER, "../Engine/shaders/leaves/fragmentShaderBlending.glsl");
+	spLeaves = new ShaderProgram(vs4, fs4);
+	// Associating the shared matrix index with the binding point of the camera (0)
+	sharedMatricesIndex = spLeaves->getUniformBlockIndex("SharedMatrices");
+	spLeaves->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
+
+	//////////// DEPTH MAP LEAVES SHADERS /////////////////////////
+	Shader vs5(GL_VERTEX_SHADER, "../Engine/shaders/leaves/vertexShaderBlendingSM.glsl");
+	Shader fs5(GL_FRAGMENT_SHADER, "../Engine/shaders/leaves/fragmentShaderBlendingSM.glsl");
+	spLeavesDepthMap = new ShaderProgram(vs5, fs5);
+	// Associating the shared matrix index with the binding point of the camera (0)
+	sharedMatricesIndex = spLeavesDepthMap->getUniformBlockIndex("SharedMatrices");
+	spLeavesDepthMap->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
+
 	// Loading the shaders and creating the shader program
-	Shader vs4(GL_VERTEX_SHADER, "../Engine/shaders/simpleVertexShader.glsl");
-	Shader fs4(GL_FRAGMENT_SHADER, "../Engine/shaders/simpleFragmentShader.glsl");
-	spSimple = new ShaderProgram(vs4, fs4);
+	Shader vs6(GL_VERTEX_SHADER, "../Engine/shaders/simpleVertexShader.glsl");
+	Shader fs6(GL_FRAGMENT_SHADER, "../Engine/shaders/simpleFragmentShader.glsl");
+	spSimple = new ShaderProgram(vs6, fs6);
 	// Associating the shared matrix index with the binding point of the camera (0)
 	sharedMatricesIndex = spSimple->getUniformBlockIndex("SharedMatrices");
 	spSimple->bindUniformBlock(sharedMatricesIndex, camera->getUboBindingPoint());
@@ -101,7 +122,6 @@ static void setupTextures() {
 	GLint textureID = spCylinder->getUniformLocation("diffuseMap");
 	GLint normalMapID = spCylinder->getUniformLocation("normalMap");
 	GLint shadowMapID = spCylinder->getUniformLocation("shadowMap");
-	
 	spCylinder->use();
 	spCylinder->setUniform(textureID, 0);
 	spCylinder->setUniform(normalMapID, 1);
@@ -112,6 +132,18 @@ static void setupTextures() {
 	spShadows->use();
 	spShadows->setUniform(shadowMapID, 0);
 	spShadows->stopUsing();
+
+	textureID = spLeaves->getUniformLocation("diffuseMap");
+	shadowMapID = spLeaves->getUniformLocation("shadowMap");
+	spLeaves->use();
+	spLeaves->setUniform(textureID, 0);
+	spLeaves->setUniform(shadowMapID, 1);
+	spLeaves->stopUsing();
+
+	textureID = spLeavesDepthMap->getUniformLocation("diffuseMap");
+	spLeavesDepthMap->use();
+	spLeavesDepthMap->setUniform(textureID, 0);
+	spLeavesDepthMap->stopUsing();
 }
 
 static void setupLightAndShadows() {
@@ -122,6 +154,8 @@ static void setupLightAndShadows() {
 	Vec3 lightUp(0.0f, 1.0f, 0.0f); // up
 
 	Mat4 lightView = lookAt(lightPosition, lightTarget, lightUp);
+
+	Mat4 LSM = lightProj * lightView;
 
 	Vec3 lightColor(1.0f, 1.0f, 1.0f);
 	float ambientStrength = 0.3f;
@@ -146,14 +180,39 @@ static void setupLightAndShadows() {
 	spCylinder->setUniform(specularStrengthL, specularStrength);
 	spCylinder->setUniform(shininessL, shininess);
 	spCylinder->setUniform(normalMappingL, normalMapping);
-	spCylinder->setUniform(uniformLSM, lightProj * lightView);
+	spCylinder->setUniform(uniformLSM, LSM);
 	spCylinder->stopUsing();
 
 	spDepthMapCylinder->use();
 	uniformLSM = spDepthMapCylinder->getUniformLocation("lightSpaceMatrix");
-	spDepthMapCylinder->setUniform(uniformLSM, lightProj * lightView);
+	spDepthMapCylinder->setUniform(uniformLSM, LSM);
 	spDepthMapCylinder->stopUsing();
 	/////////////////////////////////////////////////////
+
+	/////////////////// LEAVES ///////////////////////
+	lightColorL = spLeaves->getUniformLocation("lightColor");
+	ambientStrenghtL = spLeaves->getUniformLocation("ambientStrength");
+	lightPositionL = spLeaves->getUniformLocation("lightPosition");
+	specularStrengthL = spLeaves->getUniformLocation("specularStrength");
+	shininessL = spLeaves->getUniformLocation("shininess");
+	cameraPosLspLeaves = spLeaves->getUniformLocation("viewPos");
+	uniformLSM = spLeaves->getUniformLocation("lightSpaceMatrix");
+
+	spLeaves->use();
+	spLeaves->setUniform(lightColorL, lightColor);
+	spLeaves->setUniform(ambientStrenghtL, ambientStrength);
+	spLeaves->setUniform(lightPositionL, lightPosition);
+	spLeaves->setUniform(specularStrengthL, specularStrength);
+	spLeaves->setUniform(shininessL, shininess);
+	spLeaves->setUniform(uniformLSM, LSM);
+	spLeaves->stopUsing();
+
+	spLeavesDepthMap->use();
+	uniformLSM = spLeavesDepthMap->getUniformLocation("lightSpaceMatrix");
+	spLeavesDepthMap->setUniform(uniformLSM, LSM);
+	spLeavesDepthMap->stopUsing();
+	/////////////////////////////////////////////////////
+
 
 	/////////////////// OTHER OBJECTS ///////////////////
 	lightColorL = spShadows->getUniformLocation("lightColor");
@@ -170,14 +229,28 @@ static void setupLightAndShadows() {
 	spShadows->setUniform(lightPositionL, lightPosition);
 	spShadows->setUniform(specularStrengthL, 0.1f);
 	spShadows->setUniform(shininessL, shininess);
-	spShadows->setUniform(uniformLSM, lightProj * lightView);
+	spShadows->setUniform(uniformLSM, LSM);
 	spShadows->stopUsing();
 
 	spDepthMap->use();
 	uniformLSM = spDepthMap->getUniformLocation("lightSpaceMatrix");
-	spDepthMap->setUniform(uniformLSM, lightProj * lightView);
+	spDepthMap->setUniform(uniformLSM, LSM);
 	spDepthMap->stopUsing();
 	/////////////////////////////////////////////////////
+}
+
+static void updateCameraPositionInShaders() {
+	spCylinder->use();
+	spCylinder->setUniform(cameraPosLsp, cameraController->position);
+	spCylinder->stopUsing();
+
+	spShadows->use();
+	spShadows->setUniform(cameraPosLspShadows, cameraController->position);
+	spShadows->stopUsing();
+
+	spLeaves->use();
+	spLeaves->setUniform(cameraPosLspLeaves, cameraController->position);
+	spLeaves->stopUsing();
 }
 
 static void setupCamera(Camera* camera, GLFWwindow* window, int windowWidth, int windowHeight) {
@@ -244,6 +317,7 @@ static void setDefaultGrowthParameters() {
 	growthParameters->w2 = 0.14f;
 	growthParameters->g1 = 0.2f;
 	growthParameters->g2 = 3.0f;
+	growthParameters->leavesPerTip = 2;
 	GrowthParameters::instance = growthParameters;
 }
 
@@ -286,7 +360,7 @@ void Cylinder::start() {
 	setupLightAndShadows();
 
 	// Setup leaves
-	leaves = new Leaves();
+	leaves = new Leaves(depthMap, spLeaves, spLeavesDepthMap);
 
 	plane = Mesh::loadFromFile("../Engine/objs/cylinder32.obj");
 	plane->paint(ColorRGBA::GREEN);
@@ -296,13 +370,17 @@ void Cylinder::start() {
 
 	depthMap->setOnRenderToDepthMap(this, [&]() {
 		// First we render to the depth map using the depth shaders
-		//cylinder->setShaderProgram(spDepthMapCylinder);
+		for (SceneNode* leave : leaves->sceneNodes) {
+			leave->setShaderProgram(spLeavesDepthMap);
+		}
 		if (root) root->sceneNode->setShaderProgram(spDepthMapCylinder);
 		sceneNodePlane->setShaderProgram(spDepthMap);
 	}, [&]() {
 
 		// Then return to the regular shaders
-		//cylinder->setShaderProgram(spCylinder);
+		for (SceneNode* leave : leaves->sceneNodes) {
+			leave->setShaderProgram(spLeaves);
+		}
 		if (root) root->sceneNode->setShaderProgram(spCylinder);
 		sceneNodePlane->setShaderProgram(spShadows);
 	});
@@ -318,7 +396,6 @@ void Cylinder::start() {
 	sceneNodeSphere->setAfterDrawFunction([]() {
 		GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 	});
-
 }
 
 float currOffset = 0.01f;
@@ -328,56 +405,54 @@ bool hasLeaves = false;
 
 void Cylinder::update() {
 
-	static bool isBReleased = false;
+	/*static bool isBReleased = false;
 	if (glfwGetKey(getWindow(), GLFW_KEY_B) == GLFW_PRESS && isBReleased) {
 		isBReleased = false;
 		drawSphere = !drawSphere;
 	}
 	else if (glfwGetKey(getWindow(), GLFW_KEY_B) == GLFW_RELEASE) {
 		isBReleased = true;
-	}
+	}*/
 
 	if (!paused && root) {
 		root->updateModule(getElapsedTime());
 
-		if (drawSphere)
+		/*if (drawSphere)
 			sceneNodeSphere->setModel(Mat4::translation(root->boundingSphere.center) * Mat4::scaling(root->boundingSphere.radius * 2));
 		else
-			sceneNodeSphere->setModel(Mat4::ZERO);
+			sceneNodeSphere->setModel(Mat4::ZERO);*/
+
+		leaves->removeLeaves();
 	}
 
 	treeGrowthUI->updateFPSCounter(float(getElapsedTime()));
-
-	spCylinder->use();
-	spCylinder->setUniform(cameraPosLsp, cameraController->position);
+	
+	updateCameraPositionInShaders();
 
 	static bool isNReleased = false;
 	if (glfwGetKey(getWindow(), GLFW_KEY_N) == GLFW_PRESS && isNReleased) {
 		isNReleased = false;
 		normalMapping = (normalMapping == GL_TRUE) ? GL_FALSE : GL_TRUE;
+		spCylinder->use();
 		spCylinder->setUniform(normalMappingL, normalMapping);
+		spCylinder->stopUsing();
 	}
 	else if (glfwGetKey(getWindow(), GLFW_KEY_N) == GLFW_RELEASE) {
 		isNReleased = true;
 	}
 
-	spCylinder->stopUsing();
-
-	spShadows->use();
-	spShadows->setUniform(cameraPosLspShadows, cameraController->position);
-	spShadows->stopUsing();
-
-
 	static bool isLReleased = false;
 	if (glfwGetKey(getWindow(), GLFW_KEY_L) == GLFW_PRESS && isLReleased) {
 		isLReleased = false;
 
-		hasLeaves = !hasLeaves;
+		if (paused) {
+			hasLeaves = !hasLeaves;
 
-		if (!hasLeaves)
-			root->generateLeaves(getSceneGraph(), leaves);
-		else
-			leaves->removeLeaves();
+			if (hasLeaves)
+				root->generateLeaves(getSceneGraph(), leaves);
+			else
+				leaves->removeLeaves();
+		}
 	}
 	else if (glfwGetKey(getWindow(), GLFW_KEY_L) == GLFW_RELEASE) {
 		isLReleased = true;
@@ -388,5 +463,5 @@ void Cylinder::update() {
 }
 
 void Cylinder::end() {
-
+	delete leaves;
 }

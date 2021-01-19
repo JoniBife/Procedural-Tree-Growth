@@ -46,12 +46,16 @@ void Engine::setupGLFW() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPEN_GL_MAJOR);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPEN_GL_MINOR);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+	if (MSAA > 0)
+		glfwWindowHint(GLFW_SAMPLES, MSAA);
 
 	windowWidth = SCREEN_WIDTH;
 	windowHeight = SCREEN_HEIGHT;
 
 	window = setupWindow(windowWidth, windowHeight, WINDOW_TITLE, FULLSCREEN, VSYNC);
 	setupCallbacks(window);
+
+	
 
 #if _DEBUG
 	std::cout << "GLFW " << glfwGetVersionString() << std::endl;
@@ -95,6 +99,7 @@ void Engine::setupOpenGL() {
 	GL_CALL(glEnable(GL_CULL_FACE));
 	GL_CALL(glCullFace(GL_BACK));
 	GL_CALL(glFrontFace(GL_CCW));
+	if (MSAA > 0) GL_CALL(glEnable(GL_MULTISAMPLE));
 	GL_CALL(glViewport(0, 0, windowWidth, windowHeight));
 }
 
@@ -202,6 +207,7 @@ void Engine::run() {
 			GL_CALL(glEnable(GL_CULL_FACE));
 			GL_CALL(glCullFace(GL_BACK));
 			GL_CALL(glFrontFace(GL_CCW));
+			if (MSAA > 0) GL_CALL(glEnable(GL_MULTISAMPLE));
 			GL_CALL(glViewport(0, 0, windowWidth, windowHeight));
 
 			GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));

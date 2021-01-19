@@ -18,7 +18,11 @@ struct GrowthParameters {
 	float vMax; // Maximum module vigour, not clear in the paper whether this is global or module specific
 	float vMin; // Minimum module vigour, not clear in the paper whether this is global or module specific
 
+	int leavesPerTip;
+
 	static GrowthParameters* instance; // TODO Use proper singleton pattern
+
+
 };
 
 #endif

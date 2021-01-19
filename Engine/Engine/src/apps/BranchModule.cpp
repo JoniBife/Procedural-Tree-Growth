@@ -259,34 +259,41 @@ void BranchModule::setOrientationRecurs(Mat4& orientation, BranchNode* curr) {
 
 void BranchModule::generateLeaves(SceneGraph* sceneGraph, Leaves* leaves) {
 	leaves->removeLeaves();
-	generateLeavesRecursively(sceneGraph, leaves, root);
+	generateLeavesRecursively(sceneGraph, leaves, root, true);
 }
-void BranchModule::generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* leaves, BranchNode* curr) {
+void BranchModule::generateLeavesRecursively(SceneGraph* sceneGraph, Leaves* leaves, BranchNode* curr, bool isRoot) {
 	
 	// If we are in a tip we create the leaves scene node
-	if (curr->children.size() == 0) {
+	if (!isRoot && (curr->children.size() == 0 || !curr->reachedMax)) {
 
-		Vec3 translation = Vec3(curr->positionWithDiameter.x, curr->positionWithDiameter.y, curr->positionWithDiameter.z);
-		Mat4 orientation = Mat4::translation(translation) 
-			* Qtrn::fromDir(curr->relativePosition.normalize()).toRotationMatrix() 
-			* Mat4::rotation(randomFloat(0.0f, 2 * PI), Vec3::Y);
-		SceneNode* sceneNodeLeaves = sceneGraph->getRoot()->createChild(leaves->quad, orientation,leaves->shader);
-		sceneNodeLeaves->setBeforeDrawFunction([=](ShaderProgram* sp) {
-			GL_CALL(glEnable(GL_BLEND));
-			GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-			GL_CALL(glDisable(GL_CULL_FACE));
-		});
-		sceneNodeLeaves->setAfterDrawFunction([=]() {
-			GL_CALL(glEnable(GL_CULL_FACE));
-			GL_CALL(glDisable(GL_BLEND));
-		});
-		sceneNodeLeaves->addTexture(leaves->texture);
-		leaves->sceneNodes.push_back(sceneNodeLeaves);
+		for (int i = 0; i < 2; ++i) {
+			float randomScale = randomFloat(0.2f, 3.0f);
+
+			Vec3 translation = Vec3(curr->positionWithDiameter.x, curr->positionWithDiameter.y, curr->positionWithDiameter.z);
+			Mat4 orientation = Mat4::translation(translation)
+				* Qtrn::fromDir(curr->relativePosition.normalize()).toRotationMatrix()
+				* Mat4::rotation(randomFloat(0.0f, 2 * PI), Vec3::Y)
+				* Mat4::rotation(-PI / 2, Vec3::X)
+				* Mat4::scaling({ 0.1f * randomScale, 0.0f, 0.1f * randomScale});
+			SceneNode* sceneNodeLeaves = sceneGraph->getRoot()->createChild(leaves->quad, orientation, leaves->shader);
+			sceneNodeLeaves->setBeforeDrawFunction([=](ShaderProgram* sp) {
+				GL_CALL(glEnable(GL_BLEND));
+				GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+				GL_CALL(glDisable(GL_CULL_FACE));
+			});
+			sceneNodeLeaves->setAfterDrawFunction([=]() {
+				GL_CALL(glEnable(GL_CULL_FACE));
+				GL_CALL(glDisable(GL_BLEND));
+			});
+			sceneNodeLeaves->addTexture(leaves->texture);
+			sceneNodeLeaves->addTexture(leaves->depthMap);
+			leaves->sceneNodes.push_back(sceneNodeLeaves);
+		}
 		return;
 	}
 
 	for (BranchNode* child : curr->children) {
-		generateLeavesRecursively(sceneGraph, leaves, curr);
+		generateLeavesRecursively(sceneGraph, leaves, child);
 	}
 }
 

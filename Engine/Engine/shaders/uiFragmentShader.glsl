@@ -2,9 +2,9 @@
 in vec2 exTextCoord;
 out vec4 fragmentColor;
 
-uniform sampler2D texture;
+uniform sampler2D text;
 
 void main()
 {    
-    fragmentColor = texture(texture,exTextCoord);
+    fragmentColor = texture(text,exTextCoord);
 } 

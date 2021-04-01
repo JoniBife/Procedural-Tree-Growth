@@ -122,9 +122,11 @@ void SceneNode::draw() {
 
 		Mat4 model = retriveModelRecursively();
 		shaderProgram->setUniform(modelUniformLocation, model);
-		Mat3 inverse;
-		bool canInverse = model.toMat3().inverse(inverse);
-		shaderProgram->setUniform(normalUniformLocation, canInverse ? inverse.transpose() : Mat3::ZERO);
+		if (normalUniformLocation >= 0) {
+			Mat3 inverse;
+			bool canInverse = model.toMat3().inverse(inverse);
+			shaderProgram->setUniform(normalUniformLocation, canInverse ? inverse.transpose() : Mat3::ZERO);
+		}
 
 		mesh->draw();
 

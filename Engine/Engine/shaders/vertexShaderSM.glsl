@@ -17,8 +17,6 @@ uniform SharedMatrices {
 uniform mat4 lightSpaceMatrix;
 
 void main(void)
-{
-	vec3 exNormal = normal * inNormal;
-	
+{	
 	gl_Position =  lightSpaceMatrix * model * inPosition;
 }

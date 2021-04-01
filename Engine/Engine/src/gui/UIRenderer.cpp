@@ -14,7 +14,7 @@ UIRenderer::UIRenderer() {
 	{
 		modelLocation = uiShader->getUniformLocation("model");
 		projectionLocation = uiShader->getUniformLocation("projection");
-		uiTextureLocation = uiShader->getUniformLocation("texture");
+		uiTextureLocation = uiShader->getUniformLocation("text");
 
 		uiShader->setUniform(uiTextureLocation, 0);
 	}

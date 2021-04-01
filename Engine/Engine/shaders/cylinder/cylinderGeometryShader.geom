@@ -1,7 +1,7 @@
 #version 330 core
 
 layout (lines) in; // [x,y,z,diameter]
-layout (triangle_strip, max_vertices = 200) out;
+layout (triangle_strip, max_vertices = 46) out;
 
 out vec4 exPosition;
 out vec3 exNormal;
@@ -24,7 +24,7 @@ uniform SharedMatrices {
 	mat4 projection;
 };
 
-const int sectors = 16;
+const int sectors = 6;
 
 mat4 rotationFromDir(vec4 dir) {
 

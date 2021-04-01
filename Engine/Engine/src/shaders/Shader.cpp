@@ -76,6 +76,7 @@ std::string getShaderTypeName(GLenum shaderType) {
     switch (shaderType) {
     case GL_VERTEX_SHADER: return "Vertex shader";
     case GL_FRAGMENT_SHADER: return "Fragment shader";
+    case GL_GEOMETRY_SHADER: return "Geometry shader";
     default: return "no shader type";
     };
     return "";

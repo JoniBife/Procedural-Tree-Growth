@@ -391,9 +391,6 @@ void TreeGrowth::start() {
 	});
 }
 
-float currOffset = 0.01f;
-int i = 0;
-bool drawSphere = true;
 bool hasLeaves = false;
 
 void TreeGrowth::update() {
@@ -437,10 +434,37 @@ void TreeGrowth::update() {
 		isLReleased = true;
 	}
 
-	//points->updateVertices(dynamicVertices);
-
 }
 
 void TreeGrowth::end() {
-	delete leaves;
+	if (spCylinder != nullptr) delete spCylinder; 
+	if (spDepthMapCylinder != nullptr)delete spDepthMapCylinder;
+	if (spShadows != nullptr)delete spShadows;
+	if (spDepthMap != nullptr)delete spDepthMap;
+	if (spSimple != nullptr)delete spSimple;
+
+	if (points != nullptr)delete points;
+	if (plane != nullptr)delete plane;
+	if (cameraController!= nullptr)delete cameraController;
+	if (cylinder!= nullptr)delete cylinder;
+
+	if (tree != nullptr)delete tree;
+
+	if (woodTexture!= nullptr) 
+		delete woodTexture;
+	if (woodTextureNormalMap != nullptr) 
+		delete woodTextureNormalMap;
+	if (planeTexture != nullptr) 
+		delete planeTexture;
+	if (depthMap != nullptr) 
+		delete depthMap;
+
+	if (treeGrowthUI != nullptr)
+		delete treeGrowthUI;
+
+	if (sphere != nullptr)
+		delete sphere;
+
+	if (leaves != nullptr)
+		delete leaves;
 }
